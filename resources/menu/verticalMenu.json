@@ -1,0 +1,39 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "Tổng quan",
+      "icon": "menu-icon tf-icons bx bx-home-smile",
+      "slug": "dashboard"
+    },
+    {
+      "url": "/campaigns",
+      "name": "Chiến dịch",
+      "icon": "menu-icon tf-icons bx bx-category-alt",
+      "slug": "campaigns"
+    },
+    {
+      "name": "Báo cáo",
+      "icon": "menu-icon tf-icons bx bx-line-chart",
+      "slug": "report",
+      "submenu": [
+        {
+          "url": "report/performance",
+          "name": "Hiệu suất",
+          "slug": "performance"
+        },
+        {
+          "url": "report/order",
+          "name": "Đơn hàng",
+          "slug": "order"
+        }
+      ]
+    },
+    {
+      "url": "/payment",
+      "name": "Thanh toán",
+      "icon": "menu-icon tf-icons bx bx-credit-card",
+      "slug": "payment"
+    }
+  ]
+}

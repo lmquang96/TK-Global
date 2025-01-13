@@ -1,0 +1,21 @@
+.text-blue {
+  color: #696cff !important;
+}
+.camps-detail-anchor a {
+  color: #384551;
+}
+.camps-detail-anchor a:hover {
+  color: #696cff;
+}
+.autoComplete_wrapper {
+  width: 100%;
+}
+.autoComplete_wrapper > input {
+  width: 100% !important;
+  line-height: 1.375;
+  height: 38px !important;
+  border-radius: var(--bs-border-radius) !important;
+}
+.autoComplete_wrapper > ul > li mark {
+  color: #696cff !important;
+}
