@@ -67,7 +67,7 @@ $navbarDetached = ($navbarDetached ?? '');
           <li class="nav-item lh-1 me-4">
             <div class="text-end">
               <div>
-                lmquang96
+                {{ auth()->user()->name }}
               </div>
               <small class="d-block mt-1 text-sm text-warning">
                 Thành viên
@@ -93,7 +93,9 @@ $navbarDetached = ($navbarDetached ?? '');
                       </div>
                     </div>
                     <div class="flex-grow-1">
-                      <h6 class="mb-0">lmquang96</h6>
+                      <h6 class="mb-0">
+                        {{ auth()->user()->name }}
+                      </h6>
                       <small class="text-muted">Thành viên</small>
                     </div>
                   </div>
@@ -124,9 +126,12 @@ $navbarDetached = ($navbarDetached ?? '');
                 <div class="dropdown-divider my-1"></div>
               </li>
               <li>
-                <a class="dropdown-item" href="{{ route('login') }}">
-                  <i class="bx bx-power-off bx-md me-3"></i><span>Đăng xuất</span>
-                </a>
+                <form id="formLogout" action="{{ route('logout') }}" method="POST">
+                  @csrf
+                  <a class="dropdown-item" href="javascript:void(0)" onclick="event.preventDefault(); this.closest('#formLogout').submit();">
+                    <i class="bx bx-power-off bx-md me-3"></i><span>Đăng xuất</span>
+                  </a>
+                </form>
               </li>
             </ul>
           </li>
@@ -150,7 +155,7 @@ $navbarDetached = ($navbarDetached ?? '');
           <div class="row">
             <div class="col d-flex gap-3">
               <div style="height: 20px;">
-                <img src="https://rutdao247.vn/wp-content/uploads/2023/11/zalo-logo.png" alt="" style="height: 100%; padding: 2px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/1024px-Icon_of_Zalo.svg.png" alt="" style="height: 100%; padding: 2px;">
               </div>
               <div>
                 <a href="#" target="_blank" class="text-decoration-underline">Liên hệ qua Zalo</a>

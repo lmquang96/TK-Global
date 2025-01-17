@@ -30,7 +30,7 @@
       <div class="d-flex align-items-start row">
         <div class="col-sm-7">
           <div class="card-body">
-            <h5 class="card-title text-primary mb-3">Xin chúc mừng Quang! 🎉</h5>
+            <h5 class="card-title text-primary mb-3">Xin chúc mừng {{ auth()->user()->name }}! 🎉</h5>
             <p class="mb-6">Hoa hồng của bạn hôm nay nhiều hơn 72% so với hôm qua.<br>Hãy kiểm tra chi tiết trong báo cáo của bạn.</p>
 
             <a href="javascript:;" class="btn btn-sm btn-outline-primary">Xem ngay</a>

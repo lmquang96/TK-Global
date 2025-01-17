@@ -29,12 +29,7 @@
         <div class="row">
           <div class="col-4 mb-4">
             <label class="form-label">Khoảng ngày</label>
-            <div class="input-group">
-              <input type="text" class="form-control" name="yyyymmdd" id="datepicker">
-              <span class="input-group-text" style="padding-left: calc(0.543rem - 2px); padding-right: calc(0.543rem - 2px);">
-                <i class='bx bx-calendar'></i>
-              </span>
-            </div>
+            <x-date-range-input name="yyyymmdd" />
           </div>
           <div class="col-4 mb-4">
             <label class="form-label">Chiến dịch</label>
@@ -366,109 +361,8 @@
 
 <!--/ Card layout -->
 @endsection
+@endsection
 @section('page-script')
-<script src="https://cdn.jsdelivr.net/npm/@easepick/datetime@1.2.1/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@easepick/core@1.2.1/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@easepick/base-plugin@1.2.1/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@easepick/range-plugin@1.2.1/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@easepick/preset-plugin@1.2.1/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@easepick/lock-plugin@1.2.1/dist/index.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/autoComplete.min.js"></script>
-<script>
-  const picker = new easepick.create({
-    element: document.getElementById('datepicker'),
-    css: [
-      'https://cdn.jsdelivr.net/npm/@easepick/core@1.2.1/dist/index.css',
-      'https://cdn.jsdelivr.net/npm/@easepick/range-plugin@1.2.1/dist/index.css',
-      'https://cdn.jsdelivr.net/npm/@easepick/preset-plugin@1.2.1/dist/index.css',
-      'https://cdn.jsdelivr.net/npm/@easepick/lock-plugin@1.2.1/dist/index.css',
-    ],
-    zIndex: 999,
-    lang: 'vi-VN',
-    plugins: ['RangePlugin', 'PresetPlugin'],
-    RangePlugin: {
-      locale: {
-        one: 'ngày',
-        other: 'ngày',
-      }
-    },
-    PresetPlugin: {
-      customLabels: [
-        'Hôm nay',
-        'Hôm qua',
-        '7 ngày trước',
-        '30 ngày trước',
-        'Tháng này',
-        'Tháng trước'
-      ]
-    },
-  });
-
-  picker.setStartDate(new Date());
-  picker.setEndDate((new Date()).setDate((new Date()).getDate() - 7));
-
-  const autoCompleteJS = new autoComplete({
-  data: {
-    src: async () => {
-      try {
-        document
-          .getElementById("autoComplete")
-          .setAttribute("placeholder", "Loading...");
-        // Fetch External Data Source
-        const source = await fetch(
-          "/campaigns/list"
-        );
-        const data = await source.json();
-        // Post Loading placeholder text
-        document
-          .getElementById("autoComplete")
-          .setAttribute("placeholder", autoCompleteJS.placeHolder);
-        // Returns Fetched data
-        return data;
-      } catch (error) {
-        return error;
-      }
-    },
-    keys: ["mid", "name"],
-    cache: true,
-    filter: (list) => {
-      // Filter duplicates
-      // incase of multiple data keys usage
-      const filteredResults = Array.from(
-        new Set(list.map((value) => value.match))
-      ).map((name) => {
-        return list.find((value) => value.match === name);
-      });
-
-      return filteredResults;
-    }
-  },
-  placeHolder: "shopee",
-  resultsList: {
-    noResults: true,
-    maxResults: 15,
-    tabSelect: true
-  },
-  resultItem: {
-    highlight: true
-  },
-  events: {
-    input: {
-      focus: () => {
-        if (autoCompleteJS.input.value.length) autoCompleteJS.start();
-      }
-    }
-  }
-});
-
-autoCompleteJS.input.addEventListener("selection", function (event) {
-  const feedback = event.detail;
-  autoCompleteJS.input.blur();
-  // Prepare User's Selected Value
-  const selection = feedback.selection.value[feedback.selection.key];
-  // Replace Input value with the selected value
-  autoCompleteJS.input.value = selection;
-});
-
-</script>
+@vite('resources/assets/js/autocomplete.js')
 @endsection

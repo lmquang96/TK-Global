@@ -28,14 +28,18 @@
           <h4 class="mb-1">Hãy cùng kiếm tiền nào 🚀</h4>
           <p class="mb-6">Điền thông tin của bạn vào mẫu bên dưới thật dễ dàng!</p>
 
-          <form id="formAuthentication" class="mb-6" action="{{url('/')}}" method="GET">
-            <div class="mb-6">
-              <label for="username" class="form-label">Username</label>
-              <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" autofocus>
-            </div>
+          <form id="formRegister" class="mb-6" action="{{ route('store-user') }}" method="POST">
+            @csrf
+            @if($errors->any())
+            {!! implode('', $errors->all('<label style="color: #ff3e1d; font-size: 85%; margin-bottom: 0.25rem;">:message</label>')) !!}
+            @endif
             <div class="mb-6">
               <label for="email" class="form-label">Email</label>
-              <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email">
+              <input type="text" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" value="{{ old('email') }}">
+            </div>
+            <div class="mb-6">
+              <label for="username" class="form-label">Họ và tên</label>
+              <input type="text" class="form-control" id="name" name="name" placeholder="Nhập họ tên của bạn" autofocus value="{{ old('name') }}">
             </div>
             <div class="mb-6 form-password-toggle">
               <label class="form-label" for="password">Mật khẩu</label>
@@ -45,16 +49,24 @@
               </div>
             </div>
 
+            <div class="mb-6 form-password-toggle">
+              <label class="form-label" for="re_password">Nhập lại mật khẩu</label>
+              <div class="input-group input-group-merge">
+                <input type="password" id="re_password" class="form-control" name="re_password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="re_password" />
+                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+              </div>
+            </div>
+
             <div class="my-8">
               <div class="form-check mb-0 ms-2">
-                <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms">
-                <label class="form-check-label" for="terms-conditions">
+                <input class="form-check-input" type="checkbox" id="terms" name="terms">
+                <label class="form-check-label" for="terms">
                   Tôi đồng ý với
                   <a href="{{ route('terms-of-service') }}">Điều khoản dịch vụ</a> và <a href="{{ route('privacy-policy') }}">Chính sách bảo mật</a>
                 </label>
               </div>
             </div>
-            <button class="btn btn-primary d-grid w-100">
+            <button type="submit" class="btn btn-primary d-grid w-100">
               Đăng ký
             </button>
           </form>
@@ -71,4 +83,8 @@
     </div>
   </div>
 </div>
+@endsection
+@section('page-script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@vite('resources/assets/js/authenticate.js')
 @endsection

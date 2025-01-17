@@ -4,39 +4,53 @@ namespace App\Http\Controllers\campaigns;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Campaign;
+use App\Models\Category;
+use App\Models\LinkHistory;
 
 class Main extends Controller
 {
-  public function index()
+  const STATUS_ACTIVE = 1;
+
+  public function index(Request $request)
   {
-    return view('content.campaigns.index');
+    $campaigns = Campaign::where('status', self::STATUS_ACTIVE)
+    ->when($request->keyword, function($q, $keyword) {
+      $q->where('name', 'like', '%'.$keyword.'%');
+    })
+    ->when($request->category, function($q, $category) {
+      $q->where('category_id', $category);
+    })
+    ->when($request->cp_type, function($q, $cpType) {
+      $q->where('cp_type', $cpType);
+    })
+    ->get();
+
+    $categories = Category::where('status', self::STATUS_ACTIVE)->get();
+
+    return view('content.campaigns.index', compact('campaigns', 'categories'));
   }
 
-  public function detail()
+  public function detail($id)
   {
-    return view('content.campaigns.detail');
+    $campaign = Campaign::where('status', self::STATUS_ACTIVE)
+    ->where('code', $id)
+    ->first();
+
+    $linkHistories = LinkHistory::where('user_id', auth()->user()->id)
+    ->where('campaign_id', $campaign->id)
+    ->limit(5)
+    ->get();
+
+    return view('content.campaigns.detail', compact('campaign', 'linkHistories'));
   }
 
   public function getCampaigns()
   {
-    $data = [
-      [
-        'mid' => '1',
-        'name' => 'Shopee'
-      ],
-      [
-        'mid' => '2',
-        'name' => 'Lazada'
-      ],
-      [
-        'mid' => '3',
-        'name' => 'Tiki'
-      ],
-      [
-        'mid' => '4',
-        'name' => 'Shopee MCN'
-      ],
-    ];
-    return response()->json($data, 200, []);
+    $campaigns = Campaign::select('id', 'name')
+    ->where('status', self::STATUS_ACTIVE)
+    ->get();
+
+    return response()->json($campaigns, 200, []);
   }
 }

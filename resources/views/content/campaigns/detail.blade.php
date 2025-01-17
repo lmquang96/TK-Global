@@ -7,8 +7,8 @@
     <li class="breadcrumb-item">
       <a href="javascript:void(0);">Chiến dịch</a>
     </li>
-    <li class="breadcrumb-item active">
-      HDBank
+    <li class="breadcrumb-item active text-truncate">
+      {{ $campaign->name }}
     </li>
   </ol>
 </nav>
@@ -24,17 +24,17 @@
   <div class="col-9">
     <div class="card" id="create-link">
       <div class="card-body">
+        @if ($campaign->link_generate_type == 0)
         <h6>Tạo link chiến dịch</h6>
         <div class="row mb-4">
           <div class="col-9">
             <label class="form-label">Link sản phẩm</label>
-            <input type="text" class="form-control" placeholder="" value="https://shopee.vn/" />
+            <input type="text" class="form-control" placeholder="" value="{{ $campaign->url }}" id="original-link" />
           </div>
           <div class="col-3">
             <label class="form-label">Tên miền</label>
-            <select class="form-select" name="domains">
-              <option value="1" selected>abc.com</option>
-              <option value="2">xyz.com</option>
+            <select class="form-select" id="domain" name="domain">
+              <option value="click.tkglobal.com">click.tkglobal.com</option>
             </select>
           </div>
         </div>
@@ -47,24 +47,24 @@
             <div class="row">
               <div class="col-6 mb-4">
                 <label class="form-label">Nguồn chiến dịch</label>
-                <input type="text" class="form-control" placeholder="VD: google, facebook..."/>
+                <input type="text" class="form-control" placeholder="VD: google, facebook..." id="sub1" />
               </div>
               <div class="col-6 mb-4">
                 <label class="form-label">Cách tiếp thị</label>
-                <input type="text" class="form-control" placeholder="VD: cpc, ads, banner,..."/>
+                <input type="text" class="form-control" placeholder="VD: cpc, ads, banner,..."id="sub2" />
               </div>
               <div class="col-6">
                 <label class="form-label">Tên chiến dịch</label>
-                <input type="text" class="form-control" placeholder="VD: the-tin-dung, vay-sinh-vien,..."/>
+                <input type="text" class="form-control" placeholder="VD: the-tin-dung, vay-sinh-vien,..." id="sub3" />
               </div>
               <div class="col-6">
                 <label class="form-label">Nội dung chiến dịch</label>
-                <input type="text" class="form-control" placeholder="VD: ngay-10-10, giam-lai-suat,..."/>
+                <input type="text" class="form-control" placeholder="VD: ngay-10-10, giam-lai-suat,..." id="sub4" />
               </div>
             </div>
           </div>
         </div>
-        <button type="button" class="btn btn-primary mt-4" onclick="generateLink()">
+        <button type="button" id="generate-link" class="btn btn-primary mt-4" onclick="generateLink()">
           <span class="tf-icons bx bx-link bx-18px me-2"></span>Tạo Link
         </button>
         <div class="row mt-4 visually-hidden" id="link-generate-area">
@@ -73,19 +73,26 @@
               <h6 class="text-blue">Tạo link thành công</h6>
               <label class="form-label text-blue">Link sản phẩm</label>
               <div class="input-group">
-                <input type="text" class="form-control bg-white" id="root-link" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" value="https://abc.com/abcxyz">
-                <button class="btn btn-primary" type="button" onclick="handleCopy()">
+                <input type="text" class="form-control bg-white" id="link-tracking" placeholder="" aria-label="Link Tracking" aria-describedby="button-addon1" value="" readonly>
+                <button class="btn btn-primary" type="button" onclick="handleCopy('#link-tracking')">
                   <i class='bx bx-copy me-2'></i> Copy
                 </button>
               </div>
             </div>
           </div>
         </div>
+        @else
+        <h6>Tạo link chiến dịch</h6>
+        <div class="col text-danger">
+          Đây là chiến dịch tạo link thủ công, nên bạn hãy liên hệ với chúng tôi để được cung cấp link tracking!
+        </div>
+        @endif
       </div>
     </div>
     <div class="card mt-6" id="history-link">
       <div class="card-body">
-        <h6>Lịch sử tạo link</h6>
+        <h6>Lịch sử tạo link <a href="#">(Xem thêm)</a></h6>
+        @if ($campaign->link_generate_type == 0)
         <div class="table-responsive text-nowrap">
           <table class="table">
             <thead>
@@ -96,37 +103,44 @@
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">
+              @foreach ($linkHistories as $linkHistory)
               <tr>
                 <td>
-                  31-12-2024 14:57:30
+                  {{ $linkHistory->created_at }}
                 </td>
                 <td>
                   <div class="input-group">
-                    <input type="text" class="form-control bg-white" id="root-link" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" value="https://abc.com/abcxyz">
-                    <button class="btn btn-primary" style="--bs-btn-padding-x: 0.75rem;" type="button" onclick="handleCopy()">
+                    <input type="text" class="form-control bg-white" id="link-history-tracking-input-{{ $linkHistory->id }}" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" value="{{ $linkHistory->tracking_url }}">
+                    <button class="btn btn-primary" style="--bs-btn-padding-x: 0.75rem;" type="button" onclick="handleCopy('#link-history-tracking-input-{{ $linkHistory->id }}')">
                       <i class='bx bx-copy'></i>
                     </button>
                   </div>
                 </td>
                 <td>
                   <div class="input-group">
-                    <input type="text" class="form-control bg-white" id="root-link" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" value="https://shopee.vn/">
-                    <button class="btn btn-primary" style="--bs-btn-padding-x: 0.75rem;" type="button" onclick="handleCopy()">
+                    <input type="text" class="form-control bg-white" id="link-history-root-input-{{ $linkHistory->id }}" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" value="{{ $linkHistory->originial_url }}">
+                    <button class="btn btn-primary" style="--bs-btn-padding-x: 0.75rem;" type="button" onclick="handleCopy('#link-history-root-input-{{ $linkHistory->id }}')">
                       <i class='bx bx-copy'></i>
                     </button>
                   </div>
                 </td>
               </tr>
+              @endforeach
             </tbody>
           </table>
         </div>
+        @else
+        <div class="col text-danger">
+          Đây là chiến dịch tạo link thủ công, nên rất tiếc chúng tôi sẽ không lưu lại lịch sử!
+        </div>
+        @endif
       </div>
     </div>
     <div class="card mt-6" id="info">
       <div class="card-body">
         <h6>Thông tin chiến dịch</h6>
         <div>
-          ah hihi đồ ngốc
+          {!! $campaign->detail !!}
         </div>
       </div>
     </div>
@@ -135,20 +149,20 @@
     <div class="card">
       <div class="card-body">
         <div class="text-center">
-          <img src="https://storage.googleapis.com/hyperlead-public/production/assets/offers/logo/Logo-HDBank.png" height="48" />
+          <img src="{{ $campaign->image }}" height="48" />
         </div>
-        <h5 class="card-title mt-2">HDBank</h5> 
+        <h5 class="card-title mt-2">{{ $campaign->name }}</h5> 
         <div class="d-flex">
           <i class="bx bxs-dollar-circle mb-2"></i>
-          <span style="margin-left: 0.5rem">Lên đến 270.000₫</span>
+          <span style="margin-left: 0.5rem">{{ $campaign->commission_text }}</span>
         </div>
         <div class="d-flex">
           <i class="bx bx-shape-circle mb-2"></i>
-          <span style="margin-left: 0.5rem">Tài chính/Ngân hàng</span>
+          <span style="margin-left: 0.5rem">{{ $campaign->category->name }}</span>
         </div>
         <div class="d-flex">
           <i class="bx bx-git-branch mb-2"></i>
-          <span style="margin-left: 0.5rem">CPS</span>
+          <span style="margin-left: 0.5rem">{{ $campaign->cp_type }}</span>
         </div>
         <hr />
         <div class="camps-detail-anchor">
@@ -182,24 +196,13 @@
   </div>
 </div>
 <!-- Toast with Placements -->
-<div class="bs-toast toast toast-placement-ex m-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
-  <div class="toast-header">
-    <i class='bx bx-bell me-2'></i>
-    <div class="me-auto fw-medium">Thông báo</div>
-    <small>Vừa xong</small>
-    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-  </div>
-  <div class="toast-body">
-    Sao chép link phân phối thành công
-  </div>
-</div>
+<x-toast type="info" message="Sao chép link phân phối thành công" />
 <!-- Toast with Placements -->
 <!--/ Text alignment -->
 
 <!--/ Card layout -->
 @endsection
 @section('page-script')
-@vite(['resources/assets/js/ui-toasts.js'])
 <script>
   let rotate = 0;
   function toggleIcon() {
@@ -210,18 +213,48 @@
   }
 
   function generateLink() {
-    $("#link-generate-area").removeClass("visually-hidden");
+    $("#generate-link").html('Đang xử lý');
+    $("#generate-link").prop("disabled", true);
+    let originalLink = $('#original-link').val();
+    let domain = $('#domain').val();
+    let campaign = '{{ $campaign->code }}';
+    let campaignId = '{{ $campaign->id }}';
+    let sub1 = $('#sub1').val();
+    let sub2 = $('#sub2').val();
+    let sub3 = $('#sub3').val();
+    let sub4 = $('#sub4').val();
+    let linkTracking = `https://${domain}?c=${campaign}&r=${encodeURIComponent(originalLink)}&s1=${sub1}&s2=${sub2}&s3=${sub3}&s4=${sub4}`;
+
+    $.ajax({
+      type: "post",
+      url: "{{ route('links-store-history') }}",
+      data: {
+        _token: "{{ csrf_token() }}",
+        originalLink: originalLink,
+        domain: domain,
+        campaignId: campaignId,
+        sub1: sub1,
+        sub2: sub2,
+        sub3: sub3,
+        sub4: sub4,
+        linkTracking: linkTracking
+      },
+      success: function (response) {
+        $("#generate-link").prop("disabled", true);
+        $("#link-tracking").val(linkTracking);
+        $("#link-generate-area").removeClass("visually-hidden");
+        $("#generate-link").html('Tạo Link');
+        $("#generate-link").prop("disabled", false);
+      }
+    });
   }
 
-  function handleCopy() {
-    const toastPlacementExample = document.querySelector('.toast-placement-ex');
-    selectedType = 'bg-primary';
-    selectedPlacement = ['top-0', 'start-0'];
-
-    toastPlacementExample.classList.add(selectedType);
-    DOMTokenList.prototype.add.apply(toastPlacementExample.classList, selectedPlacement);
-    toastPlacement = new bootstrap.Toast(toastPlacementExample);
-    toastPlacement.show();
+  function handleCopy(target) {
+    let copyText = $(target);
+    copyText.select();
+    copyText[0].setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    toastShow();
   }
 </script>
 @endsection

@@ -30,72 +30,55 @@
       <!-- Account -->
       <div class="card-body">
         <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 border-bottom">
-          <img src="{{asset('assets/img/avatars/my-avatar.jpg')}}" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
-          <div class="button-wrapper">
-            <label for="upload" class="btn btn-primary me-3 mb-4" tabindex="0">
-              <span class="d-none d-sm-block">Tải lên ảnh mới</span>
-              <i class="bx bx-upload d-block d-sm-none"></i>
-              <input type="file" id="upload" class="account-file-input" hidden accept="image/png, image/jpeg" />
-            </label>
+          <img src="{{ $profile->profile->avatar ? asset('assets/img/avatars/'.$profile->profile->avatar) : asset('assets/img/avatars/default.png')}}" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
+          <form id="form-avatar-upload" action="{{ route('profile-update-avatar') }}" method="POST" enctype="multipart/form-data" >
+            @csrf
+            @method('PUT')
+            <div class="button-wrapper">
+              <label for="upload" class="btn btn-primary me-3 mb-4" tabindex="0">
+                <span class="d-none d-sm-block">Tải lên ảnh mới</span>
+                <i class="bx bx-upload d-block d-sm-none"></i>
+                <input type="file" id="upload" class="account-file-input" hidden accept="image/*" name="avatar" />
+              </label>
 
-            <div>Tải lên ảnh JPG, GIF hoặc PNG. Dung lượng tối đa 2MB</div>
-          </div>
+              <div>Tải lên ảnh JPG, GIF hoặc PNG. Dung lượng tối đa 2MB</div>
+            </div>
+          </form>
         </div>
       </div>
       <div class="card-body pt-4">
-        <form id="formAccountSettings" method="POST" onsubmit="return false">
+        <form method="POST" action="{{ route('profile-update-personal-info') }}">
+          @csrf
+          @method('PUT')
           <div class="row g-6">
             <div class="col-md-6">
-              <label for="firstName" class="form-label">Username</label>
-              <input class="form-control" type="text" id="firstName" name="firstName" value="admin" autofocus />
-            </div>
-            <div class="col-md-6">
-              <label for="lastName" class="form-label">Họ và tên</label>
-              <input class="form-control" type="text" name="lastName" id="lastName" value="Lê Minh Quang" />
+              <label for="name" class="form-label">Họ và tên</label>
+              <input class="form-control" type="text" name="name" id="lastName" value="{{ $profile->name }}" />
             </div>
             <div class="col-md-6">
               <label for="email" class="form-label">Email</label>
-              <input class="form-control" type="text" id="email" name="email" value="admin@example.com" placeholder="john.doe@example.com" />
+              <input class="form-control" type="text" id="email" name="email" value="{{ $profile->email }}" placeholder="admin@example.com" disabled />
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="phoneNumber">Số điện thoại</label>
+              <label class="form-label" for="phone">Số điện thoại</label>
               <div class="input-group input-group-merge">
                 <span class="input-group-text">VN (+84)</span>
-                <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="326018395" value="0326018395" />
+                <input type="text" id="phone" name="phone" class="form-control" placeholder="Nhập số điện thoại của bạn" value="{{ $profile->profile->phone }}" />
               </div>
             </div>
             <div class="col-md-6">
               <label for="address" class="form-label">Địa chỉ</label>
-              <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="Mễ Trì, Nam Từ Liêm" />
+              <input type="text" class="form-control" id="address" name="address" placeholder="Nhập địa chỉ của bạn" value="{{ $profile->profile->address }}" />
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="country">Thành phố</label>
-              <select id="country" class="select2 form-select">
-                <option value="">-- Chọn --</option>
-                <option value="Australia" selected>Hà Nội</option>
-                <option value="Bangladesh">Bangladesh</option>
-                <option value="Belarus">Belarus</option>
-                <option value="Brazil">Brazil</option>
-                <option value="Canada">Canada</option>
-                <option value="China">China</option>
-                <option value="France">France</option>
-                <option value="Germany">Germany</option>
-                <option value="India">India</option>
-                <option value="Indonesia">Indonesia</option>
-                <option value="Israel">Israel</option>
-                <option value="Italy">Italy</option>
-                <option value="Japan">Japan</option>
-                <option value="Korea">Korea, Republic of</option>
-                <option value="Mexico">Mexico</option>
-                <option value="Philippines">Philippines</option>
-                <option value="Russia">Russian Federation</option>
-                <option value="South Africa">South Africa</option>
-                <option value="Thailand">Thailand</option>
-                <option value="Turkey">Turkey</option>
-                <option value="Ukraine">Ukraine</option>
-                <option value="United Arab Emirates">United Arab Emirates</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="United States">United States</option>
+              <label class="form-label" for="city">Thành phố</label>
+              <select id="city" class="select2 form-select" name="city"></select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="account_type">Loại tài khoản</label>
+              <select id="account_type" class="select2 form-select" name="account_type">
+                <option value="Individual" {{ $profile->profile->account_type == 'Individual' ? 'selected' : '' }}>Cá nhân</option>
+                <option value="Company" {{ $profile->profile->account_type == 'Company' ? 'selected' : '' }}>Doanh nghiệp</option>
               </select>
             </div>
           </div>
@@ -109,39 +92,41 @@
     <div class="card">
       <h5 class="card-header">Thông tin thanh toán</h5>
       <div class="card-body pt-4">
-        <form id="formAccountSettings" method="POST" onsubmit="return false">
+        <form method="POST" action="{{ route('profile-update-payment-info') }}">
+          @csrf
+          @method('PUT')
           <div class="row g-6">
             <div class="col-md-6">
-              <label for="firstName" class="form-label">Chủ tài khoản</label>
-              <input class="form-control" type="text" id="firstName" name="firstName" value="LE MINH QUANG" autofocus />
+              <label for="bank_owner" class="form-label">Chủ tài khoản</label>
+              <input class="form-control" type="text" id="bank_owner" name="bank_owner" value="{{ $profile->profile->bank_owner }}" placeholder="Nhập tên chủ tài khoản ngân hàng của bạn" />
             </div>
             <div class="col-md-6">
-              <label for="lastName" class="form-label">Số tài khoản</label>
-              <input class="form-control" type="text" name="lastName" id="lastName" value="987654987654" />
+              <label for="bank_number" class="form-label">Số tài khoản</label>
+              <input class="form-control" type="text" name="bank_number" id="bank_number" value="{{ $profile->profile->bank_number }}" placeholder="Nhập số tài khoản ngân hàng  của bạn" />
             </div>
             <div class="col-md-6">
-              <label for="email" class="form-label">Ngân hàng</label>
-              <input class="form-control" type="text" id="email" name="email" value="Quỹ Tín dụng Nhân dân Trung ương - CCF" placeholder="john.doe@example.com" />
+              <label for="bank" class="form-label">Ngân hàng</label>
+              <select id="bank" class="select2 form-select" name="bank"></select>
             </div>
             <div class="col-md-6">
-              <label for="lastName" class="form-label">Chi nhánh</label>
-              <input class="form-control" type="text" name="lastName" id="lastName" value="Hà Nội" />
+              <label for="bank_branch" class="form-label">Chi nhánh</label>
+              <input class="form-control" type="text" name="bank_branch" id="bank_branch" value="{{ $profile->profile->bank_branch }}" placeholder="Nhập tên chi nhánh ngân hàng của bạn" />
             </div>
             <div class="col-md-6">
-              <label for="lastName" class="form-label">Số CMT/CCCD</label>
-              <input class="form-control" type="text" name="lastName" id="lastName" value="123456789112" />
+              <label for="citizen_id_no" class="form-label">Số CMT/CCCD</label>
+              <input class="form-control" type="text" name="citizen_id_no" id="citizen_id_no" value="{{ $profile->profile->citizen_id_no }}" placeholder="Nhập số CMT/CCCD của bạn" />
             </div>
             <div class="col-md-6">
-              <label for="address" class="form-label">Ngày cấp</label>
-              <input type="date" class="form-control" id="address" name="address" value="2025-01-10" />
+              <label for="citizen_id_date" class="form-label">Ngày cấp</label>
+              <x-date-input name="citizen_id_date" value="{{ $profile->profile->citizen_id_date }}" />
             </div>
             <div class="col-md-6">
-              <label for="lastName" class="form-label">Nơi cấp</label>
-              <input class="form-control" type="text" name="lastName" id="lastName" value="Cục Cảnh sát quản lí hành chính về trật tự xã hội" />
+              <label for="citizen_id_place" class="form-label">Nơi cấp</label>
+              <input class="form-control" type="text" name="citizen_id_place" id="citizen_id_place" value="{{ $profile->profile->citizen_id_place }}" placeholder="Nhập nơi cấp CMT/CCCD của bạn" />
             </div>
             <div class="col-md-6">
-              <label for="lastName" class="form-label">Mã số thuế</label>
-              <input class="form-control" type="text" name="lastName" id="lastName" value="8638110008" />
+              <label for="tax" class="form-label">Mã số thuế</label>
+              <input class="form-control" type="text" name="tax" id="tax" value="{{ $profile->profile->tax }}" placeholder="Nhập mã số thuế của bạn" />
             </div>
           </div>
           <div class="mt-6">
@@ -154,5 +139,60 @@
 </div>
 <!--/ Text alignment -->
 
+<!-- Toast with Placements -->
+@if (\Session::has('message'))
+<x-toast type="info" message="{{ \Session::get('message') }}" />
+@endif
+@if($errors->any())
+<x-toast type="error" message="{{ $errors->first() }}" />
+@endif
+<!-- Toast with Placements -->
+
 <!--/ Card layout -->
+@endsection
+@section('page-script')
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      type: "GET",
+      url: "https://provinces.open-api.vn/api/",
+      success: function (response) {
+        let profileCity = '{{ $profile->profile->city_code }}'
+        let html = '<option value="">-- Chọn --</option>';
+        $.each(response, function (index, item) { 
+          html += `<option value="${item.code}|${item.name}" ${profileCity == item.code ? 'selected' : ''}>${item.name}</option>`;
+        });
+
+        $('#city').html(html);
+      }
+    });
+
+    $.ajax({
+      type: "GET",
+      url: "https://api.vietqr.io/v2/banks",
+      success: function (response) {
+        let profileCity = '{{ $profile->profile->bank_code }}'
+        let html = '<option value="">-- Chọn --</option>';
+        $.each(response.data, function (index, item) { 
+          html += `<option value="${item.code}|${item.name}" ${profileCity == item.code ? 'selected' : ''}>${item.name}</option>`;
+        });
+
+        $('#bank').html(html);
+      }
+    });
+
+    @if (Session::has('message') || $errors->any()) {
+      toastShow();
+    }
+    @endif
+  });
+
+  $("#upload").change(function (e) { 
+    e.preventDefault();
+
+    if ($(this).val().length > 0) {
+      $("#form-avatar-upload").submit();
+    }
+  });
+</script>
 @endsection

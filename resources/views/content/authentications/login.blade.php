@@ -27,10 +27,14 @@
           <h4 class="mb-1">Chào mừng đến {{config('variables.templateName')}}! 👋</h4>
           <p class="mb-6">Xin vui lòng đăng nhập tài khoản của bạn và bắt đầu kiếm tiền nào!</p>
 
-          <form id="formAuthentication" class="mb-6" action="{{url('/')}}" method="GET">
+          <form id="formAuthentication" class="mb-6" action="{{ route('authenticate') }}" method="POST">
+            @csrf
+            @if($errors->any())
+            {!! implode('', $errors->all('<label style="color: #ff3e1d; font-size: 85%; margin-bottom: 0.25rem;">:message</label>')) !!}
+            @endif
             <div class="mb-6">
-              <label for="email" class="form-label">Email/Username</label>
-              <input type="text" class="form-control" id="email" name="email-username" placeholder="Enter your email or username" autofocus>
+              <label for="email" class="form-label">Email</label>
+              <input type="text" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" autofocus>
             </div>
             <div class="mb-6 form-password-toggle">
               <label class="form-label" for="password">Mật khẩu</label>
@@ -42,7 +46,7 @@
             <div class="mb-8">
               <div class="d-flex justify-content-between mt-8">
                 <div class="form-check mb-0 ms-2">
-                  <input class="form-check-input" type="checkbox" id="remember-me">
+                  <input class="form-check-input" type="checkbox" id="remember-me" name="remember">
                   <label class="form-check-label" for="remember-me">
                     Lưu đăng nhập
                   </label>
@@ -69,4 +73,8 @@
     <!-- /Register -->
   </div>
 </div>
+@endsection
+@section('page-script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@vite('resources/assets/js/authenticate.js')
 @endsection
