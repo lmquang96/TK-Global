@@ -41,6 +41,15 @@
     },
   });
 
-  picker.setStartDate(new Date());
-  picker.setEndDate((new Date()).setDate((new Date()).getDate() - 7));
+  let date = '{{ $date ?? null }}';
+  let sDate = (new Date()).setDate((new Date()).getDate() - 7);
+  let eDate = new Date();
+  if (date !== '') {
+    let dataArray = date.split(' - ');
+    sDate = new Date(dataArray[0]);
+    eDate = new Date(dataArray[1]);
+  }
+  
+  picker.setStartDate(sDate);
+  picker.setEndDate(eDate);
 </script>

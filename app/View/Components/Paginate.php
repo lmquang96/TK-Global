@@ -5,15 +5,15 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class DateRangeInput extends Component
+class Paginate extends Component
 {
     /**
      * Create a new component instance.
      */
     public function __construct(
-        public string $name,
-        public string $date,
+        public LengthAwarePaginator $paginator,
     )
     {
         //
@@ -24,6 +24,6 @@ class DateRangeInput extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.date-range-input');
+        return view('components.paginate');
     }
 }

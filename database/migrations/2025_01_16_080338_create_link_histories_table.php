@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('link_histories', function (Blueprint $table) {
             $table->id();
-            $table->string('originial_url');
-            $table->string('tracking_url');
+            $table->string('code');
+            $table->string('original_url');
             $table->string('domain');
-            $table->string('short_url');
-            $table->string('sub1');
-            $table->string('sub2');
-            $table->string('sub3');
-            $table->string('sub4');
+            $table->string('short_url')->nullable();
+            $table->string('sub1')->nullable();
+            $table->string('sub2')->nullable();
+            $table->string('sub3')->nullable();
+            $table->string('sub4')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('campaign_id')->constrained()->onDelete('cascade');
             $table->timestamps();

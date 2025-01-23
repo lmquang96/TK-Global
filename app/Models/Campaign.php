@@ -14,4 +14,12 @@ class Campaign extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function linkHistories() {
+        return $this->hasMany(LinkHistory::class);
+    }
+
+    public function conversions() {
+        return $this->hasMany(Conversion::class);
+    }
 }

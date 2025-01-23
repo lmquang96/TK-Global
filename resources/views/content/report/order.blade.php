@@ -26,61 +26,64 @@
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <div class="row">
-          <div class="col-4 mb-4">
-            <label class="form-label">Khoảng ngày</label>
-            <x-date-range-input name="yyyymmdd" />
-          </div>
-          <div class="col-4 mb-4">
-            <label class="form-label">Chiến dịch</label>
-            <input type="text" class="form-control" placeholder="Shopee" id="autoComplete" />
-          </div>
-          <div class="col-4 mb-4">
-            <label class="form-label">Mã chuyển đổi/đơn hàng</label>
-            <div class="input-group">
-              <button type="button" class="btn btn-outline-primary">Chuyển đổi</button>
-              <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="visually-hidden">Toggle Dropdown</span>
+        <form action="{{ route('report-order') }}" method="GET">
+          <div class="row">
+            <div class="col-4 mb-4">
+              <label class="form-label">Khoảng ngày</label>
+              <x-date-range-input name="date" date="{{ request('date') }}" />
+            </div>
+            <div class="col-4 mb-4">
+              <label class="form-label">Chiến dịch</label>
+              <input type="text" class="form-control" placeholder="Shopee" id="autoComplete" name="keyword" value="{{ request('keyword') }}" />
+            </div>
+            <div class="col-4 mb-4">
+              <label class="form-label">Mã chuyển đổi/đơn hàng</label>
+              <div class="input-group">
+                <button type="button" class="btn btn-outline-primary" id="code-name">Chuyển đổi</button>
+                <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="javascript:void(0);" onclick="handleChangeCode('code', 'Chuyển đổi')">Chuyển đổi</a></li>
+                  <li><a class="dropdown-item" href="javascript:void(0);" onclick="handleChangeCode('order_code', 'Đơn hàng')">Đơn hàng</a></li>
+                </ul>
+                <input type="hidden" name="code_key" value="{{ request('code_key') }}">
+                <input type="text" class="form-control" name="code_value" value="{{ request('code_value') }}">
+              </div>
+            </div>
+            <div class="col-4 mb-4">
+              <label for="exampleFormControlSelect1" class="form-label">Trạng thái</label>
+              <select class="form-select" name="status">
+                <option value="">Tất cả</option>
+                <option value="Pending"{{ request('status') == 'Pending' ? 'selected' : '' }}>Tạm duyệt</option>
+                <option value="Approved"{{ request('status') == 'Approved' ? 'selected' : '' }}>Đã duyệt</option>
+                <option value="Cancelled"{{ request('status') == 'Cancelled' ? 'selected' : '' }}>Hủy</option>
+              </select>
+            </div>
+            <div class="col-4 mb-4">
+              <label class="form-label">Sub ID 1</label>
+              <input type="text" class="form-control" placeholder="VD: google, facebook..." name="sub1" value="{{ request('sub1') }}" />
+            </div>
+            <div class="col-4 mb-4">
+              <label class="form-label">Sub ID 2</label>
+              <input type="text" class="form-control" placeholder="VD: cpc, ads, banner,..." name="sub2" value="{{ request('sub2') }}" />
+            </div>
+            <div class="col-4 mb-4">
+              <label class="form-label">Sub ID 3</label>
+              <input type="text" class="form-control" placeholder="VD: the-tin-dung, vay-sinh-vien,..." name="sub3" value="{{ request('sub3') }}" />
+            </div>
+            <div class="col-4 mb-4">
+              <label class="form-label">Sub ID 4</label>
+              <input type="text" class="form-control" placeholder="VD: ngay-10-10, giam-lai-suat,..." name="sub4" value="{{ request('sub4') }}" />
+            </div>
+            <div class="col-4 mb-4">
+              <label></label>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span class="tf-icons bx bx-filter bx-18px me-2"></span>Lọc
               </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="javascript:void(0);">Chuyển đổi</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0);">Đơn hàng</a></li>
-              </ul>
-              <input type="text" class="form-control">
             </div>
           </div>
-          <div class="col-4 mb-4">
-            <label for="exampleFormControlSelect1" class="form-label">Trạng thái</label>
-            <select class="form-select">
-              <option value="1">Tất cả</option>
-              <option value="2">Tạm duyệt</option>
-              <option value="3">Đã duyệt</option>
-              <option value="4">Hủy</option>
-            </select>
-          </div>
-          <div class="col-4 mb-4">
-            <label class="form-label">Sub ID 1</label>
-            <input type="text" class="form-control" placeholder="Shopee" />
-          </div>
-          <div class="col-4 mb-4">
-            <label class="form-label">Sub ID 2</label>
-            <input type="text" class="form-control" placeholder="Shopee" />
-          </div>
-          <div class="col-4 mb-4">
-            <label class="form-label">Sub ID 3</label>
-            <input type="text" class="form-control" placeholder="Shopee" />
-          </div>
-          <div class="col-4 mb-4">
-            <label class="form-label">Sub ID 4</label>
-            <input type="text" class="form-control" placeholder="Shopee" />
-          </div>
-          <div class="col-4 mb-4">
-            <label></label>
-            <button type="button" class="btn btn-primary" style="width: 100%;">
-              <span class="tf-icons bx bx-filter bx-18px me-2"></span>Lọc
-            </button>
-          </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
@@ -97,7 +100,7 @@
             </div>
           </div>
           <p class="mb-1">Lượt click</p>
-          <h4 class="card-title mb-3">2.456</h4>
+          <h4 class="card-title mb-3" id="total-click-value">0</h4>
         </div>
       </div>
     </div>
@@ -110,7 +113,7 @@
             </div>
           </div>
           <p class="mb-1">Số chuyển đổi</p>
-          <h4 class="card-title mb-3">9.652</h4>
+          <h4 class="card-title mb-3" id="total-conversion-value">0</h4>
         </div>
       </div>
     </div>
@@ -123,7 +126,7 @@
             </div>
           </div>
           <p class="mb-1">Giá trị chuyển đổi</p>
-          <h4 class="card-title mb-3">88.489.320₫</h4>
+          <h4 class="card-title mb-3" id="total-price-value">0₫</h4>
         </div>
       </div>
     </div>
@@ -136,7 +139,7 @@
             </div>
           </div>
           <p class="mb-1">Hoa hồng phát sinh</p>
-          <h4 class="card-title mb-3">12.628.500₫</h4>
+          <h4 class="card-title mb-3" id="total-com-value">0₫</h4>
         </div>
       </div>
     </div>
@@ -144,7 +147,7 @@
 </div>
 <div class="card">
   <h5 class="card-header">Dữ liệu</h5>
-  <div class="card-body">
+  {{-- <div class="card-body">
     <div class="row">
       <div class="col-6 col-lg-3 d-flex align-items-center">
         <div class="me-2" style="white-space: nowrap;">Hiển thị</div>
@@ -161,7 +164,8 @@
         </button>
       </div>
     </div>
-  </div>
+  </div> --}}
+  @if (!$data->isEmpty())
   <div class="table-responsive text-nowrap">
     <table class="table table-hover">
       <thead>
@@ -169,6 +173,7 @@
           <th>ID chuyển đổi</th>
           <th>Thời gian phát sinh</th>
           <th>Thời gian click</th>
+          <th>Chiến dịch</th>
           <th>ID đơn hàng</th>
           <th>Giá trị đơn hàng(₫)</th>
           <th>Hoa hồng(₫)</th>
@@ -181,78 +186,61 @@
         </tr>
       </thead>
       <tbody class="table-border-bottom-0">
-        @for ($i = 0; $i < 5; $i++)
-        <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetail">
+        @foreach ($data as $key => $row)
+        <tr style="cursor: pointer;" onclick="handleShowOrderDetail('{{ $key }}')">
           <td>
-            5b9f309f7e38ff6db7dbfb4fb10e09a3
+            {{ $row->code }}
           </td>
           <td>
-            2025-01-07 13:45:51
+            {{ $row->order_time }}
           </td>
           <td>
-            2025-01-07 13:45:51
+            {{ $row->click->created_at }}
           </td>
           <td>
-            1360133424012396
+            {{ $row->campaign->name }}
           </td>
           <td>
-            {{ number_format(2456789, 0, ',', '.') }}
+            {{ $row->order_code }}
           </td>
           <td>
-            {{ number_format(2456, 0, ',', '.') }}
+            {{ number_format($row->unit_price, 0, ',', '.') }}
           </td>
           <td>
+            {{ number_format($row->commission_pub, 0, ',', '.') }}
+          </td>
+          <td>
+            @if ($row->status == 'Pending')
             <span class="badge bg-label-warning me-1">Tạm duyệt</span>
+            @elseif ($row->status == 'Approved')
+            <span class="badge bg-label-success me-1">Đã duyệt</span>
+            @else
+            <span class="badge bg-label-danger me-1">Đã hủy</span>
+            @endif
           </td>
           <td>
-            facebook
+            {{ $row->click->linkHistory->sub1 ?? 'N/A' }}
           </td>
           <td>
-            ads
+            {{ $row->click->linkHistory->sub2 ?? 'N/A' }}
           </td>
           <td>
-            giam-gia-soc-thang-1
+            {{ $row->click->linkHistory->sub3 ?? 'N/A' }}
           </td>
           <td>
+            {{ $row->click->linkHistory->sub4 ?? 'N/A' }}
           </td>
         </tr>
-        @endfor
+        @endforeach
       </tbody>
     </table>
   </div>
   <div class="card-body">
-    <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <li class="page-item first">
-          <a class="page-link" href="javascript:void(0);"><i class="tf-icon bx bx-chevrons-left bx-sm"></i></a>
-        </li>
-        <li class="page-item prev">
-          <a class="page-link" href="javascript:void(0);"><i class="tf-icon bx bx-chevron-left bx-sm"></i></a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="javascript:void(0);">1</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="javascript:void(0);">2</a>
-        </li>
-        <li class="page-item active">
-          <a class="page-link" href="javascript:void(0);">3</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="javascript:void(0);">4</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="javascript:void(0);">5</a>
-        </li>
-        <li class="page-item next">
-          <a class="page-link" href="javascript:void(0);"><i class="tf-icon bx bx-chevron-right bx-sm"></i></a>
-        </li>
-        <li class="page-item last">
-          <a class="page-link" href="javascript:void(0);"><i class="tf-icon bx bx-chevrons-right bx-sm"></i></a>
-        </li>
-      </ul>
-    </nav>
+    <x-paginate :paginator="$data" />
   </div>
+  @else
+  <x-empty-data />
+  @endif
 </div>
 <!-- Modal -->
 <div class="modal fade" id="modalDetail" tabindex="-1" aria-hidden="true">
@@ -263,96 +251,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="table-responsive text-nowrap">
+        <div class="table-responsive">
           <table class="table table-striped">
             <tbody class="table-border-bottom-0">
-              <tr>
-                <td>
-                  Chiến dịch
-                </td>
-                <td>
-                  Shopee MCN
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  ID click
-                </td>
-                <td>
-                  e107d7d717052de30d7c1abe667c8d88
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Thiêt bị
-                </td>
-                <td>
-                  N/A
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  IP
-                </td>
-                <td>
-                  113.185.104.65
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Tên sản phẩm
-                </td>
-                <td style="white-space: normal;">
-                  Đầm Midi Dáng Xoè Cotton Lạnh Xếp Ly Vai, Váy Dáng Dài Thời Trang Nữ Thanh Lịch Maybi
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Sub ID 1
-                </td>
-                <td>
-                  facebook
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Sub ID 2
-                </td>
-                <td>
-                  ads
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Sub ID 3
-                </td>
-                <td>
-                  giam-gia-sap-san-thang-1
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Sub ID 4
-                </td>
-                <td>
-                  N/A
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Link gốc
-                </td>
-                <td>
-                  https://shopee.vn/
-                </td>
-              </tr>
+              <tr></tr>
             </tbody>
           </table>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-        {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
       </div>
     </div>
   </div>
@@ -361,8 +269,99 @@
 
 <!--/ Card layout -->
 @endsection
-@endsection
 @section('page-script')
 <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/autoComplete.min.js"></script>
 @vite('resources/assets/js/autocomplete.js')
+<script>
+  function handleChangeCode(key, name) {
+    $("#code-name").html(name);
+    $("input[name=code_key]").val(key);
+  }
+
+  const detailModal = new bootstrap.Modal("#modalDetail");
+
+  function handleShowOrderDetail(key) {
+    let order = {!! json_encode($data) !!};
+    order = order.data[key];
+    let html = `
+    <tr>
+      <td class="text-nowrap">Chiến dịch</td>
+      <td>${order.campaign.name}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">ID click</td>
+      <td>${order.click.code}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">Thiêt bị</td>
+      <td>${order.click.agent}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">IP</td>
+      <td>${order.click.ip}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">Mã sản phẩm</td>
+      <td style="white-space: normal;">${order.product_code}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">Tên sản phẩm</td>
+      <td style="white-space: normal;">${order.product_name}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">Sub ID 1</td>
+      <td>${order.click.link_history.sub1 != null ? order.click.link_history.sub1 : 'N/A'}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">Sub ID 2</td>
+      <td>${order.click.link_history.sub2 != null ? order.click.link_history.sub2 : 'N/A'}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">Sub ID 3</td>
+      <td>${order.click.link_history.sub3 != null ? order.click.link_history.sub3 : 'N/A'}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">Sub ID 4</td>
+      <td>${order.click.link_history.sub4 != null ? order.click.link_history.sub4 : 'N/A'}</td>
+    </tr>
+    <tr>
+      <td class="text-nowrap">Link gốc</td>
+      <td>${order.click.link_history.original_url}</td>
+    </tr>
+    `;
+    $("#modalDetail table tbody").html(html);
+    detailModal.show();
+  }
+
+  $(document).ready(function () {
+    let codeKey = '{{ request('code_key') }}';
+
+    if (codeKey) {
+      let name = 'Chuyển đổi';
+      if (codeKey == 'order_code') {
+        name = 'Đơn hàng';
+      }
+      $("#code-name").html(name);
+    }
+  });
+
+  function animateNumber(element, targetValue, after = '') {
+    const duration = 1000; // 1 giây
+    const $number = $(element);
+
+    $({ value: 0 }).animate({ value: targetValue }, {
+      duration: duration,
+      easing: "linear", // Dạng tiến trình của animation (có thể thay đổi)
+      step: function (now) {
+        // Cập nhật giá trị trong mỗi bước của animation
+        $number.text(Math.floor(now).toLocaleString("vi-VN")+after); // Làm tròn số
+      }
+    });
+  }
+
+  animateNumber('#total-click-value', {{ $clickCount }});
+  animateNumber('#total-conversion-value', {{ $totalConversion }});
+  animateNumber('#total-price-value', {{ $totalPrice }}, '₫');
+  animateNumber('#total-com-value', {{ $totalCom }}, '₫');
+</script>
 @endsection

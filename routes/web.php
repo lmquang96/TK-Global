@@ -68,5 +68,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
   Route::prefix('/links')->group(function () {
     Route::post('/store-history', [LinkMain::class, 'storeHistory'])->name('links-store-history');
+    Route::get('/history', [LinkMain::class, 'history'])->name('links-history');
   });
 });

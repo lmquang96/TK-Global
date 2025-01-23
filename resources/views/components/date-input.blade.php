@@ -35,6 +35,8 @@
 
     let value = '{{ $value ?? null }}';
     if (value !== null) {
-        picker.setDate(new Date(value));
+      picker.setDate(new Date(value));
+    } else {
+      picker.setDate(new Date());
     }
   </script>

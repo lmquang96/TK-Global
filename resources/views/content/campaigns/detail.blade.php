@@ -91,8 +91,8 @@
     </div>
     <div class="card mt-6" id="history-link">
       <div class="card-body">
-        <h6>Lịch sử tạo link <a href="#">(Xem thêm)</a></h6>
         @if ($campaign->link_generate_type == 0)
+        <h6>Lịch sử tạo link <a href="{{ route('links-history', ['c' => $campaign->code]) }}">(Xem thêm)</a></h6>
         <div class="table-responsive text-nowrap">
           <table class="table">
             <thead>
@@ -110,7 +110,7 @@
                 </td>
                 <td>
                   <div class="input-group">
-                    <input type="text" class="form-control bg-white" id="link-history-tracking-input-{{ $linkHistory->id }}" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" value="{{ $linkHistory->tracking_url }}">
+                    <input type="text" class="form-control bg-white" id="link-history-tracking-input-{{ $linkHistory->id }}" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" value="https://{{ $linkHistory->domain }}/t/{{ $linkHistory->code }}">
                     <button class="btn btn-primary" style="--bs-btn-padding-x: 0.75rem;" type="button" onclick="handleCopy('#link-history-tracking-input-{{ $linkHistory->id }}')">
                       <i class='bx bx-copy'></i>
                     </button>
@@ -130,6 +130,7 @@
           </table>
         </div>
         @else
+        <h6>Lịch sử tạo link</a></h6>
         <div class="col text-danger">
           Đây là chiến dịch tạo link thủ công, nên rất tiếc chúng tôi sẽ không lưu lại lịch sử!
         </div>
@@ -223,7 +224,6 @@
     let sub2 = $('#sub2').val();
     let sub3 = $('#sub3').val();
     let sub4 = $('#sub4').val();
-    let linkTracking = `https://${domain}?c=${campaign}&r=${encodeURIComponent(originalLink)}&s1=${sub1}&s2=${sub2}&s3=${sub3}&s4=${sub4}`;
 
     $.ajax({
       type: "post",
@@ -236,10 +236,10 @@
         sub1: sub1,
         sub2: sub2,
         sub3: sub3,
-        sub4: sub4,
-        linkTracking: linkTracking
+        sub4: sub4
       },
       success: function (response) {
+        let linkTracking = `https://${domain}/t/${response.data}`;
         $("#generate-link").prop("disabled", true);
         $("#link-tracking").val(linkTracking);
         $("#link-generate-area").removeClass("visually-hidden");
