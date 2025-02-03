@@ -17,5 +17,5 @@ class LinkHistory extends Model
 
     public function click() {
         return $this->hasMany(Click::class);
-      }
+    }
 }
