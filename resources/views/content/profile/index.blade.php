@@ -142,7 +142,8 @@
               </div>
               <div class="col-md-6">
                 <label for="citizen_id_date" class="form-label">Ngày cấp</label>
-                <x-date-input name="citizen_id_date" value="{{ auth()->user()->profile->citizen_id_date ?? '' }}" />
+                <x-date-input name="citizen_id_date"
+                  value="{{ auth()->user()->profile->citizen_id_date ?? \Carbon\Carbon::now()->format('Y-m-d') }}" />
               </div>
               <div class="col-md-6">
                 <label for="citizen_id_place" class="form-label">Nơi cấp</label>

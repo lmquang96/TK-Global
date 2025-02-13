@@ -24,24 +24,30 @@ class Main extends Controller
       $city_code = $city[0];
       $city_name = $city[1];
     }
-    $profile = auth()->user();
-    $profile->name = $request->name;
-    $profile->profile->phone = $request->phone;
-    $profile->profile->address = $request->address;
-    $profile->profile->city_code = $city_code;
-    $profile->profile->city_name = $city_name;
-    $profile->profile->account_type = $request->account_type;
 
-    try {
-      $profile->save();
-      $profile->profile->save();
+    if (!empty(auth()->user()->profile)) {
+      $profile = auth()->user();
+      $profile->name = $request->name;
+      $profile->profile->phone = $request->phone;
+      $profile->profile->address = $request->address;
+      $profile->profile->city_code = $city_code;
+      $profile->profile->city_name = $city_name;
+      $profile->profile->account_type = $request->account_type;
 
-      return redirect()->back()->with('message', self::MSG_UPDATE_SUCCESS);
-    } catch (\Exception $e) {
-      \Log::error($e->getMessage());
+      try {
+        $profile->save();
+        $profile->profile->save();
+        $profile->refresh();
 
-      return redirect()->back()->withErrors(['message' => self::MSG_UPDATE_ERROR]);
-    } 
+        return redirect()->back()->with('message', self::MSG_UPDATE_SUCCESS);
+      } catch (\Exception $e) {
+        \Log::error($e->getMessage());
+
+        return redirect()->back()->withErrors(['message' => self::MSG_UPDATE_ERROR]);
+      }
+    } else {
+
+    }
   }
 
   public function updatePaymentInfo(Request $request) {
