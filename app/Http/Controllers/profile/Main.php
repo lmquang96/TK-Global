@@ -13,9 +13,7 @@ class Main extends Controller
 
   public function index()
   {
-    $profile = auth()->user();
-
-    return view('content.profile.index', compact('profile'));
+    return view('content.profile.index');
   }
 
   public function updatePersonalInfo(Request $request) {

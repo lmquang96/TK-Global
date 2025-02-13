@@ -336,107 +336,119 @@
 
   // Profit Report Line Chart
   // --------------------------------------------------------------------
-  const profileReportChartEl = document.querySelector('#profileReportChart'),
-    profileReportChartConfig = {
-      series: [
-        {
-          data: [21, 30, 22, 42, 26, 35, 29]
+  $.ajax({
+    type: 'GET',
+    url: '/click-chart',
+    data: {},
+    success: function (response) {
+      if (response.status && response.status == 200) {
+        let dataY = Object.values(response.data).map(num => +num);
+        let maxY = Math.max(...dataY);
+        const profileReportChartEl = document.querySelector('#profileReportChart'),
+          profileReportChartConfig = {
+            series: [
+              {
+                name: 'Lượt click',
+                data: Object.values(response.data)
+              }
+            ],
+            chart: {
+              height: 175,
+              parentHeightOffset: 0,
+              parentWidthOffset: 0,
+              toolbar: {
+                show: false
+              },
+              type: 'area'
+            },
+            dataLabels: {
+              enabled: false
+            },
+            stroke: {
+              width: 3,
+              curve: 'smooth'
+            },
+            legend: {
+              show: false
+            },
+            markers: {
+              size: 6,
+              colors: 'transparent',
+              strokeColors: 'transparent',
+              strokeWidth: 4,
+              discrete: [
+                {
+                  fillColor: config.colors.white,
+                  seriesIndex: 0,
+                  dataPointIndex: 6,
+                  strokeColor: config.colors.warning,
+                  strokeWidth: 2,
+                  size: 6,
+                  radius: 8
+                }
+              ],
+              hover: {
+                size: 7
+              }
+            },
+            colors: [config.colors.warning],
+            fill: {
+              type: 'gradient',
+              gradient: {
+                shade: shadeColor,
+                shadeIntensity: 0.6,
+                opacityFrom: 0.5,
+                opacityTo: 0.25,
+                stops: [0, 95, 100]
+              }
+            },
+            grid: {
+              show: true,
+              borderColor: borderColor,
+              strokeDashArray: 8,
+              padding: {
+                top: -20,
+                bottom: 10,
+                left: 0,
+                right: 8
+              }
+            },
+            xaxis: {
+              categories: Object.keys(response.data),
+              axisBorder: {
+                show: false
+              },
+              axisTicks: {
+                show: false
+              },
+              labels: {
+                show: true,
+                style: {
+                  fontSize: '13px',
+                  colors: labelColor
+                }
+              }
+            },
+            yaxis: {
+              labels: {
+                show: false,
+                style: {
+                  fontSize: '13px',
+                  colors: labelColor
+                }
+              },
+              min: 0,
+              max: maxY,
+              tickAmount: 4
+            }
+          };
+        if (typeof profileReportChartEl !== undefined && profileReportChartEl !== null) {
+          const profileReportChart = new ApexCharts(profileReportChartEl, profileReportChartConfig);
+          profileReportChart.render();
         }
-      ],
-      chart: {
-        height: 175,
-        parentHeightOffset: 0,
-        parentWidthOffset: 0,
-        toolbar: {
-          show: false
-        },
-        type: 'area'
-      },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        width: 3,
-        curve: 'smooth'
-      },
-      legend: {
-        show: false
-      },
-      markers: {
-        size: 6,
-        colors: 'transparent',
-        strokeColors: 'transparent',
-        strokeWidth: 4,
-        discrete: [
-          {
-            fillColor: config.colors.white,
-            seriesIndex: 0,
-            dataPointIndex: 6,
-            strokeColor: config.colors.warning,
-            strokeWidth: 2,
-            size: 6,
-            radius: 8
-          }
-        ],
-        hover: {
-          size: 7
-        }
-      },
-      colors: [config.colors.warning],
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: shadeColor,
-          shadeIntensity: 0.6,
-          opacityFrom: 0.5,
-          opacityTo: 0.25,
-          stops: [0, 95, 100]
-        }
-      },
-      grid: {
-        show: false,
-        borderColor: borderColor,
-        strokeDashArray: 8,
-        padding: {
-          top: -20,
-          bottom: 10,
-          left: 0,
-          right: 8
-        }
-      },
-      xaxis: {
-        categories: ['20', '21', '22', '23', '24', '25', '26'],
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        labels: {
-          show: true,
-          style: {
-            fontSize: '13px',
-            colors: labelColor
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          show: false,
-          style: {
-            fontSize: '13px',
-            colors: labelColor
-          }
-        },
-        min: 10,
-        max: 50,
-        tickAmount: 4
       }
-    };
-  if (typeof profileReportChartEl !== undefined && profileReportChartEl !== null) {
-    const profileReportChart = new ApexCharts(profileReportChartEl, profileReportChartConfig);
-    profileReportChart.render();
-  }
+    }
+  });
 
   // Order Statistics Chart
   // --------------------------------------------------------------------
@@ -519,106 +531,230 @@
 
   // Income Chart - Area chart
   // --------------------------------------------------------------------
-  const incomeChartEl = document.querySelector('#incomeChart'),
-    incomeChartConfig = {
-      series: [
-        {
-          data: [21, 30, 22, 42, 26, 35, 29]
+  // const incomeChartEl = document.querySelector('#incomeChart'),
+  //   incomeChartConfig = {
+  //     series: [
+  //       {
+  //         data: [21, 30, 22, 42, 26, 35, 29]
+  //       }
+  //     ],
+  //     chart: {
+  //       height: 232,
+  //       parentHeightOffset: 0,
+  //       parentWidthOffset: 0,
+  //       toolbar: {
+  //         show: false
+  //       },
+  //       type: 'area'
+  //     },
+  //     dataLabels: {
+  //       enabled: false
+  //     },
+  //     stroke: {
+  //       width: 3,
+  //       curve: 'smooth'
+  //     },
+  //     legend: {
+  //       show: false
+  //     },
+  //     markers: {
+  //       size: 6,
+  //       colors: 'transparent',
+  //       strokeColors: 'transparent',
+  //       strokeWidth: 4,
+  //       discrete: [
+  //         {
+  //           fillColor: config.colors.white,
+  //           seriesIndex: 0,
+  //           dataPointIndex: 6,
+  //           strokeColor: config.colors.primary,
+  //           strokeWidth: 2,
+  //           size: 6,
+  //           radius: 8
+  //         }
+  //       ],
+  //       hover: {
+  //         size: 7
+  //       }
+  //     },
+  //     colors: [config.colors.primary],
+  //     fill: {
+  //       type: 'gradient',
+  //       gradient: {
+  //         shade: shadeColor,
+  //         shadeIntensity: 0.6,
+  //         opacityFrom: 0.5,
+  //         opacityTo: 0.25,
+  //         stops: [0, 95, 100]
+  //       }
+  //     },
+  //     grid: {
+  //       borderColor: borderColor,
+  //       strokeDashArray: 8,
+  //       padding: {
+  //         top: -20,
+  //         bottom: 10,
+  //         left: 20,
+  //         right: 8
+  //       }
+  //     },
+  //     xaxis: {
+  //       categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+  //       axisBorder: {
+  //         show: false
+  //       },
+  //       axisTicks: {
+  //         show: false
+  //       },
+  //       labels: {
+  //         show: true,
+  //         style: {
+  //           fontSize: '13px',
+  //           colors: labelColor
+  //         }
+  //       }
+  //     },
+  //     yaxis: {
+  //       labels: {
+  //         show: true,
+  //         style: {
+  //           fontSize: '13px',
+  //           colors: labelColor
+  //         }
+  //       },
+  //       min: 10,
+  //       max: 50,
+  //       tickAmount: 4
+  //     }
+  //   };
+  // if (typeof incomeChartEl !== undefined && incomeChartEl !== null) {
+  //   const incomeChart = new ApexCharts(incomeChartEl, incomeChartConfig);
+  //   incomeChart.render();
+  // }
+
+  $.ajax({
+    type: 'GET',
+    url: '/data-chart',
+    data: {},
+    success: function (response) {
+      if (response.status && response.status == 200) {
+        let dataY = Object.values(response.data).map(num => +num);
+        let maxY = Math.max(...dataY);
+        const incomeChartEl = document.querySelector('#incomeChart'),
+          incomeChartConfig = {
+            series: [
+              {
+                name: 'Hoa hồng phát sinh',
+                data: Object.values(response.data)
+              }
+            ],
+            tooltip: {
+              y: {
+                formatter: function (value) {
+                  return value.toLocaleString('vi-VN') + '₫';
+                }
+              }
+            },
+            chart: {
+              height: 232,
+              parentHeightOffset: 0,
+              parentWidthOffset: 0,
+              toolbar: {
+                show: false
+              },
+              type: 'area'
+            },
+            dataLabels: {
+              enabled: false
+            },
+            stroke: {
+              width: 3,
+              curve: 'smooth'
+            },
+            legend: {
+              show: false
+            },
+            markers: {
+              size: 6,
+              colors: 'transparent',
+              strokeColors: 'transparent',
+              strokeWidth: 4,
+              discrete: [
+                {
+                  fillColor: config.colors.white,
+                  seriesIndex: 0,
+                  dataPointIndex: 7,
+                  strokeColor: config.colors.primary,
+                  strokeWidth: 2,
+                  size: 6,
+                  radius: 8
+                }
+              ],
+              hover: {
+                size: 7
+              }
+            },
+            colors: [config.colors.primary],
+            fill: {
+              type: 'gradient',
+              gradient: {
+                shade: shadeColor,
+                shadeIntensity: 0.6,
+                opacityFrom: 0.5,
+                opacityTo: 0.25,
+                stops: [0, 95, 100]
+              }
+            },
+            grid: {
+              borderColor: borderColor,
+              strokeDashArray: 8,
+              padding: {
+                top: -20,
+                bottom: 10,
+                left: 20,
+                right: 8
+              }
+            },
+            xaxis: {
+              categories: Object.keys(response.data),
+              axisBorder: {
+                show: false
+              },
+              axisTicks: {
+                show: false
+              },
+              labels: {
+                show: true,
+                style: {
+                  fontSize: '13px',
+                  colors: labelColor
+                }
+              }
+            },
+            yaxis: {
+              labels: {
+                show: true,
+                style: {
+                  fontSize: '13px',
+                  colors: labelColor
+                },
+                formatter: function (value) {
+                  return value.toFixed(0) + ' ₫'; // Hiển thị 2 chữ số thập phân + đơn vị
+                }
+              },
+              min: 0,
+              max: maxY,
+              tickAmount: 4,
+              forceNiceScale: true
+            }
+          };
+        if (typeof incomeChartEl !== undefined && incomeChartEl !== null) {
+          const incomeChart = new ApexCharts(incomeChartEl, incomeChartConfig);
+          incomeChart.render();
         }
-      ],
-      chart: {
-        height: 232,
-        parentHeightOffset: 0,
-        parentWidthOffset: 0,
-        toolbar: {
-          show: false
-        },
-        type: 'area'
-      },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        width: 3,
-        curve: 'smooth'
-      },
-      legend: {
-        show: false
-      },
-      markers: {
-        size: 6,
-        colors: 'transparent',
-        strokeColors: 'transparent',
-        strokeWidth: 4,
-        discrete: [
-          {
-            fillColor: config.colors.white,
-            seriesIndex: 0,
-            dataPointIndex: 6,
-            strokeColor: config.colors.primary,
-            strokeWidth: 2,
-            size: 6,
-            radius: 8
-          }
-        ],
-        hover: {
-          size: 7
-        }
-      },
-      colors: [config.colors.primary],
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: shadeColor,
-          shadeIntensity: 0.6,
-          opacityFrom: 0.5,
-          opacityTo: 0.25,
-          stops: [0, 95, 100]
-        }
-      },
-      grid: {
-        borderColor: borderColor,
-        strokeDashArray: 8,
-        padding: {
-          top: -20,
-          bottom: 10,
-          left: 20,
-          right: 8
-        }
-      },
-      xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        labels: {
-          show: true,
-          style: {
-            fontSize: '13px',
-            colors: labelColor
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          show: true,
-          style: {
-            fontSize: '13px',
-            colors: labelColor
-          }
-        },
-        min: 10,
-        max: 50,
-        tickAmount: 4
       }
-    };
-  if (typeof incomeChartEl !== undefined && incomeChartEl !== null) {
-    const incomeChart = new ApexCharts(incomeChartEl, incomeChartConfig);
-    incomeChart.render();
-  }
+    }
+  });
 
   // Expenses Mini Chart - Radial Chart
   // --------------------------------------------------------------------

@@ -20,12 +20,12 @@
         {
           "url": "report/performance",
           "name": "Hiệu suất",
-          "slug": "performance"
+          "slug": "report-performance"
         },
         {
           "url": "report/order",
           "name": "Đơn hàng",
-          "slug": "order"
+          "slug": "report-order"
         }
       ]
     },

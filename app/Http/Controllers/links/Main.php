@@ -13,7 +13,7 @@ class Main extends Controller
         $linkHistory = new LinkHistory;
 
         $linkHistory->code = sha1(time());
-        $linkHistory->originial_url = $request->originalLink;
+        $linkHistory->original_url = $request->originalLink;
         $linkHistory->domain = $request->domain;
         $linkHistory->short_url = null;
         $linkHistory->sub1 = $request->sub1;

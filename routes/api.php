@@ -10,4 +10,6 @@ use App\Http\Controllers\Upload;
 
 Route::prefix('uploadOrder')->group(function () {
   Route::post('/upload', [Upload::class, 'upload']);
+
+  Route::post('/storeAds', [Upload::class, 'storeAds']);
 });

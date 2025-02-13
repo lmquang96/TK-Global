@@ -7,6 +7,9 @@ use Illuminate\Foundation\Queue\Queueable;
 use Carbon\Carbon;
 use App\Models\Click;
 use App\Models\Conversion;
+use App\Models\Config;
+use App\Models\User;
+use App\Models\LinkHistory;
 
 class UploadOrderJob implements ShouldQueue
 {
@@ -15,12 +18,8 @@ class UploadOrderJob implements ShouldQueue
   protected $mid;
   protected $data;
 
-  const SERVER_ID = 15;
-  const DEFAULT_IP = '117.4.242.101';
-  const DEFAULT_PGM_ID = '0000';
-  const DEFAULT_KLOOK_AFF_ID = 'A100133640';
-  const DEFAULT_ADPIA_AFF_ID = 'A100069586';
   const USD_RATE = 22500;
+  const KLOOK_ID = 1;
 
   /**
    * Create a new job instance.
@@ -34,7 +33,7 @@ class UploadOrderJob implements ShouldQueue
   /**
    * Execute the job.
    */
-  public function handle(): void
+  public function handle()
   {
     $mid = $this->mid;
     $data = $this->data;
@@ -47,7 +46,20 @@ class UploadOrderJob implements ShouldQueue
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
       } elseif ($mid == 'klook') {
-        // ...
+        $ads = Config::query()
+          ->where('name', 'klook_ads')
+          ->pluck('value')
+          ->first();
+        if (empty($ads)) {
+          return true;
+        }
+
+        $ads = json_decode($ads, true);
+
+        $upsertData = self::getKlookUpsertData($sheet, $mid, $ads);
+
+        $updateData = $upsertData['update'] ?? [];
+        $upsertData = $upsertData['insert'];
       }
 
       $chunks = array_chunk($upsertData, 500);
@@ -237,5 +249,239 @@ class UploadOrderJob implements ShouldQueue
     }
 
     return $name;
+  }
+
+  public function getKlookUpsertData($sheet, $mid, $ads)
+  {
+    $upsertData = [];
+
+    foreach ($sheet as $key => $row) {
+      $adid = (strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
+      if (!empty($adid)) {
+        // $subid = $adid['sub1'];
+        $email = 'lmquangit@gmail.com';
+        $sub1 = $ads[$row['adid']]['sub2'];
+        $sub2 = $ads[$row['adid']]['sub3'];
+      } else {
+        continue;
+      }
+
+      $userId = User::where('email', $email)->pluck('id')->first();
+      $campaginId = self::KLOOK_ID;
+      $linkHistoryId = null;
+
+      $existLink = LinkHistory::where('sub1', $sub1)
+      ->where('sub2', $sub2)
+      ->where('user_id', $userId)
+      ->where('campaign_id', $campaginId)
+      ->first();
+
+      if (!$existLink) {
+        $link = new LinkHistory();
+        $link->code = sha1(time() + $key);
+        $link->sub1 = $sub1;
+        $link->sub2 = $sub2;
+        $link->user_id = $userId;
+        $link->campaign_id = $campaginId;
+
+        try {
+          $link->save();
+          $linkHistoryId = $link->id;
+        } catch (\Exception $e) {
+          \Log::error("--------------");
+          \Log::error($e->getMessage());
+          \Log::error("--------------");
+        }
+      } else {
+        $linkHistoryId = $existLink->id;
+      }
+
+      $clickId = null;
+      $click = new Click();
+
+      $click->code = sha1(time() + $key);
+      $click->link_history_id = $linkHistoryId;
+
+      try {
+        $click->save();
+        $clickId = $click->id;
+      } catch (\Exception $e) {
+        \Log::error("--------------");
+        \Log::error($e->getMessage());
+        \Log::error("--------------");
+      }
+
+      $dataKey = 'insert';
+      $time = Carbon::parse(trim($row['action_date']) . ' ' . trim($row['action_time']));
+      $orderCode = trim($row['order_id']);
+      $productCode = trim($row['ticket_id']) . "_" . trim($row['booking_number']);
+      $quantity = 1;
+
+      $sales = 0;
+      $salesAmount = trim($row['sales_amount']);
+      $salesObject = explode(" ", $salesAmount);
+
+      if (count($salesObject) == 2) {
+        $sales = self::convertCurrency($salesObject);
+      } else {
+        continue;
+      }
+      $productName = str_replace("'", "''", trim($row['activity_name']));
+      $sumCom = 0;
+      $comAmount = trim($row['commission_amount']);
+      $comObject = explode(" ", $comAmount);
+      if (count($comObject) == 2) {
+        $sumCom = self::convertCurrency($comObject);
+      } else {
+        continue;
+      }
+      $commissionPub = $sumCom * 0.7;
+      $commissionSys = $sumCom * 0.3;
+      $status = 'Pending';
+      if ($row['action'] == 'Refund') {
+        $dataKey = 'update';
+        $status = 'Cancelled';
+        $sales = abs($sales);
+        $commissionPub = abs($commissionPub);
+        $commissionSys = abs($commissionSys);
+      }
+
+      $upsertData[$dataKey][] = [
+        'code' => sha1(time() + $key),
+        'order_code' => $orderCode,
+        'order_time' => $time,
+        'unit_price' => $sales,
+        'quantity' => $quantity,
+        'commission_pub' => $commissionPub,
+        'commission_sys' => $commissionSys,
+        'status' => $status,
+        'product_code' => $productCode,
+        'product_name' => $productName,
+        'campaign_id' => $campaginId,
+        'click_id' => $clickId,
+        'user_id' => $userId,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
+      ];
+    }
+
+    return $upsertData;
+  }
+
+  public function convertCurrency($currency)
+  {
+    $rate = 0;
+
+    switch ($currency[0]) {
+      case 'TWD':
+        $rate = 750;
+        break;
+
+      case 'HKD':
+        $rate = 3000;
+        break;
+
+      case 'USD':
+        $rate = 22500;
+        break;
+
+      case 'CAD':
+        $rate = 17500;
+        break;
+
+      case 'PHP':
+        $rate = 430;
+        break;
+
+      case 'CNY':
+        $rate = 3200;
+        break;
+
+      case 'MYR':
+        $rate = 5100;
+        break;
+
+      case 'AUD':
+        $rate = 15700;
+        break;
+
+      case 'EUR':
+        $rate = 25700;
+        break;
+
+      case 'JPY':
+        $rate = 158;
+        break;
+
+      case 'GBP':
+        $rate = 30500;
+        break;
+
+      case 'NZD':
+        $rate = 14700;
+        break;
+
+      case 'IDR':
+        $rate = 1.54;
+        break;
+
+      case 'INR':
+        $rate = 290;
+        break;
+
+      case 'SGD':
+        $rate = 18000;
+        break;
+
+      case 'KRW':
+        $rate = 18;
+        break;
+
+      case 'TRY':
+        $rate = 720;
+        break;
+
+      case 'SEK':
+        $rate = 2250;
+        break;
+
+      case 'ILS':
+        $rate = 6190;
+        break;
+
+      case 'AED':
+        $rate = 6600;
+        break;
+
+      case 'CHF':
+        $rate = 27300;
+        break;
+
+      case 'MXN':
+        $rate = 1225;
+        break;
+
+      case 'THB':
+        $rate = 666;
+        break;
+
+      case 'ZAR':
+        $rate = 1277;
+        break;
+
+      case 'NOK':
+        $rate = 2160;
+        break;
+
+      case 'VND':
+        $rate = 1;
+        break;
+
+      default:
+        $rate = -1;
+        break;
+    }
+
+    return floatval($currency[1] * $rate);
   }
 }

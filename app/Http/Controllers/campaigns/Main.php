@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\LinkHistory;
+use Illuminate\Support\Facades\Cache;
 
 class Main extends Controller
 {
@@ -14,17 +15,19 @@ class Main extends Controller
 
   public function index(Request $request)
   {
-    $campaigns = Campaign::where('status', self::STATUS_ACTIVE)
-    ->when($request->keyword, function($q, $keyword) {
-      $q->where('name', 'like', '%'.$keyword.'%');
-    })
-    ->when($request->category, function($q, $category) {
-      $q->where('category_id', $category);
-    })
-    ->when($request->cp_type, function($q, $cpType) {
-      $q->where('cp_type', $cpType);
-    })
-    ->get();
+    $campaigns = Cache::remember('campaigns_all', 600, function() use ($request) {
+      return Campaign::where('status', self::STATUS_ACTIVE)
+      ->when($request->keyword, function($q, $keyword) {
+        $q->where('name', 'like', '%'.$keyword.'%');
+      })
+      ->when($request->category, function($q, $category) {
+        $q->where('category_id', $category);
+      })
+      ->when($request->cp_type, function($q, $cpType) {
+        $q->where('cp_type', $cpType);
+      })
+      ->get();
+    });
 
     $categories = Category::where('status', self::STATUS_ACTIVE)->get();
 
@@ -47,9 +50,11 @@ class Main extends Controller
 
   public function getCampaigns()
   {
-    $campaigns = Campaign::select('id', 'name')
-    ->where('status', self::STATUS_ACTIVE)
-    ->get();
+    $campaigns = Cache::remember('campaigns_list', 600, function() {
+      return Campaign::select('id', 'name')
+      ->where('status', self::STATUS_ACTIVE)
+      ->get();
+    });
 
     return response()->json($campaigns, 200, []);
   }

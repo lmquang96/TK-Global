@@ -8,6 +8,8 @@ use App\Imports\TransitionImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use App\Jobs\UploadOrderJob;
+use App\Models\Config;
+use Carbon\Carbon;
 
 class Upload extends Controller
 {
@@ -56,5 +58,39 @@ class Upload extends Controller
         'data' => $e->getMessage()
       ]);
     }
+  }
+
+  public function storeAds(Request $request)
+  {
+    $array = Excel::toArray(new TransitionImport(), $request->file('file'));
+    $adsData = [];
+
+    foreach ($array as $sheet) {
+      foreach ($sheet as $key => $row) {
+        $adsData[$row['adid']] = [
+          'sub1' => $row['label1'],
+          'sub2' => $row['label2'],
+          'sub3' => $row['label3']
+        ];
+      }
+    }
+
+    Config::where('name', 'klook_ads')
+    ->update([
+      'value' => json_encode($adsData),
+      'updated_at' => Carbon::now()
+    ]);
+
+    // Config::query()
+    // ->insert([
+    //   'name' => 'klook_ads',
+    //   'value' => json_encode($adsData),
+    //   'created_at' => Carbon::now(),
+    // ]);
+    
+    return response()->json([
+      'status' => 200,
+      'data' => $adsData
+    ]);
   }
 }

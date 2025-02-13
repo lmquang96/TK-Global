@@ -39,6 +39,8 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 Route::middleware(['auth', 'verified'])->group(function () {
   Route::get('/', [Analytics::class, 'index'])->name('dashboard');
+  Route::get('/data-chart', [Analytics::class, 'getDataChart'])->name('get-data-chart');
+  Route::get('/click-chart', [Analytics::class, 'getClickChart'])->name('get-click-chart');
 
   Route::prefix('/campaigns')->group(function () {
     Route::get('/', [CampaignMain::class, 'index'])->name('campaigns');
@@ -53,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
   Route::prefix('/payment')->group(function () {
     Route::get('/', [PaymentMain::class, 'index'])->name('payment');
+    Route::post('/submission', [PaymentMain::class, 'submission'])->name('submission');
   });
 
   Route::prefix('/profile')->group(function () {
