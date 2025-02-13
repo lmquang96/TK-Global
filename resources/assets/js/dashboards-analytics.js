@@ -352,6 +352,13 @@
                 data: Object.values(response.data)
               }
             ],
+            tooltip: {
+              y: {
+                formatter: function (value) {
+                  return value.toLocaleString('vi-VN');
+                }
+              }
+            },
             chart: {
               height: 175,
               parentHeightOffset: 0,
@@ -439,7 +446,8 @@
               },
               min: 0,
               max: maxY,
-              tickAmount: 4
+              tickAmount: 4,
+              forceNiceScale: true
             }
           };
         if (typeof profileReportChartEl !== undefined && profileReportChartEl !== null) {

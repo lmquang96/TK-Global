@@ -33,7 +33,7 @@
         <div class="card-body">
           <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 border-bottom">
             <img
-              src="{{ auth()->user()->profile->avatar ? asset('assets/img/avatars/' . auth()->user()->profile->avatar) : asset('assets/img/avatars/default.png') }}"
+              src="{{ !empty(auth()->user()->profile->avatar) ? asset('assets/img/avatars/' . auth()->user()->profile->avatar) : asset('assets/img/avatars/default.png') }}"
               alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar"
               style="object-fit: cover;" />
             <form id="form-avatar-upload" action="{{ route('profile-update-avatar') }}" method="POST"
@@ -73,13 +73,13 @@
                 <div class="input-group input-group-merge">
                   <span class="input-group-text">VN (+84)</span>
                   <input type="text" id="phone" name="phone" class="form-control"
-                    placeholder="Nhập số điện thoại của bạn" value="{{ auth()->user()->profile->phone }}" />
+                    placeholder="Nhập số điện thoại của bạn" value="{{ auth()->user()->profile->phone ?? '' }}" />
                 </div>
               </div>
               <div class="col-md-6">
                 <label for="address" class="form-label">Địa chỉ</label>
                 <input type="text" class="form-control" id="address" name="address"
-                  placeholder="Nhập địa chỉ của bạn" value="{{ auth()->user()->profile->address }}" />
+                  placeholder="Nhập địa chỉ của bạn" value="{{ auth()->user()->profile->address ?? '' }}" />
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="city">Thành phố</label>
@@ -89,9 +89,12 @@
                 <label class="form-label" for="account_type">Loại tài khoản</label>
                 <select id="account_type" class="select2 form-select" name="account_type">
                   <option value="Individual"
-                    {{ auth()->user()->profile->account_type == 'Individual' ? 'selected' : '' }}>Cá
+                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'Individual' ? 'selected' : '' }}>
+                    Cá
                     nhân</option>
-                  <option value="Company" {{ auth()->user()->profile->account_type == 'Company' ? 'selected' : '' }}>Doanh
+                  <option value="Company"
+                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'Company' ? 'selected' : '' }}>
+                    Doanh
                     nghiệp</option>
                 </select>
               </div>
@@ -113,13 +116,13 @@
               <div class="col-md-6">
                 <label for="bank_owner" class="form-label">Chủ tài khoản</label>
                 <input class="form-control" type="text" id="bank_owner" name="bank_owner"
-                  value="{{ auth()->user()->profile->bank_owner }}"
+                  value="{{ auth()->user()->profile->bank_owner ?? '' }}"
                   placeholder="Nhập tên chủ tài khoản ngân hàng của bạn" />
               </div>
               <div class="col-md-6">
                 <label for="bank_number" class="form-label">Số tài khoản</label>
                 <input class="form-control" type="text" name="bank_number" id="bank_number"
-                  value="{{ auth()->user()->profile->bank_number }}"
+                  value="{{ auth()->user()->profile->bank_number ?? '' }}"
                   placeholder="Nhập số tài khoản ngân hàng  của bạn" />
               </div>
               <div class="col-md-6">
@@ -129,28 +132,28 @@
               <div class="col-md-6">
                 <label for="bank_branch" class="form-label">Chi nhánh</label>
                 <input class="form-control" type="text" name="bank_branch" id="bank_branch"
-                  value="{{ auth()->user()->profile->bank_branch }}"
+                  value="{{ auth()->user()->profile->bank_branch ?? '' }}"
                   placeholder="Nhập tên chi nhánh ngân hàng của bạn" />
               </div>
               <div class="col-md-6">
                 <label for="citizen_id_no" class="form-label">Số CMT/CCCD</label>
                 <input class="form-control" type="text" name="citizen_id_no" id="citizen_id_no"
-                  value="{{ auth()->user()->profile->citizen_id_no }}" placeholder="Nhập số CMT/CCCD của bạn" />
+                  value="{{ auth()->user()->profile->citizen_id_no ?? '' }}" placeholder="Nhập số CMT/CCCD của bạn" />
               </div>
               <div class="col-md-6">
                 <label for="citizen_id_date" class="form-label">Ngày cấp</label>
-                <x-date-input name="citizen_id_date" value="{{ auth()->user()->profile->citizen_id_date }}" />
+                <x-date-input name="citizen_id_date" value="{{ auth()->user()->profile->citizen_id_date ?? '' }}" />
               </div>
               <div class="col-md-6">
                 <label for="citizen_id_place" class="form-label">Nơi cấp</label>
                 <input class="form-control" type="text" name="citizen_id_place" id="citizen_id_place"
-                  value="{{ auth()->user()->profile->citizen_id_place }}"
+                  value="{{ auth()->user()->profile->citizen_id_place ?? '' }}"
                   placeholder="Nhập nơi cấp CMT/CCCD của bạn" />
               </div>
               <div class="col-md-6">
                 <label for="tax" class="form-label">Mã số thuế</label>
                 <input class="form-control" type="text" name="tax" id="tax"
-                  value="{{ auth()->user()->profile->tax }}" placeholder="Nhập mã số thuế của bạn" />
+                  value="{{ auth()->user()->profile->tax ?? '' }}" placeholder="Nhập mã số thuế của bạn" />
               </div>
             </div>
             <div class="mt-6">
@@ -181,7 +184,7 @@
         type: "GET",
         url: "https://provinces.open-api.vn/api/",
         success: function(response) {
-          let profileCity = '{{ auth()->user()->profile->city_code }}'
+          let profileCity = '{{ auth()->user()->profile->city_code ?? null }}'
           let html = '<option value="">-- Chọn --</option>';
           $.each(response, function(index, item) {
             html +=
@@ -196,7 +199,7 @@
         type: "GET",
         url: "https://api.vietqr.io/v2/banks",
         success: function(response) {
-          let profileCity = '{{ auth()->user()->profile->bank_code }}'
+          let profileCity = '{{ auth()->user()->profile->bank_code ?? null }}'
           let html = '<option value="">-- Chọn --</option>';
           $.each(response.data, function(index, item) {
             html +=

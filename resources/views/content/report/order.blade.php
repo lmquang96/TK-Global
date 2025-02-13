@@ -105,7 +105,10 @@
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between mb-4">
               <div class="avatar flex-shrink-0">
-                <img src="{{ asset('assets/img/icons/unicons/paypal.png') }}" alt="paypal" class="rounded">
+                <div class="d-flex h-100 rounded align-items-center justify-content-center"
+                  style="background-color: #e9f9df">
+                  <i class="bx bxs-pointer" style="color: #69df31"></i>
+                </div>
               </div>
             </div>
             <p class="mb-1">Lượt click</p>
@@ -118,7 +121,10 @@
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between mb-4">
               <div class="avatar flex-shrink-0">
-                <img src="{{ asset('assets/img/icons/unicons/cc-primary.png') }}" alt="Credit Card" class="rounded">
+                <div class="d-flex h-100 rounded align-items-center justify-content-center"
+                  style="background-color: #d5f6fd">
+                  <i class="bx bx-transfer" style="color: #30c5e2"></i>
+                </div>
               </div>
             </div>
             <p class="mb-1">Số chuyển đổi</p>
@@ -131,7 +137,10 @@
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between mb-4">
               <div class="avatar flex-shrink-0">
-                <img src="{{ asset('assets/img/icons/unicons/wallet-info.png') }}" alt="wallet info" class="rounded">
+                <div class="d-flex h-100 rounded align-items-center justify-content-center"
+                  style="background-color: #ffdfd5">
+                  <i class="bx bxs-coin-stack" style="color: #f35b40"></i>
+                </div>
               </div>
             </div>
             <p class="mb-1">Giá trị chuyển đổi</p>
@@ -144,8 +153,10 @@
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between mb-4">
               <div class="avatar flex-shrink-0">
-                <img src="{{ asset('assets/img/icons/unicons/chart-success.png') }}" alt="chart success"
-                  class="rounded">
+                <div class="d-flex h-100 rounded align-items-center justify-content-center"
+                  style="background-color: #e8e8ff">
+                  <i class="bx bxs-wallet" style="color: #7f7bee"></i>
+                </div>
               </div>
             </div>
             <p class="mb-1">Hoa hồng phát sinh</p>

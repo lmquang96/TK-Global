@@ -58,6 +58,7 @@ class Analytics extends Controller
 
     $totalCom = $query->sum('commission_pub');
     $totalSales = $query->selectRaw('sum(unit_price * quantity) as sales')->pluck('sales')->first();
+
     $totalConversion = $query->count();
 
     $clickCount = Click::query()
@@ -69,7 +70,7 @@ class Analytics extends Controller
 
     return [
       'totalCom' => $totalCom,
-      'totalSales' => $totalSales,
+      'totalSales' => $totalSales ?? 0,
       'clickCount' => $clickCount,
       'totalConversion' => $totalConversion
     ];

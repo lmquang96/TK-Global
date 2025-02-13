@@ -86,8 +86,9 @@
       <a class="nav-link dropdown-toggle hide-arrow p-0" id="dropdownMenuButton" href="javascript:void(0);"
         data-bs-toggle="dropdown" aria-expanded="false">
         <div class="avatar avatar-online">
-          <img src="{{ asset('assets/img/avatars/' . auth()->user()->profile->avatar) }}" alt
-            class="w-px-40 h-px-40 rounded-circle" style="object-fit: cover;">
+          <img
+            src="{{ !empty(auth()->user()->profile->avatar) ? asset('assets/img/avatars/' . auth()->user()->profile->avatar) : asset('assets/img/avatars/default.png') }}"
+            alt class="w-px-40 h-px-40 rounded-circle" style="object-fit: cover;">
         </div>
       </a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
@@ -97,7 +98,7 @@
               <div class="flex-shrink-0 me-3">
                 <div class="avatar avatar-online">
                   <img
-                    src="{{ auth()->user()->profile->avatar ? asset('assets/img/avatars/' . auth()->user()->profile->avatar) : asset('assets/img/avatars/default.png') }}"
+                    src="{{ !empty(auth()->user()->profile->avatar) ? asset('assets/img/avatars/' . auth()->user()->profile->avatar) : asset('assets/img/avatars/default.png') }}"
                     alt class="w-px-40 h-px-40 rounded-circle" style="object-fit: cover;">
                 </div>
               </div>

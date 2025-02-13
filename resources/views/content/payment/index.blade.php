@@ -41,35 +41,37 @@
                   <tbody>
                     <tr>
                       <td class="pe-4" style="color: #a7acb2;">Chủ tài khoản:</td>
-                      <td>{{ auth()->user()->profile->bank_owner }}</td>
+                      <td>{{ auth()->user()->profile->bank_owner ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td class="pe-4" style="color: #a7acb2;">Số tài khoản:</td>
-                      <td>{{ auth()->user()->profile->bank_number }}</td>
+                      <td>{{ auth()->user()->profile->bank_number ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td class="pe-4" style="color: #a7acb2;">Ngân hàng:</td>
-                      <td>{{ auth()->user()->profile->bank_name }}</td>
+                      <td>{{ auth()->user()->profile->bank_name ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td class="pe-4" style="color: #a7acb2;">Chi Nhánh:</td>
-                      <td>{{ auth()->user()->profile->bank_branch }}</td>
+                      <td>{{ auth()->user()->profile->bank_branch ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td class="pe-4" style="color: #a7acb2;">Số CMT/CCCD:</td>
-                      <td>{{ auth()->user()->profile->citizen_id_no }}</td>
+                      <td>{{ auth()->user()->profile->citizen_id_no ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td class="pe-4" style="color: #a7acb2;">Ngày cấp:</td>
-                      <td>{{ \Carbon\Carbon::parse(auth()->user()->profile->citizen_id_date)->format('Y-m-d') }}</td>
+                      <td>
+                        {{ !empty(auth()->user()->profile->citizen_id_date) ? \Carbon\Carbon::parse(auth()->user()->profile->citizen_id_date)->format('Y-m-d') : 'N/A' }}
+                      </td>
                     </tr>
                     <tr>
                       <td class="pe-4" style="color: #a7acb2;">Nơi cấp:</td>
-                      <td>{{ auth()->user()->profile->citizen_id_place }}</td>
+                      <td>{{ auth()->user()->profile->citizen_id_place ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td class="pe-4" style="color: #a7acb2;">Mã số thuế:</td>
-                      <td>{{ auth()->user()->profile->tax }}</td>
+                      <td>{{ auth()->user()->profile->tax ?? 'N/A' }}</td>
                     </tr>
                   </tbody>
                 </table>
