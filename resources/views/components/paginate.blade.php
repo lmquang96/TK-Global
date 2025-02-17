@@ -1,5 +1,5 @@
-<nav aria-label="Page navigation">
-  <ul class="pagination">
+<nav aria-label="Page navigation" class="d-flex flex-column flex-md-row">
+  <ul class="pagination me-0">
     @if (!$paginator->onFirstPage())
       <li class="page-item first">
         <a class="page-link" href="{{ $paginator->url(1) }}"><i class="tf-icon bx bx-chevrons-left bx-sm"></i></a>
@@ -55,14 +55,14 @@
             class="tf-icon bx bx-chevrons-right bx-sm"></i></a>
       </li>
     @endif
-    @php
-      $lastItemInPage = $paginator->currentPage() * $paginator->perPage();
-      if ($lastItemInPage > $paginator->total()) {
-          $lastItemInPage = $paginator->total();
-      }
-    @endphp
-    <div class="ms-2" style="place-self: center;">(Kết quả từ
-      {{ ($paginator->currentPage() - 1) * $paginator->perPage() + 1 }} - {{ $lastItemInPage }} trên tổng
-      {{ $paginator->total() }})</div>
   </ul>
+  @php
+    $lastItemInPage = $paginator->currentPage() * $paginator->perPage();
+    if ($lastItemInPage > $paginator->total()) {
+        $lastItemInPage = $paginator->total();
+    }
+  @endphp
+  <div class="ms-2 align-self-start align-self-md-center">(Kết quả từ
+    {{ ($paginator->currentPage() - 1) * $paginator->perPage() + 1 }} - {{ $lastItemInPage }} trên tổng
+    {{ $paginator->total() }})</div>
 </nav>

@@ -38,7 +38,7 @@
 
 <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
   <!-- Search -->
-  <div class="navbar-nav align-items-center">
+  <div class="navbar-nav align-items-center d-none d-md-flex">
     {{-- <div class="nav-item d-flex align-items-center">
             <i class="bx bx-search bx-md"></i>
             <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2" placeholder="Tìm kiếm..." aria-label="Search...">

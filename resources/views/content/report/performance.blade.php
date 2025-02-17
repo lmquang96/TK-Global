@@ -29,16 +29,16 @@
         <div class="card-body">
           <form action="{{ route('report-performance') }}" method="GET">
             <div class="row">
-              <div class="col-3">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <label class="form-label">Khoảng ngày</label>
                 <x-date-range-input name="date" date="{{ request('date') }}" />
               </div>
-              <div class="col-3">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-4 mt-sm-0">
                 <label class="form-label">Chiến dịch</label>
                 <input type="text" class="form-control" placeholder="Enter something" id="autoComplete" name="keyword"
                   value="{{ request('keyword') }}" />
               </div>
-              <div class="col-3 mt-auto">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-4 mt-md-auto">
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                   <span class="tf-icons bx bx-filter bx-18px me-2"></span>Lọc
                 </button>
