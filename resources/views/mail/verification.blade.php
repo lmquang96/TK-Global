@@ -333,7 +333,7 @@
                                 <td align="center" style="padding:0;Margin:0;font-size:0px"><a target="_blank"
                                     href="https://viewstripo.email"
                                     style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#2D3142;font-size:14px"><img
-                                      src="http://localhost:8000/assets/img/logo/horizontal.png" alt="Logo"
+                                      src="https://tlglobal.asia/assets/img/logo/horizontal.png" alt="Logo"
                                       style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"
                                       height="60" title="Logo"></a></td>
                               </tr>
@@ -394,7 +394,8 @@
                                     Xin chào, {{ $user->name }}</h3>
                                   <p
                                     style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Imprima, Arial, sans-serif;line-height:27px;color:#2D3142;font-size:18px">
-                                    <br></p>
+                                    <br>
+                                  </p>
                                   <p
                                     style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Imprima, Arial, sans-serif;line-height:27px;color:#2D3142;font-size:18px">
                                     Vui lòng click vào link bên dưới để xác thực email của bạn.</p>
@@ -500,7 +501,8 @@
                                             src="https://ikgoyx.stripocdn.email/content/guids/CABINET_ee77850a5a9f3068d9355050e69c76d26d58c3ea2927fa145f0d7a894e624758/images/group_4076325.png"
                                             alt="Demo"
                                             style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"
-                                            width="47" title="Demo"></a></td>
+                                            width="47" title="Demo"></a>
+                                      </td>
                                     </tr>
                                   </table>
                                 </td>
