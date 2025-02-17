@@ -51,7 +51,8 @@
     <li class="nav-item lh-1 me-4">
       <button type="button" class="btn rounded-pill btn-outline-primary" data-bs-toggle="modal"
         data-bs-target="#modalSupport">
-        <span class="tf-icons bx bx-support bx-18px me-2"></span>Liên hệ hỗ trợ
+        <span class="tf-icons bx bx-support bx-18px me-0 me-sm-2"></span><span class="d-none d-sm-block">Liên hệ hỗ
+          trợ</span>
       </button>
     </li>
 
@@ -69,7 +70,7 @@
     </li>
 
     <!-- Place this tag where you want the button to render. -->
-    <li class="nav-item lh-1 me-4">
+    <li class="nav-item lh-1 me-4 d-none d-md-block">
       <div class="text-end">
         <div>
           {{ auth()->user()->name }}
