@@ -27,12 +27,12 @@
           @if ($campaign->link_generate_type == 0)
             <h6>Tạo link chiến dịch</h6>
             <div class="row mb-4">
-              <div class="col-9">
+              <div class="col-12 col-md-9">
                 <label class="form-label">Link sản phẩm</label>
                 <input type="text" class="form-control" placeholder="" value="{{ $campaign->url }}"
                   id="original-link" />
               </div>
-              <div class="col-3">
+              <div class="col-12 col-md-3">
                 <label class="form-label">Tên miền</label>
                 <select class="form-select" id="domain" name="domain">
                   <option value="track.tkglobal.asia">track.tkglobal.asia</option>
@@ -47,20 +47,20 @@
               </a>
               <div class="collapse mt-4" id="collapseExample">
                 <div class="row">
-                  <div class="col-6 mb-4">
+                  <div class="col-12 col-sm-6 mb-4">
                     <label class="form-label">Nguồn chiến dịch</label>
                     <input type="text" class="form-control" placeholder="VD: google, facebook..." id="sub1" />
                   </div>
-                  <div class="col-6 mb-4">
+                  <div class="col-12 col-sm-6 mb-4">
                     <label class="form-label">Cách tiếp thị</label>
                     <input type="text" class="form-control" placeholder="VD: cpc, ads, banner,..."id="sub2" />
                   </div>
-                  <div class="col-6">
+                  <div class="col-12 col-sm-6">
                     <label class="form-label">Tên chiến dịch</label>
                     <input type="text" class="form-control" placeholder="VD: the-tin-dung, vay-sinh-vien,..."
                       id="sub3" />
                   </div>
-                  <div class="col-6">
+                  <div class="col-12 col-sm-6">
                     <label class="form-label">Nội dung chiến dịch</label>
                     <input type="text" class="form-control" placeholder="VD: ngay-10-10, giam-lai-suat,..."
                       id="sub4" />
@@ -114,7 +114,7 @@
                         {{ $linkHistory->created_at }}
                       </td>
                       <td>
-                        <div class="input-group">
+                        <div class="input-group" style="min-width: 200px;">
                           <input type="text" class="form-control bg-white"
                             id="link-history-tracking-input-{{ $linkHistory->id }}" placeholder=""
                             aria-label="Example text with button addon" aria-describedby="button-addon1"
@@ -126,7 +126,7 @@
                         </div>
                       </td>
                       <td>
-                        <div class="input-group">
+                        <div class="input-group" style="min-width: 200px;">
                           <input type="text" class="form-control bg-white"
                             id="link-history-root-input-{{ $linkHistory->id }}" placeholder=""
                             aria-label="Example text with button addon" aria-describedby="button-addon1"
