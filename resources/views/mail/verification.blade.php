@@ -333,7 +333,7 @@
                                 <td align="center" style="padding:0;Margin:0;font-size:0px"><a target="_blank"
                                     href="https://viewstripo.email"
                                     style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#2D3142;font-size:14px"><img
-                                      src="https://tlglobal.asia/assets/img/logo/horizontal.png" alt="Logo"
+                                      src="https://tkglobal.asia/assets/img/logo/horizontal.png" alt="Logo"
                                       style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"
                                       height="60" title="Logo"></a></td>
                               </tr>
