@@ -5,7 +5,7 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb breadcrumb-style1 mb-0">
       <li class="breadcrumb-item active">
-        <a href="javascript:void(0);">Dashboard</a>
+        <a href="javascript:void(0);">Tổng quan</a>
       </li>
     </ol>
   </nav>

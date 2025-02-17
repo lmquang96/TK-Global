@@ -21,7 +21,7 @@
 
   <!-- Text alignment -->
   <div class="row mb-6">
-    <div class="col-9">
+    <div class="col-lg-9">
       <div class="card" id="create-link">
         <div class="card-body">
           @if ($campaign->link_generate_type == 0)
@@ -159,50 +159,54 @@
         </div>
       </div>
     </div>
-    <div class="col-3">
+    <div class="col-lg-3 mt-6 mt-lg-0">
       <div class="card">
         <div class="card-body">
-          <div class="text-center">
+          <div class="text-sm-center">
             <img src="{{ $campaign->image }}" height="48" />
           </div>
-          <h5 class="card-title mt-2">{{ $campaign->name }}</h5>
-          <div class="d-flex">
-            <i class="bx bxs-dollar-circle mb-2"></i>
-            <span style="margin-left: 0.5rem">{{ $campaign->commission_text }}</span>
-          </div>
-          <div class="d-flex">
-            <i class="bx bx-shape-circle mb-2"></i>
-            <span style="margin-left: 0.5rem">{{ $campaign->category->name }}</span>
-          </div>
-          <div class="d-flex">
-            <i class="bx bx-git-branch mb-2"></i>
-            <span style="margin-left: 0.5rem">{{ $campaign->cp_type }}</span>
-          </div>
-          <hr />
-          <div class="camps-detail-anchor">
-            <div class="d-flex">
-              <a href="#create-link">
-                <i class="bx bx-link mb-2"></i>
-                <span style="margin-left: 0.5rem">Tạo link</span>
-              </a>
+          <div class="row mt-4">
+            <div class="col-xs-12 col-sm-6 col-lg-12">
+              <h5 class="card-title mt-2">{{ $campaign->name }}</h5>
+              <div class="d-flex">
+                <i class="bx bxs-dollar-circle mb-2"></i>
+                <span style="margin-left: 0.5rem">{{ $campaign->commission_text }}</span>
+              </div>
+              <div class="d-flex">
+                <i class="bx bx-shape-circle mb-2"></i>
+                <span style="margin-left: 0.5rem">{{ $campaign->category->name }}</span>
+              </div>
+              <div class="d-flex">
+                <i class="bx bx-git-branch mb-2"></i>
+                <span style="margin-left: 0.5rem">{{ $campaign->cp_type }}</span>
+              </div>
             </div>
-            <div class="d-flex">
-              <a href="#history-link">
-                <i class="bx bx-history mb-2"></i>
-                <span style="margin-left: 0.5rem">Lịch sử tạo link</span>
-              </a>
-            </div>
-            <div class="d-flex">
-              <a href="#info">
-                <i class="bx bx-info-square mb-2"></i>
-                <span style="margin-left: 0.5rem">Thông tin chiến dịch</span>
-              </a>
-            </div>
-            <div class="d-flex">
-              <a href="#">
-                <i class="bx bx-line-chart mb-2"></i>
-                <span style="margin-left: 0.5rem">Báo cáo đơn hàng</span>
-              </a>
+            <hr class="d-block d-sm-none d-lg-block" />
+            <div class="camps-detail-anchor col-xs-12 col-sm-6 col-lg-12">
+              <div class="d-flex">
+                <a href="#create-link">
+                  <i class="bx bx-link mb-2"></i>
+                  <span style="margin-left: 0.5rem">Tạo link</span>
+                </a>
+              </div>
+              <div class="d-flex">
+                <a href="#history-link">
+                  <i class="bx bx-history mb-2"></i>
+                  <span style="margin-left: 0.5rem">Lịch sử tạo link</span>
+                </a>
+              </div>
+              <div class="d-flex">
+                <a href="#info">
+                  <i class="bx bx-info-square mb-2"></i>
+                  <span style="margin-left: 0.5rem">Thông tin chiến dịch</span>
+                </a>
+              </div>
+              <div class="d-flex">
+                <a href="#">
+                  <i class="bx bx-line-chart mb-2"></i>
+                  <span style="margin-left: 0.5rem">Báo cáo đơn hàng</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
