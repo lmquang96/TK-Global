@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\HTTp\Middleware\SwitchUser;
+use App\Http\Middleware\SwitchUser;
 
 return Application::configure(basePath: dirname(__DIR__))
   ->withRouting(
