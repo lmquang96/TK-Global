@@ -82,7 +82,7 @@ class Analytics extends Controller
     $eDate = Carbon::now()->format('Y-m-d');
     $sDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
 
-    $result = Cache::remember('chart_data_'.auth()->user()->id, 600, function() use ($userId, $sDate, $eDate) {
+    $result = Cache::remember('chart_data_'.$userId, 600, function() use ($userId, $sDate, $eDate) {
       $query = Conversion::where('user_id', $userId)
       ->whereBetween('order_time', [$sDate.' 00:00:00', $eDate.' 23:59:59'])
       ->selectRaw("DATE_FORMAT(order_time, '%Y-%m-%d') as time, sum(commission_pub) as sumcom")

@@ -102,7 +102,8 @@ class UploadOrderJob implements ShouldQueue
     $upsertData = [];
 
     foreach ($sheet as $key => $row) {
-      $subid = $row['tripsub1'];
+      // $subid = $row['tripsub1'];
+      $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
 
       $clickData = Click::where('code', $subid)->first();
 
@@ -123,14 +124,14 @@ class UploadOrderJob implements ShouldQueue
       $arrivalCountry = trim($row['arrival_country']);
       $fromInfo = $departureCity . ", " . $departureCountry;
       $toInfo = $arrivalCity . ", " . $arrivalCountry;
-      $originalSales = floatval(str_replace(",", "", substr(trim($row['amount_usd']), 1)));
+      $originalSales = floatval(str_replace(",", ".", substr(trim($row['amount_usd']), 1)));
 
       $sales = $originalSales * self::USD_RATE;
       $productName = self::getTripcomProductName($productType, $fromInfo, $toInfo);
 
       $sumCom = self::tripcomComissionRate($productType, $departureCountry, $arrivalCountry, $sales);
-      $commissionPub = $sumCom * 0.8;
-      $commissionSys = $sumCom * 0.2;
+      $commissionPub = $sumCom * 0.7;
+      $commissionSys = $sumCom * 0.3;
       $status = 'Pending';
       if (trim($row['booking_status']) == 'Successful') {
         $status = 'Approved';
@@ -259,14 +260,21 @@ class UploadOrderJob implements ShouldQueue
       $adid = (strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
       if (!empty($adid)) {
         // $subid = $adid['sub1'];
-        $email = 'lmquangit@gmail.com';
+        $affiliate_id = 'KT20250005';
         $sub1 = $ads[$row['adid']]['sub2'];
         $sub2 = $ads[$row['adid']]['sub3'];
       } else {
-        continue;
+        // continue;
+        $affiliate_id = 'KT20250005';
+        $sub1 = $ads[$row['adid']]['sub2'];
+        $sub2 = $ads[$row['adid']]['sub3'];
       }
 
-      $userId = User::where('email', $email)->pluck('id')->first();
+      $userId = User::query()
+      ->whereHas('profile', function ($query) use ($affiliate_id) {
+        $query->where('affiliate_id', $affiliate_id);
+      })
+      ->pluck('id')->first();
       $campaginId = self::KLOOK_ID;
       $linkHistoryId = null;
 

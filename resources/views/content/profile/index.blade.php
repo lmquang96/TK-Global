@@ -98,7 +98,19 @@
                     nghiệp</option>
                 </select>
               </div>
+              <div class="col-md-6">
+                <label for="affiliate_id" class="form-label">Affiliate ID</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="affiliate-id"
+                    value="{{ auth()->user()->profile->affiliate_id }}" readonly
+                    style="color: #a7acb2;     background-color: rgba(34, 48, 62, 0.06); border-color: #cacdd1; opacity: 1;">
+                  <button class="btn btn-primary" type="button" onclick="handleCopy('#affiliate-id')">
+                    <i class='bx bx-copy me-2'></i> Copy
+                  </button>
+                </div>
+              </div>
             </div>
+
             <div class="mt-6">
               <button type="submit" class="btn btn-primary me-3">Lưu</button>
             </div>
@@ -175,7 +187,9 @@
     <x-toast type="error" message="{{ $errors->first() }}" />
   @endif
   <!-- Toast with Placements -->
-
+  <!-- Toast with Placements -->
+  <x-toast type="info" message="Sao chép link phân phối thành công" />
+  <!-- Toast with Placements -->
   <!--/ Card layout -->
 @endsection
 @section('page-script')
@@ -225,5 +239,13 @@
         $("#form-avatar-upload").submit();
       }
     });
+
+    function handleCopy(target) {
+      let copyText = $(target);
+      copyText.select();
+      copyText[0].setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      toastShow();
+    }
   </script>
 @endsection
