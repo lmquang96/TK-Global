@@ -29,16 +29,16 @@
         <div class="card-body">
           <form action="{{ route('report-order') }}" method="GET">
             <div class="row">
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label class="form-label">Khoảng ngày</label>
                 <x-date-range-input name="date" date="{{ request('date') }}" />
               </div>
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label class="form-label">Chiến dịch</label>
                 <input type="text" class="form-control" placeholder="Enter something" id="autoComplete" name="keyword"
                   value="{{ request('keyword') }}" />
               </div>
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label class="form-label">Mã chuyển đổi/đơn hàng</label>
                 <div class="input-group">
                   <button type="button" class="btn btn-outline-primary" id="code-name">Chuyển đổi</button>
@@ -56,7 +56,7 @@
                   <input type="text" class="form-control" name="code_value" value="{{ request('code_value') }}">
                 </div>
               </div>
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label for="exampleFormControlSelect1" class="form-label">Trạng thái</label>
                 <select class="form-select" name="status">
                   <option value="">Tất cả</option>
@@ -65,27 +65,27 @@
                   <option value="Cancelled"{{ request('status') == 'Cancelled' ? 'selected' : '' }}>Hủy</option>
                 </select>
               </div>
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label class="form-label">Sub ID 1</label>
                 <input type="text" class="form-control" placeholder="VD: google, facebook..." name="sub1"
                   value="{{ request('sub1') }}" />
               </div>
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label class="form-label">Sub ID 2</label>
                 <input type="text" class="form-control" placeholder="VD: cpc, ads, banner,..." name="sub2"
                   value="{{ request('sub2') }}" />
               </div>
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label class="form-label">Sub ID 3</label>
                 <input type="text" class="form-control" placeholder="VD: the-tin-dung, vay-sinh-vien,..."
                   name="sub3" value="{{ request('sub3') }}" />
               </div>
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label class="form-label">Sub ID 4</label>
                 <input type="text" class="form-control" placeholder="VD: ngay-10-10, giam-lai-suat,..." name="sub4"
                   value="{{ request('sub4') }}" />
               </div>
-              <div class="col-4 mb-4">
+              <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <label></label>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                   <span class="tf-icons bx bx-filter bx-18px me-2"></span>Lọc
