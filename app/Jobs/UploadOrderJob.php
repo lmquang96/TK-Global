@@ -24,7 +24,7 @@ class UploadOrderJob implements ShouldQueue
   /**
    * Create a new job instance.
    */
-  public function __construct($mid, $data)
+  public function __construct(string $mid, array $data)
   {
     $this->mid = $mid;
     $this->data = $data;
@@ -46,6 +46,7 @@ class UploadOrderJob implements ShouldQueue
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
       } elseif ($mid == 'klook') {
+        
         $ads = Config::query()
           ->where('name', 'klook_ads')
           ->pluck('value')
@@ -264,10 +265,7 @@ class UploadOrderJob implements ShouldQueue
         $sub1 = $ads[$row['adid']]['sub2'];
         $sub2 = $ads[$row['adid']]['sub3'];
       } else {
-        // continue;
-        $affiliate_id = 'KT20250005';
-        $sub1 = $ads[$row['adid']]['sub2'];
-        $sub2 = $ads[$row['adid']]['sub3'];
+        continue;
       }
 
       $userId = User::query()

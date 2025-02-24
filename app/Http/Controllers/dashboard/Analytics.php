@@ -120,12 +120,6 @@ class Analytics extends Controller
       $eDate = $request->eDate;
     }
 
-    $query = Conversion::where('user_id', $userId)
-    ->whereBetween('order_time', [$sDate.' 00:00:00', $eDate.' 23:59:59'])
-    ->selectRaw("DATE_FORMAT(order_time, '%Y-%m-%d') as time, sum(commission_pub) as sumcom")
-    ->groupBy('time')
-    ->pluck('sumcom', 'time');
-
     $query = Click::query()
     ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
     ->whereBetween('clicks.created_at', [$sDate.' 00:00:00', $eDate.' 23:59:59'])

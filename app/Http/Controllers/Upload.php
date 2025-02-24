@@ -49,13 +49,13 @@ class Upload extends Controller
       ]);
 
     } catch (\Exception $e) {
-      \Log::error("--------------");
+      \Log::error("------1--------");
       \Log::error($e->getMessage());
-      \Log::error("--------------");
+      \Log::error("------1--------");
 
       return response()->json([
         'status' => 400,
-        'data' => $e->getMessage()
+        'data' => $e->getFile()
       ]);
     }
   }
