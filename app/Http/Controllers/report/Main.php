@@ -141,7 +141,7 @@ class Main extends Controller
       return $item->quantity * $item->commission_pub;
     });
 
-    $data = $data->paginate(self::PER_PAGE)->withQueryString();
+    $data = $data->orderBy('created_at', 'desc')->paginate(self::PER_PAGE)->withQueryString();
 
     $clickCount = Click::query()
     ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
