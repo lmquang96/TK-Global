@@ -86,7 +86,7 @@ class UploadOrderJob implements ShouldQueue
 
         Conversion::removeDup(
           $cid,
-          Carbon::now()->subDays(3)->format('Y-m-d'),
+          Carbon::now()->subDays(120)->format('Y-m-d'),
           Carbon::now()->format('Y-m-d')
         );
         dd('done!');
