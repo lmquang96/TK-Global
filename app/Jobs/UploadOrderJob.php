@@ -38,6 +38,7 @@ class UploadOrderJob implements ShouldQueue
     $mid = $this->mid;
     $data = $this->data;
     $upsertData = $updateData = [];
+    $cid = 1;
 
     foreach ($data as $sheet) {
       if ($mid == 'tripcom') {
@@ -45,6 +46,7 @@ class UploadOrderJob implements ShouldQueue
   
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
+        $cid = 2;
       } elseif ($mid == 'klook') {
         
         $ads = Config::query()
@@ -83,7 +85,7 @@ class UploadOrderJob implements ShouldQueue
         }
 
         Conversion::removeDup(
-          2,
+          $cid,
           Carbon::now()->subDays(3)->format('Y-m-d'),
           Carbon::now()->format('Y-m-d')
         );
@@ -94,8 +96,6 @@ class UploadOrderJob implements ShouldQueue
         \Log::error("--------------");
       }
     }
-
-    dd($upsertData);
   }
 
   public function getTripcomUpsertData($sheet, $mid)
@@ -103,8 +103,8 @@ class UploadOrderJob implements ShouldQueue
     $upsertData = [];
 
     foreach ($sheet as $key => $row) {
-      // $subid = $row['tripsub1'];
-      $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
+      $subid = $row['tripsub1'];
+      // $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
 
       $clickData = Click::where('code', $subid)->first();
 
