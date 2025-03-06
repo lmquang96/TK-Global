@@ -108,6 +108,11 @@ class UploadOrderJob implements ShouldQueue
 
       $clickData = Click::where('code', $subid)->first();
 
+      if(empty($clickData)) {
+        $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
+        $clickData = Click::where('code', $subid)->first();
+      }
+
       $userId = $clickData->linkHistory->user_id;
       $clickId = $clickData->id;
       $campaginId = $clickData->linkHistory->campaign_id;
