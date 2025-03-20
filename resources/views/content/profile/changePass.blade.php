@@ -32,7 +32,7 @@
         <h5 class="card-header">Đổi mật khẩu</h5>
         <div class="card-body pt-1">
           <form id="formChangePass" method="POST" action="{{ route('update-password') }}"
-            class="fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
+            class="fv-plugins-bootstrap5 fv-plugins-framework">
             @csrf
             @method('PUT')
             @if ($errors->any())
