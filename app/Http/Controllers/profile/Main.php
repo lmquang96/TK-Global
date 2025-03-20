@@ -104,4 +104,20 @@ class Main extends Controller
   {
     return view('content.profile.changePass');
   }
+
+  public function updatePass(Request $request) {
+    if (auth()->attempt(['email' => auth()->user()->email, 'password' => $request->currentPassword])) {
+      $request->validate([
+        'password' => 'required|min:6|confirmed',
+      ]);
+
+      $user = auth()->user();
+      $user->password = bcrypt($request->password);
+      $user->save();
+
+      return redirect()->back()->with('message', self::MSG_UPDATE_SUCCESS);
+    } else {
+      return redirect()->back()->withErrors(['message' => 'Mật khẩu cũ không chính xác!']);
+    }
+  }
 }

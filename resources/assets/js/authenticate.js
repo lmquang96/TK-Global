@@ -112,3 +112,47 @@ $('#formAuthentication').validate({
     }
   }
 });
+
+$('#formChangePass').validate({
+  submitHandler: function (form) {
+    form.submit();
+  },
+  errorPlacement: function (error, element) {
+    if (element.parent().hasClass('input-group') || element.parent().hasClass('form-check')) {
+      error.insertAfter(element.parent());
+    } else {
+      error.insertAfter(element);
+    }
+  },
+  rules: {
+    currentPassword: {
+      required: true,
+      maxlength: 50,
+      pwcheck: true
+    },
+    password: {
+      required: true,
+      maxlength: 50,
+      pwcheck: true
+    },
+    password_confirmation: {
+      required: true,
+      maxlength: 50,
+      equalTo: '#password'
+    }
+  },
+  messages: {
+    currentPassword: {
+      required: 'Mật khẩu là bắt buộc',
+      maxlength: 'Mật khẩu không được quá dài'
+    },
+    password: {
+      required: 'Mật khẩu là bắt buộc',
+      maxlength: 'Mật khẩu không được quá dài'
+    },
+    password_confirmation: {
+      required: 'Nhập lại mật khẩu là bắt buộc',
+      equalTo: 'Nhập lại mật khẩu không khớp'
+    }
+  }
+});

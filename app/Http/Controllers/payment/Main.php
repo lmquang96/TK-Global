@@ -50,6 +50,7 @@ class Main extends Controller
     // ->where('')
 
     $paymentRequest = PaymentRequest::create([
+      'code' => sha1(time()),
       'submission_date' => Carbon::now()->format('Y-m-d H:i:s'),
       'amount' => $amount,
       'user_id' => auth()->user()->id
