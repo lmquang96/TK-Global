@@ -41,6 +41,10 @@
                   $errors->all('<label style="color: #ff3e1d; font-size: 85%; margin-bottom: 0.25rem;">:message</label>'),
               ) !!}
             @endif
+            @if (Session::has('message'))
+              <label
+                style="color: #198754; font-size: 85%; margin-bottom: 0.25rem;">{{ \Session::get('message') }}</label>
+            @endif
             <div class="row">
               <div class="mb-6 col-md-6 form-password-toggle fv-plugins-icon-container">
                 <label class="form-label" for="currentPassword">Mật khẩu hiện tại</label>
