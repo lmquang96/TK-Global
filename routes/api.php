@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Upload;
+use App\Http\Controllers\Postback;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -13,3 +14,6 @@ Route::prefix('uploadOrder')->group(function () {
 
   Route::post('/storeAds', [Upload::class, 'storeAds']);
 });
+
+
+Route::get('/involve/postback', [Postback::class, 'involve']);
