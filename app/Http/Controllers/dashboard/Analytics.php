@@ -40,7 +40,7 @@ class Analytics extends Controller
     $clickCountChange = $statisticsChange['clickCount'] > 0 ? ($statistics['clickCount'] / $statisticsChange['clickCount'] * 100) - 100 : 100;
     $totalConversionChange = $statisticsChange['totalConversion'] > 0 ? ($statistics['totalConversion'] / $statisticsChange['totalConversion'] * 100) - 100 : 100;
 
-    $newCampaigns = Cache::remember('new_campaigns'.auth()->user()->id, 600, function() {
+    $newCampaigns = Cache::remember('new_campaigns', 600, function() {
       return Campaign::orderBy('created_at', 'desc')->limit(5)->offset(0)->get();
     });
 
