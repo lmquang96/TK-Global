@@ -83,35 +83,99 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-header">Lịch sử rút tiền</h5>
-          <x-empty-data />
-          {{-- <div class="table-responsive text-nowrap">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Thời gian đăng ký</th>
-                  <th>Thời gian thanh toán</th>
-                  <th>Trạng thái</th>
-                  <th>Số tiền</th>
-                </tr>
-              </thead>
-              <tbody class="table-border-bottom-0">
-                @for ($i = 0; $i < 5; $i++)
+          @if (!$paymentRequests->isEmpty())
+            <div class="table-responsive text-nowrap">
+              <table class="table table-striped">
+                <thead>
                   <tr>
-                    <td>
-                      2025-01-10 15:44:21
-                    </td>
-                    <td>
-                      2025-01-10 15:44:21
-                    </td>
-                    <td><span class="badge bg-label-success me-1">Thành công</span></td>
-                    <td>
-                      45.000.000₫
-                    </td>
+                    <th>STT</th>
+                    <th>Thời gian đăng ký</th>
+                    <th>Thời gian TT</th>
+                    <th>Trạng thái</th>
+                    <th>Số tiền</th>
                   </tr>
-                @endfor
-              </tbody>
-            </table>
-          </div> --}}
+                </thead>
+                <tbody class="table-border-bottom-0">
+                  @foreach ($paymentRequests as $key => $paymentRequest)
+                    <tr>
+                      <td>
+                        {{ $key + 1 }}
+                      </td>
+                      <td>
+                        {{ \Carbon\Carbon::parse($paymentRequest->created_at)->format('Y-m-d H:i:s') }}
+                      </td>
+                      <td>
+                        {{ $paymentRequest->processing_date ? \Carbon\Carbon::parse($paymentRequest->processing_date)->format('Y-m-d H:i:s') : 'N/A' }}
+                      </td>
+                      </td>
+                      <td>
+                        @if ($paymentRequest->status == 1)
+                          <span class="badge bg-label-warning me-1">Chờ duyệt</span>
+                        @elseif ($paymentRequest->status == 2)
+                          <span class="badge bg-label-success me-1">Thành công</span>
+                        @else
+                          <span class="badge bg-label-success me-1">Từ chối</span>
+                        @endif
+                      </td>
+                      <td>
+                        {{ number_format($paymentRequest->amount, 0, ',', '.') }}₫
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          @else
+            <x-empty-data />
+          @endif
+        </div>
+      </div>
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-header">Lịch sử tạm ứng</h5>
+          @if (!$advances->isEmpty())
+            <div class="table-responsive text-nowrap">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Thời gian tạm ứng</th>
+                    <th>Tháng tạm ứng</th>
+                    <th>Trạng thái</th>
+                    <th>Số tiền</th>
+                  </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                  @foreach ($advances as $key => $advance)
+                    <tr>
+                      <td>
+                        {{ $key + 1 }}
+                      </td>
+                      <td>
+                        {{ \Carbon\Carbon::parse($advance->created_at)->format('Y-m-d H:i:s') }}
+                      </td>
+                      <td>
+                        {{ $advance->target_month }}
+                      </td>
+                      </td>
+                      <td>
+                        @if ($advance->status == 0)
+                          <span class="badge bg-label-warning me-1">Chưa trừ</span>
+                        @else
+                          <span class="badge bg-label-success me-1">Đã trừ</span>
+                        @endif
+                      </td>
+                      <td>
+                        {{ number_format($advance->amount, 0, ',', '.') }}₫
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          @else
+            <x-empty-data />
+          @endif
         </div>
       </div>
     </div>
@@ -127,7 +191,7 @@
               Current Balance
             </div>
             <div class="fw-bold" style="font-size: 1.75rem;">
-              0₫
+              {{ number_format($balance, 0, ',', '.') }}₫
             </div>
             <div class="d-flex mt-4 justify-content-between">
               <div>xxxx xxxx xxxx xxxx</div>
@@ -244,7 +308,6 @@
           }
         },
         error: function(xhr) {
-          console.log(xhr.status, xhr.responseJSON.message);
           $(".bs-toast .toast-body").html(xhr.responseJSON.message);
           myModal.toggle();
           toastShow();
