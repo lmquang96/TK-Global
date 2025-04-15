@@ -130,7 +130,8 @@ class UploadOrderJob implements ShouldQueue
       $arrivalCountry = trim($row['arrival_country']);
       $fromInfo = $departureCity . ", " . $departureCountry;
       $toInfo = $arrivalCity . ", " . $arrivalCountry;
-      $originalSales = floatval(str_replace(",", ".", substr(trim($row['amount']), 1)));
+      // $originalSales = floatval(str_replace(",", ".", substr(trim($row['amount']), 1)));
+      $originalSales = floatval(str_replace(",", ".", trim($row['amount'])));
 
       $sales = $originalSales * self::USD_RATE;
       $productName = self::getTripcomProductName($productType, $fromInfo, $toInfo);

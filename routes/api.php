@@ -17,3 +17,4 @@ Route::prefix('uploadOrder')->group(function () {
 
 
 Route::get('/involve/postback', [Postback::class, 'involve']);
+Route::get('/postback/scan', [Postback::class, 'scan']);
