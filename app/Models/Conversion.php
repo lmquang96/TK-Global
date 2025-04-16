@@ -11,6 +11,8 @@ class Conversion extends Model
     /** @use HasFactory<\Database\Factories\ConversionFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     public function click()
     {
         return $this->belongsTo(Click::class);
