@@ -42,9 +42,9 @@ class Postback extends Controller
     public function scan() {
         $postbackList = CampaignPostback::where('status', 0)->get();
 
-        $data = json_decode($postback->data);
-
         foreach ($postbackList as $key => $postback) {
+
+            $data = json_decode($postback->data);
 
             if ($data->status == 'pending') {
                 $click = Click::query()
