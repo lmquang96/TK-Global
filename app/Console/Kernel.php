@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
    */
   protected $commands = [
     // Đăng ký các lệnh của bạn ở đây
-    Commands\ConversionsScan::class, // Ví dụ thêm command của bạn vào đây
+    \App\Console\Commands\ConversionsScan::class, // Ví dụ thêm command của bạn vào đây
   ];
 
   /**
