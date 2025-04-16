@@ -27,5 +27,7 @@ class ConversionsScan extends Command
     public function handle(ScanConversionsService $scanConversionsService)
     {
         $scanConversionsService->scan();
+
+        return true;
     }
 }
