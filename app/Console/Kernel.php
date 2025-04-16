@@ -27,6 +27,10 @@ class Kernel extends ConsoleKernel
   {
     // Đặt lịch cho các công việc của bạn ở đây
     $schedule->command('app:conversions-scan')->everyMinute();
+
+    $schedule->call(function () {
+      \Log::info('Schedule test is running...');
+    })->everyMinute();
   }
 
   /**
