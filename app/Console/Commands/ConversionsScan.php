@@ -28,6 +28,6 @@ class ConversionsScan extends Command
     {
         $scanConversionsService->scan();
 
-        return true;
+        return 0;
     }
 }
