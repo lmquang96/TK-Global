@@ -8,6 +8,8 @@ use App\Models\Conversion;
 
 class ScanConversionsService
 {
+  const USD_VND_RATE = 22500;
+  
   public function scan()
   {
     $postbackList = CampaignPostback::where('status', 0)->get();

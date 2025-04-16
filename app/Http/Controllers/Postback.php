@@ -10,8 +10,6 @@ use App\Models\Conversion;
 
 class Postback extends Controller
 {
-    const USD_VND_RATE = 22500;
-
     public function involve(Request $request) {
         $data = $request->all();
 
