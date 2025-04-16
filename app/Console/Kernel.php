@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
   protected function schedule(Schedule $schedule)
   {
     // Đặt lịch cho các công việc của bạn ở đây
-    $schedule->command('app:conversions-scan')->everyTenMinutes();
+    $schedule->command('app:conversions-scan')->everyMinutes();
   }
 
   /**
