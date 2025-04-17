@@ -26,8 +26,6 @@ class ConversionsScan extends Command
      */
     public function handle(ScanConversionsService $scanConversionsService)
     {
-        Log::info('ConversionsScan command running...');
-        
         $scanConversionsService->scan();
 
         return 0;
