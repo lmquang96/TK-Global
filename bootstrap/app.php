@@ -19,5 +19,5 @@ return Application::configure(basePath: dirname(__DIR__))
     //
   })
   ->withSchedule(function ($schedule) {
-    $schedule->command('app:conversions-scan')->everyMinute();
+    $schedule->command('app:conversions-scan')->everyTenMinutes();
   })->create();
