@@ -5,9 +5,8 @@ namespace App\Http\Controllers\authentications;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Profile;
+use Illuminate\Support\Facades\Log;
+use App\Services\Auth\RegisterService;
 
 class Main extends Controller
 {
@@ -41,7 +40,7 @@ class Main extends Controller
     return view('content.authentications.register');
   }
 
-  public function storeUser(Request $request)
+  public function storeUser(Request $request, RegisterService $registerService)
   {
     $request->validate([
       'email' => ['required', 'email', 'max:50', 'unique:users,email'],
@@ -52,19 +51,11 @@ class Main extends Controller
     ]);
 
     try {
-      $userId = User::create([
-        'email' => $request->email,
-        'name' => $request->name,
-        'password' => $request->password
-      ])->id;
-
-      Profile::create([
-        'user_id' => $userId
-      ]);
+      $registerService->createUser($request);
 
       return redirect('login');
     } catch (\Exception $e) {
-      \Log::error($e->getMessage());
+      Log::error($e->getMessage());
     }
   }
 

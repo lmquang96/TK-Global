@@ -8,52 +8,37 @@ use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\LinkHistory;
 use Illuminate\Support\Facades\Cache;
+use App\Services\Campaign\CampaignService;
+use App\Services\Traffic\LinkService;
 
 class Main extends Controller
 {
   const STATUS_ACTIVE = 1;
 
-  public function index(Request $request)
+  public function index(Request $request, CampaignService $campaignService)
   {
-    $campaigns = Cache::remember('campaigns_all', 600, function() use ($request) {
-      return Campaign::where('status', self::STATUS_ACTIVE)
-      ->when($request->keyword, function($q, $keyword) {
-        $q->where('name', 'like', '%'.$keyword.'%');
-      })
-      ->when($request->category, function($q, $category) {
-        $q->where('category_id', $category);
-      })
-      ->when($request->cp_type, function($q, $cpType) {
-        $q->where('cp_type', $cpType);
-      })
-      ->get();
-    });
+    $campaigns = $campaignService->getAll($request);
 
-    $categories = Category::where('status', self::STATUS_ACTIVE)->get();
+    $categories = $campaignService->getCategories();
 
     return view('content.campaigns.index', compact('campaigns', 'categories'));
   }
 
-  public function detail($id)
+  public function detail($id, CampaignService $campaignService, LinkService $linkService)
   {
-    $campaign = Campaign::where('status', self::STATUS_ACTIVE)
-    ->where('code', $id)
-    ->first();
+    $campaign = $campaignService->getDetail($id);
 
-    $linkHistories = LinkHistory::where('user_id', auth()->user()->id)
-    ->where('campaign_id', $campaign->id)
-    ->limit(5)
-    ->get();
+    $linkHistories = $linkService->getHistoriesByCampagin($campaign->id);
 
     return view('content.campaigns.detail', compact('campaign', 'linkHistories'));
   }
 
   public function getCampaigns()
   {
-    $campaigns = Cache::remember('campaigns_list', 600, function() {
+    $campaigns = Cache::remember('campaigns_list', 600, function () {
       return Campaign::select('id', 'name')
-      ->where('status', self::STATUS_ACTIVE)
-      ->get();
+        ->where('status', self::STATUS_ACTIVE)
+        ->get();
     });
 
     return response()->json($campaigns, 200, []);
