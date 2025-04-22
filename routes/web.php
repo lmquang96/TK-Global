@@ -64,8 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/update-payment-info', [ProfileMain::class, 'updatePaymentInfo'])->name('profile-update-payment-info');
     Route::put('/update-avatar', [ProfileMain::class, 'updateAvatar'])->name('profile-update-avatar');
     Route::get('/change-password', [ProfileMain::class, 'changePass'])->name('change-password');
-    Route::put('/update-password', [ProfileMain::class, 'updatePass'])->name('update-password');
   });
+
+  Route::put('/update-password', [AuthMain::class, 'updatePass'])->name('update-password');
 
   Route::get('/terms-of-service', [GuideMain::class, 'termsOfService'])->name('terms-of-service');
   Route::get('/privacy-policy', [GuideMain::class, 'privacyPolicy'])->name('privacy-policy');

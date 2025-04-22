@@ -4,120 +4,51 @@ namespace App\Http\Controllers\profile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Services\User\UserService;
 
 class Main extends Controller
 {
-  const MSG_UPDATE_SUCCESS = 'Cập nhật thành công!';
-  const MSG_UPDATE_ERROR = 'Cập nhật thất bại, vui lòng liên hệ với chúng tôi để khắc phục sự cố!';
-
   public function index()
   {
     return view('content.profile.index');
   }
 
-  public function updatePersonalInfo(Request $request) {
-    $city = $request->city;
-    $city_code = $city_name = null;
-    if ($city) {
-      $city = explode("|", $city);
-      $city_code = $city[0];
-      $city_name = $city[1];
+  public function updatePersonalInfo(Request $request, UserService $userService)
+  {
+    $updatePersonalInfo = $userService->updatePersonalInfo($request);
+
+    if ($updatePersonalInfo['status']) {
+      return redirect()->back()->with('message', $updatePersonalInfo['data']);
     }
-
-    if (!empty(auth()->user()->profile)) {
-      $profile = auth()->user();
-      $profile->name = $request->name;
-      $profile->profile->phone = $request->phone;
-      $profile->profile->address = $request->address;
-      $profile->profile->city_code = $city_code;
-      $profile->profile->city_name = $city_name;
-      $profile->profile->account_type = $request->account_type;
-
-      try {
-        $profile->save();
-        $profile->profile->save();
-        $profile->refresh();
-
-        return redirect()->back()->with('message', self::MSG_UPDATE_SUCCESS);
-      } catch (\Exception $e) {
-        \Log::error($e->getMessage());
-
-        return redirect()->back()->withErrors(['message' => self::MSG_UPDATE_ERROR]);
-      }
-    } else {
-
-    }
+    return redirect()->back()->withErrors(['message' => $updatePersonalInfo['data']]);
   }
 
-  public function updatePaymentInfo(Request $request) {
-    $bank = $request->bank;
-    $bank_code = $bank_name = null;
-    if ($bank) {
-      $bank = explode("|", $bank);
-      $bank_code = $bank[0];
-      $bank_name = $bank[1];
+  public function updatePaymentInfo(Request $request, UserService $userService)
+  {
+    $updatePaymentInfo = $userService->updatePaymentInfo($request);
+
+    if ($updatePaymentInfo['status']) {
+      return redirect()->back()->with('message', $updatePaymentInfo['data']);
     }
-    $profile = auth()->user();
-    $profile->profile->bank_owner = $request->bank_owner;
-    $profile->profile->bank_number = $request->bank_number;
-    $profile->profile->bank_code = $bank_code;
-    $profile->profile->bank_name = $bank_name;
-    $profile->profile->bank_branch = $request->bank_branch;
-    $profile->profile->citizen_id_no = $request->citizen_id_no;
-    $profile->profile->citizen_id_date = $request->citizen_id_date;
-    $profile->profile->citizen_id_place = $request->citizen_id_place;
-    $profile->profile->tax = $request->tax;
-
-    try {
-      $profile->profile->save();
-
-      return redirect()->back()->with('message', self::MSG_UPDATE_SUCCESS);
-    } catch (\Exception $e) {
-      \Log::error($e->getMessage());
-
-      return redirect()->back()->withErrors(['message' => self::MSG_UPDATE_ERROR]);
-    } 
+    return redirect()->back()->withErrors(['message' => $updatePaymentInfo['data']]);
   }
 
-  public function updateAvatar(Request $request) {
+  public function updateAvatar(Request $request, UserService $userService)
+  {
     $request->validate([
       'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Kiểm tra file phải là ảnh
     ]);
 
-    $avatar = $request->file('avatar');
-    try {
-      $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
-      $avatar->move(public_path('assets/img/avatars'), $avatarName);
+    $updateAvatar = $userService->updateAvatar($request);
 
-      $profile = auth()->user();
-      $profile->profile->avatar = $avatarName;
-      $profile->profile->save();
-
-      return back()->with('message', self::MSG_UPDATE_SUCCESS);
-    } catch (\Exception $e) {
-      dd($e);
+    if ($updateAvatar['status']) {
+      return redirect()->back()->with('message', $updateAvatar['data']);
     }
+    return redirect()->back()->withErrors(['message' => $updateAvatar['data']]);
   }
 
   public function changePass()
   {
     return view('content.profile.changePass');
-  }
-
-  public function updatePass(Request $request) {
-    if (auth()->attempt(['email' => auth()->user()->email, 'password' => $request->currentPassword])) {
-      $request->validate([
-        'password' => 'required|min:6|confirmed',
-      ]);
-
-      $user = auth()->user();
-      $user->password = bcrypt($request->password);
-      $user->save();
-
-      return redirect()->back()->with('message', self::MSG_UPDATE_SUCCESS);
-    } else {
-      return redirect()->back()->withErrors(['message' => 'Mật khẩu cũ không chính xác!']);
-    }
   }
 }

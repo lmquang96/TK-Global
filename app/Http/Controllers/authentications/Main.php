@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Services\Auth\RegisterService;
+use App\Services\Auth\PasswordService;
 
 class Main extends Controller
 {
@@ -73,5 +74,24 @@ class Main extends Controller
   public function forgotPassword()
   {
     return view('content.authentications.forgot-password');
+  }
+
+  public function updatePass(Request $request, PasswordService $passwordService)
+  {
+    if (Auth::attempt(['email' => Auth::user()->email, 'password' => $request->currentPassword])) {
+      $request->validate([
+        'password' => 'required|min:6|confirmed',
+      ]);
+
+      $updatePass = $passwordService->updatePass($request);
+
+      if ($updatePass['status']) {
+        return redirect()->back()->with('message', $updatePass['data']);
+      }
+
+      return redirect()->back()->withErrors(['message' => $updatePass['data']]);
+    }
+
+    return redirect()->back()->withErrors(['message' => 'Mật khẩu cũ không chính xác!']);
   }
 }
