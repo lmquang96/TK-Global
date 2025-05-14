@@ -266,8 +266,11 @@ class UploadOrderJob implements ShouldQueue
     foreach ($sheet as $key => $row) {
       $adid = (strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
       if (!empty($adid)) {
-        // $subid = $adid['sub1'];
+        $subid = $adid['sub1'];
         $affiliate_id = 'KT20250005';
+        if (!empty($subid) && strlen($subid) == 10) {
+          $affiliate_id = $subid;
+        }
         $sub1 = $ads[$row['adid']]['sub2'];
         $sub2 = $ads[$row['adid']]['sub3'];
       } else {
