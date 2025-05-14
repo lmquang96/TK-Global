@@ -43,12 +43,12 @@ class UploadOrderJob implements ShouldQueue
     foreach ($data as $sheet) {
       if ($mid == 'tripcom') {
         $upsertData = self::getTripcomUpsertData($sheet, $mid);
-  
+
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
         $cid = 2;
       } elseif ($mid == 'klook') {
-        
+
         $ads = Config::query()
           ->where('name', 'klook_ads')
           ->pluck('value')
@@ -108,7 +108,7 @@ class UploadOrderJob implements ShouldQueue
 
       $clickData = Click::where('code', $subid)->first();
 
-      if(empty($clickData)) {
+      if (empty($clickData)) {
         $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
         $clickData = Click::where('code', $subid)->first();
       }
@@ -271,22 +271,23 @@ class UploadOrderJob implements ShouldQueue
         $sub1 = $ads[$row['adid']]['sub2'];
         $sub2 = $ads[$row['adid']]['sub3'];
       } else {
-        continue;
+        // continue;
+        $affiliate_id = 'TK20250012';
       }
 
       $userId = User::query()
-      ->whereHas('profile', function ($query) use ($affiliate_id) {
-        $query->where('affiliate_id', $affiliate_id);
-      })
-      ->pluck('id')->first();
+        ->whereHas('profile', function ($query) use ($affiliate_id) {
+          $query->where('affiliate_id', $affiliate_id);
+        })
+        ->pluck('id')->first();
       $campaginId = self::KLOOK_ID;
       $linkHistoryId = null;
 
       $existLink = LinkHistory::where('sub1', $sub1)
-      ->where('sub2', $sub2)
-      ->where('user_id', $userId)
-      ->where('campaign_id', $campaginId)
-      ->first();
+        ->where('sub2', $sub2)
+        ->where('user_id', $userId)
+        ->where('campaign_id', $campaginId)
+        ->first();
 
       if (!$existLink) {
         $link = new LinkHistory();
