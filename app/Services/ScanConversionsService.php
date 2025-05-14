@@ -9,7 +9,7 @@ use App\Models\Conversion;
 class ScanConversionsService
 {
   const USD_VND_RATE = 22500;
-  
+
   public function scan()
   {
     $postbackList = CampaignPostback::where('status', 0)->get();
@@ -46,7 +46,7 @@ class ScanConversionsService
           ]);
         }
       } else {
-        $status = $data->status == 'approved' ? 'Approved' : 'Rejected';
+        $status = $data->status == 'approved' ? 'Approved' : ($data->status == 'yet to consume' ? 'pending' : 'Rejected');
 
         Conversion::where('order_code', $data->conversion_id)
           ->update([
