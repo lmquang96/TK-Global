@@ -273,6 +273,7 @@ class UploadOrderJob implements ShouldQueue
       } else {
         // continue;
         $affiliate_id = 'TK20250012';
+        $sub1 = $sub2 = null;
       }
 
       $userId = User::query()
