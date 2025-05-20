@@ -33,11 +33,14 @@ class WeatherServices
 
         $response = json_decode($response);
 
+        $icon = $this->getIcon($response->current->condition->code);
+
         $result = [
+          'code' => $response->current->condition->code,
           'city' => $response->location->name,
           'temperature' => round($response->current->temp_c),
           'condition' => $response->current->condition->text,
-          'icon' => $this->getIcon($response->current->condition->code)
+          'icon' => empty($icon) ? $response->current->condition->icon : $icon
         ];
 
         return $result;
@@ -123,6 +126,11 @@ class WeatherServices
       // Mưa nhẹ nhàng
       case '1180':
         $icon = "https://cdn-icons-png.flaticon.com/128/1959/1959342.png";
+        break;
+
+      // Mưa kèm sấm sét
+      case '1276':
+        $icon = "https://cdn-icons-png.flaticon.com/128/9755/9755210.png";
         break;
 
       default:
