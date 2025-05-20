@@ -21,6 +21,6 @@
     <p class="mb-1">{{ $title }}</p>
     <h4 class="card-title mb-3" id="{{ $idValue }}">0₫</h4>
     <small class="text-{{ $changeType }} fw-medium">
-      <i class="bx bx-{{ $arrowIcon }}"></i> <span id="{{ $idChange }}">+0%</span></small>
+      <i class="bx bx-{{ $arrowIcon }}"></i> <span id="{{ $idChange }}" class="{{ $idValue == 'total-balance-value' ? 'd-none' : '' }}">+0%</span></small>
   </div>
 </div>

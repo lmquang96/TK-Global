@@ -6,16 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Analytic\StatisticsService;
 use App\Services\Campaign\CampaignService;
+use App\Services\Payment\PaymentService;
+use App\Services\Weather\WeatherServices;
 
 class Analytics extends Controller
 {
-  public function index(StatisticsService $statisticsService, CampaignService $campaignService)
+  public function index(StatisticsService $statisticsService, CampaignService $campaignService, PaymentService $paymentService, WeatherServices $weatherServices)
   {
     $statistics = $statisticsService->getStatisticsData();
 
     $newCampaigns = $campaignService->getNewCampaigns();
 
-    return view('content.dashboard.dashboards-analytics', $statistics)->with('newCampaigns', $newCampaigns);
+    $blance = $paymentService->getBalance();
+
+    $statistics['balance'] = $blance;
+
+    $city = $weatherServices->getCity();
+
+    $weather = $weatherServices->getCurrent($city);
+
+    return view('content.dashboard.dashboards-analytics', $statistics)->with([
+      'newCampaigns' => $newCampaigns,
+      'weather' => $weather
+    ]);
   }
 
   function getDataChart(StatisticsService $statisticsService)

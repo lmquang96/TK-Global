@@ -49,6 +49,9 @@
     <div class="col-lg-12 col-md-12 order-1">
       <div class="row">
         <div class="col-lg-3 col-md-6 col-12 mb-6">
+          <x-weather-card city="{{ $weather['city'] }}" temperature="{{ $weather['temperature'] }}" condition="{{ $weather['condition'] }}" icon="{{ $weather['icon'] }}" />
+        </div>
+        <div class="col-lg-3 col-md-6 col-12 mb-6">
           <x-statistics bg="#e9f9df" color="#69df31" icon="bxs-pointer" idValue="total-click-value"
             idChange="total-click-change" title="Lượt click"
             changeType="{{ $clickCountChange > 0 ? 'success' : 'danger' }}"
@@ -71,6 +74,12 @@
             idChange="total-commission-change" title="Hoa hồng phát sinh"
             changeType="{{ $totalComChange > 0 ? 'success' : 'danger' }}"
             arrowIcon="{{ $totalComChange > 0 ? 'up-arrow-alt' : 'down-arrow-alt' }}" />
+        </div>
+        <div class="col-lg-3 col-md-6 col-12 mb-6">
+          <x-statistics bg="#e8e8ff" color="#7f7bee" icon="bxs-dollar-circle" idValue="total-balance-value"
+            idChange="total-balance-change" title="Số dư khả dụng"
+            changeType=""
+            arrowIcon="" />
         </div>
       </div>
     </div>
@@ -477,6 +486,7 @@
     animateNumber('#total-sales-change', {{ abs($totalSalesChange) }}, '%');
     animateNumber('#total-commission-value', {{ $totalCom }}, '₫');
     animateNumber('#total-commission-change', {{ abs($totalComChange) }}, '%');
+    animateNumber('#total-balance-value', {{ $balance }}, '₫');
 
     animateNumber('#chart-total-com', {{ $totalCom }}, '₫');
     animateNumber('#chart-total-com-change', {{ abs($totalComChange) }}, '%');
