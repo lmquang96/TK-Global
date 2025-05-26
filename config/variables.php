@@ -24,5 +24,7 @@ return [
   "twitterUrl" => "https://twitter.com/Theme_Selection",
   "githubUrl" => "https://github.com/themeselection",
   "dribbbleUrl" => "https://dribbble.com/themeselection",
-  "instagramUrl" => "https://www.instagram.com/themeselection/"
+  "instagramUrl" => "https://www.instagram.com/themeselection/",
+  // ===============================================================
+  "impactVerify" => "df3f6525-ad67-4f42-acae-dd62d3970f88"
 ];
