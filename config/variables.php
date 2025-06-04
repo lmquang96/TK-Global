@@ -26,5 +26,5 @@ return [
   "dribbbleUrl" => "https://dribbble.com/themeselection",
   "instagramUrl" => "https://www.instagram.com/themeselection/",
   // ===============================================================
-  "impactVerify" => "df3f6525-ad67-4f42-acae-dd62d3970f88"
+  "impactVerify" => "3fa8e820-f10f-44be-a504-855908764bcc"
 ];
