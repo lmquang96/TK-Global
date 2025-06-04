@@ -13,7 +13,7 @@ class Main extends Controller
 {
   public function login()
   {
-    return view('content.0.login');
+    return view('content.authentications.login');
   }
 
   public function authenticate(Request $request)
