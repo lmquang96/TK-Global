@@ -31,6 +31,14 @@
   <script>
     (function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A6277427-bd5b-473d-a7d5-efafc60517721.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');
   </script>
+  <script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
+    (function () {
+      var script = document.createElement("script");
+      script.async = 1;
+      script.src = 'https://mntzco.com/NDIzNDEy.js?t=423412';
+      document.head.appendChild(script);
+    })();
+  </script>
 </head>
 
 <body>
