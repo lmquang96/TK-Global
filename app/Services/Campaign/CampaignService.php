@@ -29,6 +29,7 @@ class CampaignService
         ->when($request->cp_type, function ($q, $cpType) {
           $q->where('cp_type', $cpType);
         })
+        ->where('hidden', '=', 0)
         ->get();
     });
   }

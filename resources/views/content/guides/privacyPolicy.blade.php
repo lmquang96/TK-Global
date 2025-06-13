@@ -1,4 +1,4 @@
-@extends('layouts/contentNavbarLayout')
+@extends('layouts/app')
 
 @section('title', 'Chính sách bảo mật')
 @section('page-title')
