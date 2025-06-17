@@ -47,7 +47,6 @@ class Upload extends Controller
           'count' => count($data[0])
         ]
       ]);
-
     } catch (\Exception $e) {
       \Log::error("------1--------");
       \Log::error($e->getMessage());
@@ -75,19 +74,19 @@ class Upload extends Controller
       }
     }
 
-    Config::where('name', 'klook_ads')
-    ->update([
-      'value' => json_encode($adsData),
-      'updated_at' => Carbon::now()
-    ]);
+    // Config::where('name', $request->mid . '_ads')
+    //   ->update([
+    //     'value' => json_encode($adsData),
+    //     'updated_at' => Carbon::now()
+    //   ]);
 
-    // Config::query()
-    // ->insert([
-    //   'name' => 'klook_ads',
-    //   'value' => json_encode($adsData),
-    //   'created_at' => Carbon::now(),
-    // ]);
-    
+    Config::query()
+      ->insert([
+        'name' => $request->mid . '_ads',
+        'value' => json_encode($adsData),
+        'created_at' => Carbon::now(),
+      ]);
+
     return response()->json([
       'status' => 200,
       'data' => $adsData

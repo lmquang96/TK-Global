@@ -47,10 +47,26 @@ class UploadOrderJob implements ShouldQueue
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
         $cid = 2;
-      } elseif (in_array($mid, ['klook', 'klookhk'])) {
+      } elseif ($mid == 'klook') {
 
         $ads = Config::query()
           ->where('name', 'klook_ads')
+          ->pluck('value')
+          ->first();
+        if (empty($ads)) {
+          return true;
+        }
+
+        $ads = json_decode($ads, true);
+
+        $upsertData = self::getKlookUpsertData($sheet, $mid, $ads);
+
+        $updateData = $upsertData['update'] ?? [];
+        $upsertData = $upsertData['insert'];
+      } elseif ($mid == 'klookhk') {
+
+        $ads = Config::query()
+          ->where('name', 'klookhk_ads')
           ->pluck('value')
           ->first();
         if (empty($ads)) {
