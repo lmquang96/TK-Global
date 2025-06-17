@@ -42,7 +42,7 @@ class UploadOrderJob implements ShouldQueue
 
     foreach ($data as $sheet) {
       if (in_array($mid, ['tripcom', 'tripcomhk'])) {
-        $upsertData = self::getTripcomUpsertData($sheet, $mid);
+        $upsertData = self::getTripcomUpsertData($sheet);
 
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
@@ -98,9 +98,11 @@ class UploadOrderJob implements ShouldQueue
     }
   }
 
-  public function getTripcomUpsertData($sheet, $mid)
+  public function getTripcomUpsertData($sheet)
   {
     $upsertData = [];
+    $pubRate = 0.7;
+    $sysRate = 0.3;
 
     foreach ($sheet as $key => $row) {
       $subid = $row['tripsub1'];
@@ -116,6 +118,11 @@ class UploadOrderJob implements ShouldQueue
       $userId = $clickData->linkHistory->user_id;
       $clickId = $clickData->id;
       $campaginId = $clickData->linkHistory->campaign_id;
+
+      if ($campaginId == 31) {
+        $pubRate = 0.8;
+        $sysRate = 0.2;
+      }
 
       $dataKey = 'insert';
       $time = Carbon::parse(trim($row['date_gmt8']))->subHour();
@@ -137,8 +144,8 @@ class UploadOrderJob implements ShouldQueue
       $productName = self::getTripcomProductName($productType, $fromInfo, $toInfo);
 
       $sumCom = self::tripcomComissionRate($productType, $departureCountry, $arrivalCountry, $sales);
-      $commissionPub = $sumCom * 0.7;
-      $commissionSys = $sumCom * 0.3;
+      $commissionPub = $sumCom * $pubRate;
+      $commissionSys = $sumCom * $sysRate;
       $status = 'Pending';
       if (trim($row['booking_status']) == 'Successful') {
         $status = 'Approved';
@@ -262,6 +269,13 @@ class UploadOrderJob implements ShouldQueue
   public function getKlookUpsertData($sheet, $mid, $ads)
   {
     $upsertData = [];
+    $pubRate = 0.7;
+    $sysRate = 0.3;
+
+    if ($mid == 'klookhk') {
+      $pubRate = 0.8;
+      $sysRate = 0.2;
+    }
 
     foreach ($sheet as $key => $row) {
       $adid = (strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
@@ -352,8 +366,8 @@ class UploadOrderJob implements ShouldQueue
       } else {
         continue;
       }
-      $commissionPub = $sumCom * 0.7;
-      $commissionSys = $sumCom * 0.3;
+      $commissionPub = $sumCom * $pubRate;
+      $commissionSys = $sumCom * $sysRate;
       $status = 'Pending';
       if ($row['action'] == 'Refund') {
         $dataKey = 'update';

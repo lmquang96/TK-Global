@@ -747,7 +747,7 @@
                   colors: labelColor
                 },
                 formatter: function (value) {
-                  return value.toFixed(0) + ' ₫'; // Hiển thị 2 chữ số thập phân + đơn vị
+                  return value.toLocaleString('vi-VN') + ' ₫'; // Hiển thị 2 chữ số thập phân + đơn vị
                 }
               },
               min: 0,
