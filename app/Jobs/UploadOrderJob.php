@@ -288,11 +288,6 @@ class UploadOrderJob implements ShouldQueue
     $pubRate = 0.7;
     $sysRate = 0.3;
 
-    if ($mid == 'klookhk') {
-      $pubRate = 0.8;
-      $sysRate = 0.2;
-    }
-
     foreach ($sheet as $key => $row) {
       $adid = (strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
       if (!empty($adid)) {
@@ -316,6 +311,12 @@ class UploadOrderJob implements ShouldQueue
         ->pluck('id')->first();
       $campaginId = self::KLOOK_ID;
       $linkHistoryId = null;
+
+      if ($mid == 'klookhk') {
+        $pubRate = 0.8;
+        $sysRate = 0.2;
+        $campaginId = 32;
+      }
 
       $existLink = LinkHistory::where('sub1', $sub1)
         ->where('sub2', $sub2)
