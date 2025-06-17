@@ -47,7 +47,7 @@ class UploadOrderJob implements ShouldQueue
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
         $cid = 2;
-      } elseif ($mid == 'klook') {
+      } elseif (in_array($mid, ['klook', 'klookhk'])) {
 
         $ads = Config::query()
           ->where('name', 'klook_ads')
