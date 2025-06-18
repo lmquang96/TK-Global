@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\CampaignPostback;
 use App\Models\Click;
 use App\Models\Conversion;
+use App\Models\Profile;
 
 class ScanConversionsService
 {
@@ -44,6 +45,25 @@ class ScanConversionsService
             'click_id' => $click->click_id,
             'user_id' => $click->user_id
           ]);
+        } else {
+          $userId = Profile::where('affiliate_id', $data->aff_sub)->pluck('id')->first();
+          if ($userId) {
+            Conversion::create([
+              'code' => sha1(time() + $key),
+              'order_code' => $data->conversion_id,
+              'order_time' => $data->datetime_conversion,
+              'unit_price' => $sales,
+              'quantity' => 1,
+              'commission_pub' => $sumcom * 0.7,
+              'commission_sys' => $sumcom * 0.3,
+              'status' => 'Pending',
+              'product_code' => $data->adv_sub,
+              'product_name' => $data->adv_sub2,
+              'campaign_id' => 33,
+              'click_id' => 21657,
+              'user_id' => $userId
+            ]);
+          }
         }
       } else {
         $status = $data->status == 'approved' ? 'Approved' : ($data->status == 'yet to consume' ? 'pending' : 'Rejected');
