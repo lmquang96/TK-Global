@@ -46,7 +46,7 @@ class ScanConversionsService
             'user_id' => $click->user_id
           ]);
         } else {
-          $userId = Profile::where('affiliate_id', $data->aff_sub)->pluck('id')->first();
+          $userId = Profile::where('affiliate_id', $data->aff_sub)->pluck('user_id')->first();
           if ($userId) {
             Conversion::create([
               'code' => sha1(time() + $key),
