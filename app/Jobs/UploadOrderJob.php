@@ -422,7 +422,7 @@ class UploadOrderJob implements ShouldQueue
 
     switch ($currency[0]) {
       case 'TWD':
-        $rate = 750;
+        $rate = 742.5;
         break;
 
       case 'HKD':
@@ -434,59 +434,59 @@ class UploadOrderJob implements ShouldQueue
         break;
 
       case 'CAD':
-        $rate = 17500;
+        $rate = 16200;
         break;
 
       case 'PHP':
-        $rate = 430;
+        $rate = 393.75;
         break;
 
       case 'CNY':
-        $rate = 3200;
+        $rate = 3105;
         break;
 
       case 'MYR':
-        $rate = 5100;
+        $rate = 5962.5;
         break;
 
       case 'AUD':
-        $rate = 15700;
+        $rate = 14175;
         break;
 
       case 'EUR':
-        $rate = 25700;
+        $rate = 25200;
         break;
 
       case 'JPY':
-        $rate = 158;
+        $rate = 148.5;
         break;
 
       case 'GBP':
-        $rate = 30500;
+        $rate = 29250;
         break;
 
       case 'NZD':
-        $rate = 14700;
+        $rate = 13050;
         break;
 
       case 'IDR':
-        $rate = 1.54;
+        $rate = 1.3725;
         break;
 
       case 'INR':
-        $rate = 290;
+        $rate = 261;
         break;
 
       case 'SGD':
-        $rate = 18000;
+        $rate = 17100;
         break;
 
       case 'KRW':
-        $rate = 18;
+        $rate = 15.75;
         break;
 
       case 'TRY':
-        $rate = 720;
+        $rate = 569.25;
         break;
 
       case 'SEK':
@@ -494,31 +494,31 @@ class UploadOrderJob implements ShouldQueue
         break;
 
       case 'ILS':
-        $rate = 6190;
+        $rate = 6075;
         break;
 
       case 'AED':
-        $rate = 6600;
+        $rate = 6124.5;
         break;
 
       case 'CHF':
-        $rate = 27300;
+        $rate = 27000;
         break;
 
       case 'MXN':
-        $rate = 1225;
+        $rate = 1147.5;
         break;
 
       case 'THB':
-        $rate = 666;
+        $rate = 675;
         break;
 
       case 'ZAR':
-        $rate = 1277;
+        $rate = 1215;
         break;
 
       case 'NOK':
-        $rate = 2160;
+        $rate = 2137.5;
         break;
 
       case 'VND':
