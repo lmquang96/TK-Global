@@ -10,7 +10,6 @@ class ClickService
 {
   public function getClicksGroupByCampagin($request)
   {
-    $result = [];
     $clicks = Click::query()
       ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
       ->when($request->date, function ($q, $date) {
@@ -21,19 +20,12 @@ class ClickService
         return $q->join('campaigns', 'campaigns.id', '=', 'link_histories.campaign_id')
           ->where('name', 'like', '%' . $keyword . '%');
       })
-      ->where('user_id', Auth::user()->id)
+      // ->where('user_id', Auth::user()->id)
+      ->where('user_id', 16)
       ->selectRaw('campaign_id, count(*) cnt')
       ->groupBy('campaign_id');
 
-    $result['clickCount'] = $clicks->get()->sum(function ($item) {
-      return $item->cnt;
-    });
-
-    $clicks = $clicks->get();
-
-    $result['clicks'] = $clicks->keyBy('campaign_id')->toArray();
-
-    return $result;
+    return $clicks;
   }
 
   public function getClicksCount($request)
@@ -48,7 +40,8 @@ class ClickService
         return $q->join('campaigns', 'campaigns.id', '=', 'link_histories.campaign_id')
           ->where('name', 'like', '%' . $keyword . '%');
       })
-      ->where('user_id', Auth::user()->id)
+      // ->where('user_id', Auth::user()->id)
+      ->where('user_id', 16)
       ->count();
   }
 }

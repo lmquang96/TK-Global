@@ -51,6 +51,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::prefix('/report')->group(function () {
     Route::get('/performance', [ReportMain::class, 'performance'])->name('report-performance');
     Route::get('/order', [ReportMain::class, 'order'])->name('report-order');
+    Route::get('/report-order-export', [ReportMain::class, 'exportReportOrder'])->name('report-order-export');
+    Route::get('/report-performance-export', [ReportMain::class, 'exportReportPerformance'])->name('report-performance-export');
   });
 
   Route::prefix('/payment')->group(function () {

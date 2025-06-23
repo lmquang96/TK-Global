@@ -118,6 +118,11 @@
       </div>
     </div>
   </div>
+  <div>
+    <a href="{{ route('report-performance-export', request()->all()) }}" target="_blank" class="btn btn-primary mb-6 text-white">
+      <span class="tf-icons bx bx-download bx-18px me-2"></span>Export
+    </a>
+  </div>
   <div class="card">
     <h5 class="card-header">Dữ liệu</h5>
     {{-- <div class="card-body">

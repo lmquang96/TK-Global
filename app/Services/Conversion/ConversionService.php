@@ -12,7 +12,6 @@ class ConversionService
 
   public function getConversionsGroupByCampagin($request)
   {
-    $result = [];
     $data = Conversion::with('campaign')
       ->when($request->date, function ($q, $date) {
         $dateArray = explode(" - ", $date);
@@ -23,30 +22,17 @@ class ConversionService
           $query->where('name', 'like', '%' . $keyword . '%');
         });
       })
-      ->where('user_id', Auth::user()->id)
+      // ->where('user_id', Auth::user()->id)
+      ->where('user_id', 16)
       ->selectRaw('campaign_id, count(*) cnt, SUM(unit_price) as total_price, SUM(commission_pub) as total_com')
       ->groupBy('campaign_id');
 
-    $result['totalConversion'] = $data->get()->sum(function ($item) {
-      return $item->cnt;
-    });
-
-    $result['totalPrice'] = $data->get()->sum(function ($item) {
-      return $item->total_price;
-    });
-
-    $result['totalCom'] = $data->get()->sum(function ($item) {
-      return $item->total_com;
-    });
-
-    $result['data'] = $data->paginate(self::PER_PAGE)->withQueryString();
-
-    return $result;
+    return $data;
   }
 
   public function getConversions($request)
   {
-    $result = [];
+
     $data = Conversion::query()
       ->when($request->date, function ($q, $date) {
         $dateArray = explode(" - ", $date);
@@ -99,20 +85,9 @@ class ConversionService
           });
         });
       })
-      ->where('user_id', Auth::user()->id);
+      // ->where('user_id', Auth::user()->id);
+      ->where('user_id', 16);
 
-    $result['totalConversion'] = $data->count();
-
-    $result['totalPrice'] = $data->get()->sum(function ($item) {
-      return $item->quantity * $item->unit_price;
-    });
-
-    $result['totalCom'] = $data->get()->sum(function ($item) {
-      return $item->quantity * $item->commission_pub;
-    });
-
-    $result['data'] = $data->orderBy('order_time', 'desc')->paginate(self::PER_PAGE)->withQueryString();
-
-    return $result;
+    return $data;
   }
 }
