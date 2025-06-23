@@ -22,8 +22,7 @@ class ConversionService
           $query->where('name', 'like', '%' . $keyword . '%');
         });
       })
-      // ->where('user_id', Auth::user()->id)
-      ->where('user_id', 16)
+      ->where('user_id', Auth::user()->id)
       ->selectRaw('campaign_id, count(*) cnt, SUM(unit_price) as total_price, SUM(commission_pub) as total_com')
       ->groupBy('campaign_id');
 
@@ -85,8 +84,7 @@ class ConversionService
           });
         });
       })
-      // ->where('user_id', Auth::user()->id);
-      ->where('user_id', 16);
+      ->where('user_id', Auth::user()->id);
 
     return $data;
   }

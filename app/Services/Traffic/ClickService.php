@@ -20,8 +20,7 @@ class ClickService
         return $q->join('campaigns', 'campaigns.id', '=', 'link_histories.campaign_id')
           ->where('name', 'like', '%' . $keyword . '%');
       })
-      // ->where('user_id', Auth::user()->id)
-      ->where('user_id', 16)
+      ->where('user_id', Auth::user()->id)
       ->selectRaw('campaign_id, count(*) cnt')
       ->groupBy('campaign_id');
 
@@ -40,8 +39,7 @@ class ClickService
         return $q->join('campaigns', 'campaigns.id', '=', 'link_histories.campaign_id')
           ->where('name', 'like', '%' . $keyword . '%');
       })
-      // ->where('user_id', Auth::user()->id)
-      ->where('user_id', 16)
+      ->where('user_id', Auth::user()->id)
       ->count();
   }
 }
