@@ -38,7 +38,18 @@
                 <input type="text" class="form-control" placeholder="Enter something" id="autoComplete" name="keyword"
                   value="{{ request('keyword') }}" />
               </div>
-              <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-4 mt-md-auto">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <label for="exampleFormControlSelect1" class="form-label">Trạng thái</label>
+                <select class="form-select" name="status">
+                  <option value="">Tất cả</option>
+                  <option value="Paid"{{ request('status') == 'Paid' ? 'selected' : '' }}>Đã thanh toán</option>
+                  <option value="Approved"{{ request('status') == 'Approved' ? 'selected' : '' }}>Đã duyệt</option>
+                  <option value="Pending"{{ request('status') == 'Pending' ? 'selected' : '' }}>Tạm duyệt</option>
+                  <option value="Cancelled"{{ request('status') == 'Cancelled' ? 'selected' : '' }}>Hủy</option>
+                </select>
+              </div>
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <label></label>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                   <span class="tf-icons bx bx-filter bx-18px me-2"></span>Lọc
                 </button>
@@ -177,7 +188,7 @@
                   {{ number_format($clickByCampaignId > 0 ? ($row->cnt / $clickByCampaignId) * 100 : 0, 1, ',', '.') }}%
                 </td>
                 <td>
-                  <a href="{{ route('report-order', ['keyword' => $row->campaign->name, 'date' => request('date')]) }}">
+                  <a href="{{ route('report-order', ['keyword' => $row->campaign->name, 'date' => request('date'), 'status' => request('status')]) }}">
                     <span class="badge bg-label-primary me-1">Chi tiết</span>
                   </a>
                 </td>

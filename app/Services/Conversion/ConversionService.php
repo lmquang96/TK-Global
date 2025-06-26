@@ -22,6 +22,14 @@ class ConversionService
           $query->where('name', 'like', '%' . $keyword . '%');
         });
       })
+      ->when($request->status, function ($q, $status) {
+        if ($status == 'Paid') {
+          $q->where('status', 'Approved')
+            ->whereNotNull('paid_at');
+        } else {
+          $q->where('status', $status);
+        }
+      })
       ->where('user_id', Auth::user()->id)
       ->selectRaw('campaign_id, count(*) cnt, SUM(unit_price) as total_price, SUM(commission_pub) as total_com')
       ->groupBy('campaign_id');
@@ -54,7 +62,12 @@ class ConversionService
         }
       })
       ->when($request->status, function ($q, $status) {
-        $q->where('status', $status);
+        if ($status == 'Paid') {
+          $q->where('status', 'Approved')
+            ->whereNotNull('paid_at');
+        } else {
+          $q->where('status', $status);
+        }
       })
       ->when($request->sub1, function ($q, $sub1) {
         return $q->whereHas('click', function ($query) use ($sub1) {

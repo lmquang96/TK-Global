@@ -60,8 +60,9 @@
                 <label for="exampleFormControlSelect1" class="form-label">Trạng thái</label>
                 <select class="form-select" name="status">
                   <option value="">Tất cả</option>
-                  <option value="Pending"{{ request('status') == 'Pending' ? 'selected' : '' }}>Tạm duyệt</option>
+                  <option value="Paid"{{ request('status') == 'Paid' ? 'selected' : '' }}>Đã thanh toán</option>
                   <option value="Approved"{{ request('status') == 'Approved' ? 'selected' : '' }}>Đã duyệt</option>
+                  <option value="Pending"{{ request('status') == 'Pending' ? 'selected' : '' }}>Tạm duyệt</option>
                   <option value="Cancelled"{{ request('status') == 'Cancelled' ? 'selected' : '' }}>Hủy</option>
                 </select>
               </div>
@@ -238,8 +239,10 @@
                 <td>
                   @if ($row->status == 'Pending')
                     <span class="badge bg-label-warning me-1">Tạm duyệt</span>
-                  @elseif ($row->status == 'Approved')
+                  @elseif ($row->status == 'Approved' && !$row->paid_at)
                     <span class="badge bg-label-success me-1">Đã duyệt</span>
+                  @elseif ($row->status == 'Approved' && $row->paid_at)
+                    <span class="badge bg-label-success me-1">Đã thanh toán</span>
                   @else
                     <span class="badge bg-label-danger me-1">Đã hủy</span>
                   @endif
