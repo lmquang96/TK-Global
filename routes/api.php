@@ -11,6 +11,7 @@ use App\Http\Controllers\Postback;
 
 Route::prefix('uploadOrder')->group(function () {
   Route::post('/upload', [Upload::class, 'upload']);
+  Route::post('/update', [Upload::class, 'update']);
 
   Route::post('/storeAds', [Upload::class, 'storeAds']);
 });

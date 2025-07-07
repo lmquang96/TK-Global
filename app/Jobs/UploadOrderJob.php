@@ -79,6 +79,12 @@ class UploadOrderJob implements ShouldQueue
 
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
+      } elseif ($mid == 'kkday') {
+        $cid = 16;
+        $upsertData = self::getKkdayUpsertData($sheet, $mid);
+
+        $updateData = $upsertData['update'] ?? [];
+        $upsertData = $upsertData['insert'];
       }
 
       $chunks = array_chunk($upsertData, 500);
@@ -531,5 +537,78 @@ class UploadOrderJob implements ShouldQueue
     }
 
     return floatval($currency[1] * $rate);
+  }
+
+  public function getKkdayUpsertData($sheet)
+  {
+    $upsertData = [];
+    $pubRate = 0.7;
+    $sysRate = 0.3;
+
+    foreach ($sheet as $key => $row) {
+      $subid = $row['sourceparam2'];
+
+      if (empty($subid)) {
+        continue;
+      }
+      // $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
+
+      $clickData = Click::where('code', $subid)->first();
+
+      if (empty($clickData)) {
+        // $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
+        // $clickData = Click::where('code', $subid)->first();
+        continue;
+      }
+
+      $userId = $clickData->linkHistory->user_id;
+      $clickId = $clickData->id;
+      $campaginId = $clickData->linkHistory->campaign_id;
+
+      $dataKey = 'insert';
+      $time = Carbon::parse(trim($row['crtdt']))->addHours(7);
+      $orderCode = trim($row['ordermid']);
+      $productCode = $row['prodoid'];
+      $quantity = 1;
+
+      $originalSales = floatval(str_replace(",", ".", trim($row['pricetotal'])));
+
+      $sales = $originalSales * self::USD_RATE;
+      $productName = trim($row['prodname']);
+
+      $sumCom = floatval(str_replace(",", ".", trim($row['commission'])));
+      $commissionPub = $sumCom * self::USD_RATE * $pubRate;
+      $commissionSys = $sumCom * self::USD_RATE * $sysRate;
+      $status = 'Pending';
+      if (trim($row['orderstatus']) == 'BACK') {
+        $status = 'Approved';
+      } elseif (trim($row['orderstatus']) == 'CX') {
+        $dataKey = 'update';
+        $status = 'Cancelled';
+        $sales = abs($sales);
+        $commissionPub = abs($commissionPub);
+        $commissionSys = abs($commissionSys);
+      }
+
+      $upsertData[$dataKey][] = [
+        'code' => sha1(time() + $key),
+        'order_code' => $orderCode,
+        'order_time' => $time,
+        'unit_price' => $sales,
+        'quantity' => $quantity,
+        'commission_pub' => $commissionPub,
+        'commission_sys' => $commissionSys,
+        'status' => $status,
+        'product_code' => $productCode,
+        'product_name' => $productName,
+        'campaign_id' => $campaginId,
+        'click_id' => $clickId,
+        'user_id' => $userId,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
+      ];
+    }
+
+    return $upsertData;
   }
 }

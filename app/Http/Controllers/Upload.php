@@ -8,6 +8,7 @@ use App\Imports\TransitionImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use App\Jobs\UploadOrderJob;
+use App\Jobs\UpdateOrderJob;
 use App\Models\Config;
 use Carbon\Carbon;
 
@@ -39,7 +40,7 @@ class Upload extends Controller
     $data = Excel::toArray(new TransitionImport(), $file);
 
     try {
-      UploadOrderJob::dispatch($mid, $data);
+      UploadOrderJob::dispatch($mid, $data)->onConnection('sync');
 
       return response()->json([
         'status' => 200,
@@ -91,5 +92,51 @@ class Upload extends Controller
       'status' => 200,
       'data' => $adsData
     ]);
+  }
+
+  public function update(Request $request)
+  {
+    $rules = [
+      'mid' => 'required',
+      'file' => 'required|file',
+      'extension' => 'required|in:csv,xlsx,xls'
+    ];
+
+    $message = [
+      'in' => 'Only accept csv, xlsx, xls files'
+    ];
+
+    $request->request->add(['extension' => strtolower($request->file->getClientOriginalExtension())]);
+
+    $validator = Validator::make($request->all(), $rules, $message);
+
+    if ($validator->fails()) {
+      return $validator->errors();
+    }
+
+    $mid = $request->mid;
+    $file = $request->file('file');
+
+    $data = Excel::toArray(new TransitionImport(), $file);
+
+    try {
+      UpdateOrderJob::dispatch($mid, $data);
+
+      return response()->json([
+        'status' => 200,
+        'data' => [
+          'count' => count($data[0])
+        ]
+      ]);
+    } catch (\Exception $e) {
+      \Log::error("------1--------");
+      \Log::error($e->getMessage());
+      \Log::error("------1--------");
+
+      return response()->json([
+        'status' => 400,
+        'data' => $e->getFile()
+      ]);
+    }
   }
 }
