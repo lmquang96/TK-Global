@@ -38,7 +38,6 @@ class Conversion extends Model
                             AND '$endDate 23:59:59'
                     GROUP BY order_code
                         ,product_code
-                    HAVING COUNT(*) > 1
                     ) a
                 )
             AND campaign_id = $campaign_id
