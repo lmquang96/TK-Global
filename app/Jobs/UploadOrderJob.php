@@ -91,9 +91,9 @@ class UploadOrderJob implements ShouldQueue
       $chunks = array_chunk($upsertData, 500);
 
       try {
-        foreach ($chunks as $batch) {
-          Conversion::insertOrIgnore($batch);
-        }
+        // foreach ($chunks as $batch) {
+        //   Conversion::insertOrIgnore($batch);
+        // }
 
         foreach ($updateData as $item) {
           Conversion::query()
