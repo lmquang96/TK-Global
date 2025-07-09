@@ -23,7 +23,8 @@ class Conversion extends Model
         return $this->belongsTo(Campaign::class);
     }
 
-    public static function removeDup($campaign_id, $startDate, $endDate) {
+    public static function removeDup($campaign_id, $startDate, $endDate)
+    {
         $sql = "
         DELETE
         FROM conversions
@@ -35,8 +36,10 @@ class Conversion extends Model
                     WHERE campaign_id = $campaign_id
                         AND order_time BETWEEN '$startDate 00:00:00'
                             AND '$endDate 23:59:59'
+                        AND paid_at is null 
                     GROUP BY order_code
                         ,product_code
+                    HAVING COUNT(*) > 1
                     ) a
                 )
             AND campaign_id = $campaign_id
