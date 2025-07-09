@@ -36,7 +36,6 @@ class Conversion extends Model
                     WHERE campaign_id = $campaign_id
                         AND order_time BETWEEN '$startDate 00:00:00'
                             AND '$endDate 23:59:59'
-                        AND paid_at is null 
                     GROUP BY order_code
                         ,product_code
                     HAVING COUNT(*) > 1

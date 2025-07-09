@@ -92,7 +92,7 @@ class UploadOrderJob implements ShouldQueue
 
       try {
         foreach ($chunks as $batch) {
-          Conversion::insert($batch);
+          Conversion::insertOrIgnore($batch);
         }
 
         foreach ($updateData as $item) {
