@@ -42,6 +42,7 @@ class UploadOrderJob implements ShouldQueue
 
     foreach ($data as $sheet) {
       if (in_array($mid, ['tripcom', 'tripcomhk'])) {
+
         $upsertData = self::getTripcomUpsertData($sheet);
 
         $updateData = $upsertData['update'] ?? [];
