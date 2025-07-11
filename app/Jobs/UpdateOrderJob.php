@@ -38,10 +38,9 @@ class UpdateOrderJob implements ShouldQueue
     foreach ($data as $sheet) {
       if ($mid == 'klook') {
         $updateData = self::getKlookUpdateData($sheet, $mid);
+        // dd($updateData);
       } else if ($mid == 'tripcom') {
         $updateData = self::getTripcomUpdateData($sheet, $mid);
-
-        // dd($updateData);
       }
 
       try {
@@ -63,6 +62,17 @@ class UpdateOrderJob implements ShouldQueue
               'updated_at',
             ]
           );
+
+          // Conversion::query()
+          //   ->where('campaign_id', $item['campaign_id'])
+          //   ->where('order_code', $item['order_code'])
+          //   ->where('product_code', $item['product_code'])
+          //   ->update([
+          //     'unit_price' => $item['unit_price'],
+          //     'commission_pub' => $item['commission_pub'],
+          //     'commission_sys' => $item['commission_sys'],
+          //     'updated_at' => Carbon::now()
+          //   ]);
         }
 
         dd('done!');
@@ -125,7 +135,7 @@ class UpdateOrderJob implements ShouldQueue
     $sysRate = 0.3;
 
     foreach ($sheet as $key => $row) {
-      if ($row['commission_date'] != '2025-04') {
+      if ($row['commission_date'] != '2025-03' && $row['commission_date'] != '2025-02') {
         continue;
       }
       $subid = $row['tripsub1'];
