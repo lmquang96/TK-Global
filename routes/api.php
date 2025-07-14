@@ -16,6 +16,8 @@ Route::prefix('uploadOrder')->group(function () {
   Route::post('/storeAds', [Upload::class, 'storeAds']);
 });
 
+Route::post('/uploadImage', [Upload::class, 'uploadImage']);
+
 
 Route::get('/involve/postback', [Postback::class, 'involve']);
 Route::get('/postback/scan', [Postback::class, 'scan']);
