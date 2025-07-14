@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Imports\TransitionImport;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\UploadOrderJob;
 use App\Jobs\UpdateOrderJob;
@@ -139,18 +140,5 @@ class Upload extends Controller
         'data' => $e->getFile()
       ]);
     }
-  }
-
-  public function uploadImage(Request $request)
-  {
-    $request->validate([
-      'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
-
-    $file = $request->file('file');
-
-    $path = Storage::disk('avatars')->put('', $file);
-
-    return response()->json(['path' => 'assets/img/avatars/' . $path]);
   }
 }
