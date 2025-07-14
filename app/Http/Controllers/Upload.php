@@ -141,4 +141,17 @@ class Upload extends Controller
       ]);
     }
   }
+
+  public function uploadImage(Request $request)
+  {
+    $request->validate([
+      'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    $file = $request->file('file');
+
+    $path = Storage::disk('avatars')->put('', $file);
+
+    return response()->json(['path' => 'assets/img/avatars/' . $path]);
+  }
 }
