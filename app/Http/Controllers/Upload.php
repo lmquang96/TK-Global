@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\Imports\TransitionImport;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\UploadOrderJob;
 use App\Jobs\UpdateOrderJob;
 use App\Models\Config;
 use Carbon\Carbon;
+use App\Services\Profile\ProfileService;
 
 class Upload extends Controller
 {
@@ -142,16 +142,14 @@ class Upload extends Controller
     }
   }
 
-  public function uploadImage(Request $request)
+  public function uploadImage(Request $request, ProfileService $profileService)
   {
     $request->validate([
       'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
-    $file = $request->file('file');
+    $response = $profileService->uploadIdImage($request);
 
-    $path = Storage::disk('avatars')->put('', $file);
-
-    return response()->json(['path' => 'assets/img/avatars/' . $path]);
+    return response()->json($response);
   }
 }

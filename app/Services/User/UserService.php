@@ -129,4 +129,28 @@ class UserService
       ];
     }
   }
+
+  public function updateIdImage($data)
+  {
+    try {
+      if (!empty($this->user->profile)) {
+        $profile = $this->user;
+        $profile->profile->id_img_front = $data['front']['path'];
+        $profile->profile->id_img_back = $data['back']['path'];
+        $profile->profile->save();
+
+        return [
+          'status' => true,
+          'data' => self::MSG_UPDATE_SUCCESS
+        ];
+      }
+    } catch (\Throwable $th) {
+      Log::error('Lỗi xảy ra khi cập nhật ảnh CCCD: ' . $th->getMessage());
+
+      return [
+        'status' => false,
+        'data' => self::MSG_UPDATE_ERROR
+      ];
+    }
+  }
 }

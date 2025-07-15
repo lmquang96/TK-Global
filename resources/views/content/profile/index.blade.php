@@ -118,7 +118,7 @@
         </div>
         <!-- /Account -->
       </div>
-      <div class="card">
+      <div class="card mb-6">
         <h5 class="card-header">Thông tin thanh toán</h5>
         <div class="card-body pt-4">
           <form method="POST" action="{{ route('profile-update-payment-info') }}">
@@ -173,6 +173,65 @@
               <button type="submit" class="btn btn-primary me-3">Lưu</button>
             </div>
           </form>
+        </div>
+      </div>
+      <div class="card">
+        <h5 class="card-header">Ảnh CCCD</h5>
+        <div class="card-body pt-4">
+          @if (empty(auth()->user()->profile->id_img_front))
+          <form method="POST" action="{{ route('profile-update-id-image') }}" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="row">
+              <div class="col-6">
+                <h6>Ảnh mặt trước</h6>
+                <div class="position-relative id-card-upload-wrapper">
+                  <div class="text-center align-content-center id-card-upload empty">
+                    <img src="https://ecardcutter.go24.info/img/card_front.png" alt="" id="preview-file-front">
+                    <input type="file" name="file_front" class="d-none" accept="image/*">
+                  </div>
+                  <div class="id-card-upload-btn position-absolute top-50 start-50 translate-middle">
+                    <button class="btn btn-primary" id="btn-select-file-front">Chọn ảnh</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <h6>Ảnh mặt sau</h6>
+                <div class="position-relative id-card-upload-wrapper">
+                  <div class="text-center align-content-center id-card-upload empty">
+                    <img src="https://ecardcutter.go24.info/img/card_back.png" alt="" id="preview-file-back">
+                    <input type="file" name="file_back" class="d-none" accept="image/*">
+                  </div>
+                  <div class="id-card-upload-btn position-absolute top-50 start-50 translate-middle">
+                    <button class="btn btn-primary" id="btn-select-file-back">Chọn ảnh</button>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6">
+                <button type="submit" class="btn btn-primary me-3">Lưu</button>
+              </div>
+            </div>
+          </form>
+          @else
+          <div class="row">
+            <div class="col-6">
+              <h6>Ảnh mặt trước</h6>
+              <div class="id-card-upload-wrapper">
+                <div class="text-center align-content-center id-card-upload">
+                  <img src="{{ auth()->user()->profile->id_img_front }}" alt="">
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <h6>Ảnh mặt sau</h6>
+              <div class="id-card-upload-wrapper">
+                <div class="text-center align-content-center id-card-upload">
+                  <img src="{{ auth()->user()->profile->id_img_back }}" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+          @endif
         </div>
       </div>
     </div>
@@ -247,5 +306,39 @@
       document.execCommand('copy');
       toastShow();
     }
+
+    $("#btn-select-file-front").click((e) => {
+      e.preventDefault();
+      $("input[name='file_front']").click();
+    });
+
+    $("#btn-select-file-back").click((e) => {
+      e.preventDefault();
+      $("input[name='file_back']").click();
+    });
+
+    $("input[name='file_front']").change((e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          $('#preview-file-front').attr('src', e.target.result).show();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        $('#preview-file-front').attr('src', 'https://ecardcutter.go24.info/img/card_front.png');
+      }
+    });
+
+    $("input[name='file_back']").change((e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          $('#preview-file-back').attr('src', e.target.result).show();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
   </script>
 @endsection
