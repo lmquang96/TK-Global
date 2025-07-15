@@ -148,9 +148,11 @@ class Upload extends Controller
       'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
-    $file = $request->file('file');
+    $fileFront = $request->file('file_front');
+    $fileBack = $request->file('file_back');
 
-    $response = $profileService->uploadIdImage($file);
+    $response['front'] = $profileService->uploadIdImage($fileFront);
+    $response['back'] = $profileService->uploadIdImage($fileBack);
 
     return response()->json($response);
   }
