@@ -145,7 +145,8 @@ class Upload extends Controller
   public function uploadImage(Request $request, ProfileService $profileService)
   {
     $request->validate([
-      'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+      'file_front' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+      'file_back' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);
 
     $fileFront = $request->file('file_front');
