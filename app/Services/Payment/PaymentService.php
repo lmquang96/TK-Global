@@ -7,6 +7,7 @@ use App\Models\AdvancePaymentHistory;
 use App\Models\PaymentRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentService
@@ -21,18 +22,46 @@ class PaymentService
 
   public function getBalance()
   {
-    $balance = Balance::where('user_id', $this->userId)->first();
+    $userId = $this->userId;
+    $sql = "
+    SELECT SUM(amount_pub) - SUM(paid) - SUM(advance) AS balance
+    FROM (
+      SELECT SUM(amount_pub) amount_pub
+        ,0 paid
+        ,0 advance
+      FROM transactions
+      WHERE user_id = $userId
+      
+      UNION ALL
+      
+      SELECT 0 amount_pub
+        ,SUM(amount) paid
+        ,0 advance
+      FROM payment_requests
+      WHERE user_id = $userId
+      
+      UNION ALL
+      
+      SELECT 0 amount_pub
+        ,0 paid
+        ,SUM(amount)
+      FROM advance_payment_histories
+      WHERE user_id = $userId
+      ) a
+    ";
+    $balance = DB::select($sql);
+    // $balance = Balance::where('user_id', $this->userId)->first();
 
-    if ($balance) {
-      $balance = $balance->balance;
+    if ($balance[0]) {
+      $balance = $balance[0]->balance;
     } else {
       $balance = 0;
-      Balance::create([
-        'code' => sha1(time()),
-        'balance' => $balance,
-        'last_updated' => Carbon::now(),
-        'user_id' => $this->userId
-      ]);
+      // Balance::create([
+      //   'code' => sha1(time()),
+      //   'balance' => $balance,
+      //   'last_updated' => Carbon::now(),
+      //   'user_id' => $this->userId
+      // ]);
     }
 
     return $balance;
@@ -66,6 +95,7 @@ class PaymentService
 
     if ($amount % 10000 !== 0) {
       return [
+        'status' => 400,
         'message' => 'Số tiền không là bội số của 10.000!',
         'data' => []
       ];
@@ -75,6 +105,7 @@ class PaymentService
 
     if (!in_array($today, [15, 16, 17]) && !in_array($today, [27, 28, 29])) {
       return [
+        'status' => 400,
         'message' => 'Chúng tôi không hỗ trợ rút tiền trong hôm nay!',
         'data' => []
       ];
@@ -96,15 +127,17 @@ class PaymentService
 
     if ($existRequest) {
       return [
+        'status' => 400,
         'message' => 'Bạn đã gửi yêu cầu rút tiền trước đó!',
         'data' => []
       ];
     }
 
-    $balance = Balance::where('user_id', $this->userId)->first();
+    $balance = self::getBalance();
 
-    if ($balance->balance < $amount) {
+    if ($balance < $amount) {
       return [
+        'status' => 400,
         'message' => 'Số dư của bạn không đủ!',
         'data' => []
       ];
@@ -119,6 +152,7 @@ class PaymentService
     ]);
 
     return [
+      'status' => 200,
       'message' => 'Đăng ký rút tiền thành công!',
       'data' => []
     ];

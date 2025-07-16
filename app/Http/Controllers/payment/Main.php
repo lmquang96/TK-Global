@@ -29,6 +29,6 @@ class Main extends Controller
 
     $withdraw = $paymentService->withdraw($request);
 
-    return response()->json($withdraw, 200, []);
+    return response()->json($withdraw, $withdraw['status'], []);
   }
 }
