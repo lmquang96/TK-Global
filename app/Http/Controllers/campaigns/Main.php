@@ -28,7 +28,7 @@ class Main extends Controller
   {
     $campaign = $campaignService->getDetail($id);
 
-    if ($campaign->id) {
+    if ($campaign && $campaign->id) {
       $linkHistories = $linkService->getHistoriesByCampagin($campaign->id);
 
       return view('content.campaigns.detail', compact('campaign', 'linkHistories'));
