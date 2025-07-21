@@ -28,9 +28,13 @@ class Main extends Controller
   {
     $campaign = $campaignService->getDetail($id);
 
-    $linkHistories = $linkService->getHistoriesByCampagin($campaign->id);
+    if ($campaign->id) {
+      $linkHistories = $linkService->getHistoriesByCampagin($campaign->id);
 
-    return view('content.campaigns.detail', compact('campaign', 'linkHistories'));
+      return view('content.campaigns.detail', compact('campaign', 'linkHistories'));
+    }
+
+    return response()->json(['error' => 'Error'], 400, []);
   }
 
   public function getCampaigns()
