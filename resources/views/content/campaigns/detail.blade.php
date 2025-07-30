@@ -156,6 +156,106 @@
           <div>
             {!! $campaign->detail !!}
           </div>
+          @if ($campaign->allowed_rule)
+          @php
+            $traffics = json_decode($campaign->allowed_rule, TRUE);
+          @endphp
+          <h6>Traffic được chấp thuận</h6>
+          <div class="row mb-4">
+            @foreach ($traffics as $traffic)
+              <div class="col-6">
+                <div class="d-flex mb-2">
+                ✅ {{ $traffic }}
+              </div>
+            </div>
+            @endforeach
+          </div>
+          @endif
+          @if ($campaign->not_allowed_rule)
+          @php
+            $traffics = json_decode($campaign->not_allowed_rule, TRUE);
+          @endphp
+          <h6>Traffic không được chấp thuận</h6>
+          <div class="row mb-4">
+            @foreach ($traffics as $traffic)
+              <div class="col-6">
+                <div class="d-flex mb-2">
+                ❌ {{ $traffic }}
+              </div>
+            </div>
+            @endforeach
+          </div>
+          @endif
+          @if ($campaign->display_geo)
+          <h6>Quốc gia</h6>
+          @php
+            $geos = explode(',', $campaign->display_geo);
+          @endphp
+            <div>
+              <ul>
+                @foreach ($geos as $geo)
+                  <li>
+                    {{ $geo }}
+                  </li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+          @if ($campaign->cp_type && $campaign->commission_structure)
+          <h6>Dịch vụ</h6>
+            <div>
+              <ul>
+                <li>
+                  {{ $campaign->cp_type }}
+                </li>
+              </ul>
+            </div>
+          @endif
+          @if ($campaign->device)
+          @php
+            $devices = json_decode($campaign->device, TRUE);
+          @endphp
+          <h6>Traffic không được chấp thuận</h6>
+          <div class="row mb-4">
+            @foreach ($devices as $device)
+              <div>
+                <ul>
+                  <li>
+                    {{ $device }}
+                  </li>
+                </ul>
+              </div>
+            @endforeach
+          </div>
+          @endif
+          @if ($campaign->os)
+          <h6>Hệ điều hành</h6>
+            <div>
+              <ul>
+                <li>
+                  {{ $campaign->os }}
+                </li>
+              </ul>
+            </div>
+          @endif
+          @if ($campaign->conversion_flow)
+            <h6>Cách ghi nhận đơn hàng</h6>
+            <div>
+              {!! $campaign->conversion_flow !!}
+            </div>
+          @endif
+          @if ($campaign->commission_structure)
+            <h6>Bảng hoa hồng</h6>
+            <div>
+              {!! $campaign->commission_structure !!}
+            </div>
+          @endif
+          @if ($campaign->terms)
+            <h6>Các lưu ý đặc biệt</h6>
+            <div>
+              {!! $campaign->terms !!}
+            </div>
+          @endif
         </div>
       </div>
     </div>
