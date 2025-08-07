@@ -40,7 +40,9 @@ class UpdateOrderJob implements ShouldQueue
         $updateData = self::getKlookUpdateData($sheet, $mid);
         // dd($updateData);
       } else if ($mid == 'tripcom') {
-        $updateData = self::getTripcomUpdateData($sheet, $mid);
+        $data = self::getTripcomUpdateData($sheet, $mid);
+        $insertData = $data['insert'] ?? [];
+        $updateData = $data['update'] ?? [];
       }
 
       try {
@@ -74,6 +76,8 @@ class UpdateOrderJob implements ShouldQueue
           //     'updated_at' => Carbon::now()
           //   ]);
         }
+
+        Conversion::insert($insertData);
 
         dd('done!');
       } catch (\Exception $e) {
@@ -135,9 +139,9 @@ class UpdateOrderJob implements ShouldQueue
     $sysRate = 0.3;
 
     foreach ($sheet as $key => $row) {
-      if ($row['commission_date'] != '2025-03' && $row['commission_date'] != '2025-02') {
-        continue;
-      }
+      // if ($row['commission_date'] != '2025-03' && $row['commission_date'] != '2025-02') {
+      //   continue;
+      // }
       $subid = $row['tripsub1'];
       // $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
 
@@ -157,6 +161,8 @@ class UpdateOrderJob implements ShouldQueue
         $sysRate = 0.2;
       }
 
+      $arrayKey = 'update';
+
       $time = Carbon::parse(trim($row['date_gmt8']));
       $orderCode = trim($row['booking_id']);
       $productCode = $row['site_id'];
@@ -168,13 +174,17 @@ class UpdateOrderJob implements ShouldQueue
       $productName = trim($row['prod_sub_type']);
       $sumCom = self::convertUSD(trim($row['commission_amount']));
 
+      if ($sumCom < 0) {
+        $arrayKey = 'insert';
+      }
+
       $commissionPub = $sumCom * self::USD_RATE * $pubRate;
       $commissionSys = $sumCom * self::USD_RATE * $sysRate;
       $status = 'Pending';
 
-      $upsertData[] = [
+      $upsertData[$arrayKey][] = [
         'code' => sha1(time() + $key),
-        'order_code' => $orderCode,
+        'order_code' => $orderCode . ($arrayKey == 'insert' ? '_refunded' : ''),
         'order_time' => $time,
         'unit_price' => $sales,
         'quantity' => $quantity,

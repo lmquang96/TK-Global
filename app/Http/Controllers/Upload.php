@@ -122,7 +122,7 @@ class Upload extends Controller
     $data = Excel::toArray(new TransitionImport(), $file);
 
     try {
-      UpdateOrderJob::dispatch($mid, $data);
+      UpdateOrderJob::dispatch($mid, $data)->onConnection('sync');
 
       return response()->json([
         'status' => 200,
