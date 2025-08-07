@@ -30,7 +30,7 @@ class ScanConversionsService
         $sumcom = floatval($data->usd_payout) * self::USD_VND_RATE;
 
         if ($click) {
-          Conversion::updateOrCreate([
+          Conversion::upsert([
             'code' => sha1(time() + $key),
             'order_code' => $data->conversion_id,
             'order_time' => $data->datetime_conversion,
@@ -43,7 +43,18 @@ class ScanConversionsService
             'product_name' => $data->adv_sub2,
             'campaign_id' => $click->campaign_id,
             'click_id' => $click->click_id,
-            'user_id' => $click->user_id
+            'user_id' => $click->user_id,
+            'updated_at'    => now(),
+          ], [
+            'campaign_id',
+            'order_code',
+            'product_code',
+          ], [
+            'unit_price',
+            'quantity',
+            'commission_pub',
+            'commission_sys',
+            'updated_at',
           ]);
         } else {
           $userId = Profile::where('affiliate_id', $data->aff_sub)->pluck('user_id')->first();
