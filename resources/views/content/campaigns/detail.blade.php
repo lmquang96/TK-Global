@@ -166,7 +166,7 @@
                     <div>
                         {!! $campaign->detail !!}
                     </div>
-                    @if (!$campaign->allowed_rule->isEmpty())
+                    @if ($campaign->allowed_rule)
                         @php
                             $traffics = json_decode($campaign->allowed_rule, true);
                         @endphp
