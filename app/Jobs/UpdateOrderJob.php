@@ -38,7 +38,6 @@ class UpdateOrderJob implements ShouldQueue
     foreach ($data as $sheet) {
       if ($mid == 'klook') {
         $updateData = self::getKlookUpdateData($sheet, $mid);
-        // dd($updateData);
       } else if ($mid == 'tripcom') {
         $data = self::getTripcomUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
@@ -47,37 +46,37 @@ class UpdateOrderJob implements ShouldQueue
 
       try {
         foreach ($updateData as $item) {
-          Conversion::upsert(
-            [
-              $item
-            ],
-            [
-              'campaign_id',
-              'order_code',
-              'product_code',
-            ],
-            [
-              'unit_price',
-              'quantity',
-              'commission_pub',
-              'commission_sys',
-              'updated_at',
-            ]
-          );
+          // Conversion::upsert(
+          //   [
+          //     $item
+          //   ],
+          //   [
+          //     'campaign_id',
+          //     'order_code',
+          //     'product_code',
+          //   ],
+          //   [
+          //     'unit_price',
+          //     'quantity',
+          //     'commission_pub',
+          //     'commission_sys',
+          //     'updated_at',
+          //   ]
+          // );
 
-          // Conversion::query()
-          //   ->where('campaign_id', $item['campaign_id'])
-          //   ->where('order_code', $item['order_code'])
-          //   ->where('product_code', $item['product_code'])
-          //   ->update([
-          //     'unit_price' => $item['unit_price'],
-          //     'commission_pub' => $item['commission_pub'],
-          //     'commission_sys' => $item['commission_sys'],
-          //     'updated_at' => Carbon::now()
-          //   ]);
+          Conversion::query()
+            ->where('campaign_id', $item['campaign_id'])
+            ->where('order_code', $item['order_code'])
+            ->where('product_code', $item['product_code'])
+            ->update([
+              'unit_price' => $item['unit_price'],
+              'commission_pub' => $item['commission_pub'],
+              'commission_sys' => $item['commission_sys'],
+              'updated_at' => Carbon::now()
+            ]);
         }
 
-        Conversion::insert($insertData);
+        // Conversion::insert($insertData);
 
         dd('done!');
       } catch (\Exception $e) {
@@ -93,7 +92,7 @@ class UpdateOrderJob implements ShouldQueue
     $updateData = [];
 
     foreach ($sheet as $row) {
-      if (in_array($row['ticket_status'], ['Full Refund', 'Confirmed'])) {
+      if (in_array($row['ticket_status'], ['Full Refund'])) {
         continue;
       }
       $pubRate = 0.7;
@@ -125,7 +124,8 @@ class UpdateOrderJob implements ShouldQueue
         'commission_pub' => $commissionPub,
         'commission_sys' => $commissionSys,
         'product_code' => $productCode,
-        'campaign_id' => $campaginId
+        'campaign_id' => $campaginId,
+        'comment' => 'payment t8'
       ];
     }
 
