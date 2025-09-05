@@ -38,7 +38,6 @@ class UpdateOrderJob implements ShouldQueue
     foreach ($data as $sheet) {
       if ($mid == 'klook') {
         $updateData = self::getKlookUpdateData($sheet, $mid);
-        dd($updateData);
       } else if ($mid == 'tripcom') {
         $data = self::getTripcomUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
@@ -73,6 +72,7 @@ class UpdateOrderJob implements ShouldQueue
               'unit_price' => $item['unit_price'],
               'commission_pub' => $item['commission_pub'],
               'commission_sys' => $item['commission_sys'],
+              'comment' => $item['comment'],
               'updated_at' => Carbon::now()
             ]);
         }
