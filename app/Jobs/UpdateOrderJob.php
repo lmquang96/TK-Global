@@ -38,6 +38,7 @@ class UpdateOrderJob implements ShouldQueue
     foreach ($data as $sheet) {
       if ($mid == 'klook') {
         $updateData = self::getKlookUpdateData($sheet, $mid);
+        dd($updateData);
       } else if ($mid == 'tripcom') {
         $data = self::getTripcomUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
