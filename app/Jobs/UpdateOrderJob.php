@@ -125,7 +125,7 @@ class UpdateOrderJob implements ShouldQueue
         'commission_sys' => $commissionSys,
         'product_code' => $productCode,
         'campaign_id' => $campaginId,
-        'comment' => 'payment t8'
+        'comment' => 'payment t9'
       ];
     }
 
