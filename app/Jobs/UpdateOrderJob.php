@@ -42,6 +42,10 @@ class UpdateOrderJob implements ShouldQueue
         $data = self::getTripcomUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
         $updateData = $data['update'] ?? [];
+      } else if ($mid == 'tripcomprv') {
+        $data = self::getTripcomprvUpdateData($sheet, $mid);
+        $insertData = $data['insert'] ?? [];
+        $updateData = $data['update'] ?? [];
       }
 
       try {

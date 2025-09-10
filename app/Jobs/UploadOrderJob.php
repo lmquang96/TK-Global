@@ -41,7 +41,7 @@ class UploadOrderJob implements ShouldQueue
     $cid = 1;
 
     foreach ($data as $sheet) {
-      if (in_array($mid, ['tripcom', 'tripcomhk'])) {
+      if (in_array($mid, ['tripcom', 'tripcomhk', 'tripcomnew'])) {
 
         $upsertData = self::getTripcomUpsertData($sheet);
 
@@ -296,7 +296,8 @@ class UploadOrderJob implements ShouldQueue
     $sysRate = 0.3;
 
     foreach ($sheet as $key => $row) {
-      $adid = (strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
+      $adid = ($row['adid'] && strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
+
       if (!empty($adid)) {
         $subid = $adid['sub1'];
         $affiliate_id = 'KT20250005';
@@ -392,14 +393,14 @@ class UploadOrderJob implements ShouldQueue
       }
       $commissionPub = $sumCom * $pubRate;
       $commissionSys = $sumCom * $sysRate;
-      $status = 'Pending';
-      if ($row['action'] == 'Refund') {
-        $dataKey = 'update';
-        $status = 'Cancelled';
-        $sales = abs($sales);
-        $commissionPub = abs($commissionPub);
-        $commissionSys = abs($commissionSys);
-      }
+      $status = 'Cancelled';
+      // if ($row['action'] == 'Refund') {
+      //   $dataKey = 'update';
+      //   $status = 'Cancelled';
+      //   $sales = abs($sales);
+      //   $commissionPub = abs($commissionPub);
+      //   $commissionSys = abs($commissionSys);
+      // }
 
       $upsertData[$dataKey][] = [
         'code' => sha1(time() + $key),
