@@ -50,38 +50,38 @@ class UpdateOrderJob implements ShouldQueue
 
       try {
         foreach ($updateData as $item) {
-          // Conversion::upsert(
-          //   [
-          //     $item
-          //   ],
-          //   [
-          //     'campaign_id',
-          //     'order_code',
-          //     'product_code',
-          //   ],
-          //   [
-          //     'unit_price',
-          //     'quantity',
-          //     'commission_pub',
-          //     'commission_sys',
-          //     'updated_at',
-          //   ]
-          // );
+          Conversion::upsert(
+            [
+              $item
+            ],
+            [
+              'campaign_id',
+              'order_code',
+              'product_code',
+            ],
+            [
+              'unit_price',
+              'quantity',
+              'commission_pub',
+              'commission_sys',
+              'updated_at',
+            ]
+          );
 
-          Conversion::query()
-            ->where('campaign_id', $item['campaign_id'])
-            ->where('order_code', $item['order_code'])
-            ->where('product_code', $item['product_code'])
-            ->update([
-              'unit_price' => $item['unit_price'],
-              'commission_pub' => $item['commission_pub'],
-              'commission_sys' => $item['commission_sys'],
-              'comment' => $item['comment'],
-              'updated_at' => Carbon::now()
-            ]);
+          // Conversion::query()
+          //   ->where('campaign_id', $item['campaign_id'])
+          //   ->where('order_code', $item['order_code'])
+          //   ->where('product_code', $item['product_code'])
+          //   ->update([
+          //     'unit_price' => $item['unit_price'],
+          //     'commission_pub' => $item['commission_pub'],
+          //     'commission_sys' => $item['commission_sys'],
+          //     'comment' => $item['comment'],
+          //     'updated_at' => Carbon::now()
+          //   ]);
         }
 
-        // Conversion::insert($insertData);
+        Conversion::insert($insertData);
 
         dd('done!');
       } catch (\Exception $e) {
