@@ -105,7 +105,7 @@
               </div>
               <div class="flex-grow-1">
                 <h6 class="mb-0">
-                  {{ auth()->user()->name }}
+                  {{ auth()->user()->name ?? 'Guest' }}
                 </h6>
                 <small class="text-muted">Thành viên</small>
               </div>
