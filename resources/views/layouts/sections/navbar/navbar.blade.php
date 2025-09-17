@@ -73,7 +73,7 @@
     <li class="nav-item lh-1 me-4 d-none d-md-block">
       <div class="text-end">
         <div>
-          {{ auth()->user()->name }}
+          {{ auth()->user()->name ?? 'Guest' }}
         </div>
         <small class="d-block mt-1 text-sm text-warning">
           Thành viên
