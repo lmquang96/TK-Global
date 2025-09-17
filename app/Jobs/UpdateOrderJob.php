@@ -16,6 +16,7 @@ class UpdateOrderJob implements ShouldQueue
   protected $data;
 
   const USD_RATE = 22500;
+  const MYR_RATE = 5962.5;
   const KLOOK_ID = 1;
 
   /**
@@ -42,46 +43,46 @@ class UpdateOrderJob implements ShouldQueue
         $data = self::getTripcomUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
         $updateData = $data['update'] ?? [];
-      } else if ($mid == 'tripcomprv') {
-        $data = self::getTripcomprvUpdateData($sheet, $mid);
+      } else if ($mid == 'tripcomnetwork') {
+        $data = self::getTripcomNetworkUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
         $updateData = $data['update'] ?? [];
       }
 
       try {
         foreach ($updateData as $item) {
-          Conversion::upsert(
-            [
-              $item
-            ],
-            [
-              'campaign_id',
-              'order_code',
-              'product_code',
-            ],
-            [
-              'unit_price',
-              'quantity',
-              'commission_pub',
-              'commission_sys',
-              'updated_at',
-            ]
-          );
+          // Conversion::upsert(
+          //   [
+          //     $item
+          //   ],
+          //   [
+          //     'campaign_id',
+          //     'order_code',
+          //     'product_code',
+          //   ],
+          //   [
+          //     'unit_price',
+          //     'quantity',
+          //     'commission_pub',
+          //     'commission_sys',
+          //     'updated_at',
+          //   ]
+          // );
 
-          // Conversion::query()
-          //   ->where('campaign_id', $item['campaign_id'])
-          //   ->where('order_code', $item['order_code'])
-          //   ->where('product_code', $item['product_code'])
-          //   ->update([
-          //     'unit_price' => $item['unit_price'],
-          //     'commission_pub' => $item['commission_pub'],
-          //     'commission_sys' => $item['commission_sys'],
-          //     'comment' => $item['comment'],
-          //     'updated_at' => Carbon::now()
-          //   ]);
+          Conversion::query()
+            ->where('campaign_id', $item['campaign_id'])
+            ->where('order_code', $item['order_code'])
+            ->where('product_code', $item['product_code'])
+            ->update([
+              'unit_price' => $item['unit_price'],
+              'commission_pub' => $item['commission_pub'],
+              'commission_sys' => $item['commission_sys'],
+              'comment' => $item['comment'],
+              'updated_at' => Carbon::now()
+            ]);
         }
 
-        Conversion::insert($insertData);
+        // Conversion::insert($insertData);
 
         dd('done!');
       } catch (\Exception $e) {
@@ -203,6 +204,75 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now()
+      ];
+    }
+
+    return $upsertData;
+  }
+
+  public static function getTripcomNetworkUpdateData($sheet, $mid)
+  {
+    $upsertData = [];
+    $pubRate = 0.7;
+    $sysRate = 0.3;
+
+    foreach ($sheet as $key => $row) {
+      // dd($row);
+      // if ($row['commission_date'] != '2025-03' && $row['commission_date'] != '2025-02') {
+      //   continue;
+      // }
+      $subid = $row['publisher_sub_id_1'];
+
+      $clickData = Click::where('code', $subid)->first();
+
+      // if (empty($clickData)) {
+      //   $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
+      //   $clickData = Click::where('code', $subid)->first();
+      // }
+
+      $userId = $clickData->linkHistory->user_id;
+      $clickId = $clickData->id;
+      $campaginId = $clickData->linkHistory->campaign_id;
+
+      $arrayKey = 'update';
+
+      $time = Carbon::parse(trim($row['conversion_date']));
+      $orderCode = trim($row['conversion_id']);
+      $productCode = $row['order_id'];
+      $quantity = 1;
+
+      $originalSales = $row['sale_amount_myr'];
+
+      $sales = $originalSales * self::MYR_RATE;
+      // $productName = trim($row['prod_sub_type']);
+      $sumCom = $row['est_earning_usd'];
+
+      // if ($sumCom < 0) {
+      //   $arrayKey = 'insert';
+      // }
+
+      $commissionPub = $sumCom * self::USD_RATE * $pubRate;
+      $commissionSys = $sumCom * self::USD_RATE * $sysRate;
+      $status = 'Pending';
+
+      $upsertData[$arrayKey][] = [
+        // 'code' => sha1(time() + $key),
+        // 'order_code' => $orderCode . ($arrayKey == 'insert' ? '_refunded' : ''),
+        'order_code' => $orderCode,
+        'order_time' => $time,
+        'unit_price' => $sales,
+        'quantity' => $quantity,
+        'commission_pub' => $commissionPub,
+        'commission_sys' => $commissionSys,
+        'status' => $status,
+        'product_code' => $productCode,
+        // 'product_name' => $productName,
+        'campaign_id' => $campaginId,
+        'click_id' => $clickId,
+        'user_id' => $userId,
+        // 'created_at' => Carbon::now(),
+        // 'updated_at' => Carbon::now()
+        'comment' => 'payment 202509'
       ];
     }
 
