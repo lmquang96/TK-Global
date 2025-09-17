@@ -37,6 +37,9 @@ Route::post('/email/verification-notification', function (Request $request) {
   return view('content.authentications.re-verify-email');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+Route::get('/terms-of-service', [GuideMain::class, 'termsOfService'])->name('terms-of-service');
+Route::get('/privacy-policy', [GuideMain::class, 'privacyPolicy'])->name('privacy-policy');
+
 Route::middleware(['auth', 'verified'])->group(function () {
   Route::get('/', [Analytics::class, 'index'])->name('dashboard');
   Route::get('/data-chart', [Analytics::class, 'getDataChart'])->name('get-data-chart');
@@ -70,9 +73,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
   });
 
   Route::put('/update-password', [AuthMain::class, 'updatePass'])->name('update-password');
-
-  Route::get('/terms-of-service', [GuideMain::class, 'termsOfService'])->name('terms-of-service');
-  Route::get('/privacy-policy', [GuideMain::class, 'privacyPolicy'])->name('privacy-policy');
 
   Route::prefix('/links')->group(function () {
     Route::post('/store-history', [LinkMain::class, 'storeHistory'])->name('links-store-history');
