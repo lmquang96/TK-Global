@@ -22,7 +22,7 @@
         window.pDelayMinutes = 0.01;
         window.iconXAxis = 'left';
         window.iconFollowLink = true;
-        var s=document.createElement("script");s.src="/assets/lib/flyicon.js",s.onload=function(){"function"==typeof window.flyHander&&window.flyHander()},document.head.appendChild(s);});
+        var s=document.createElement("script");s.src="https://cdn.jsdelivr.net/gh/lmquang96/TK-Global@v1.0.1/public/assets/lib/flyicon.min.js",s.onload=function(){"function"==typeof window.flyHander&&window.flyHander()},document.head.appendChild(s);});
     </script>
 </body>
 
