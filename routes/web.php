@@ -9,6 +9,7 @@ use App\Http\Controllers\payment\Main as PaymentMain;
 use App\Http\Controllers\profile\Main as ProfileMain;
 use App\Http\Controllers\guides\Main as GuideMain;
 use App\Http\Controllers\links\Main as LinkMain;
+use App\Http\Controllers\api\Common;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
@@ -77,5 +78,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::prefix('/links')->group(function () {
     Route::post('/store-history', [LinkMain::class, 'storeHistory'])->name('links-store-history');
     Route::get('/history', [LinkMain::class, 'history'])->name('links-history');
+  });
+
+  Route::prefix('/common')->group(function () {
+    Route::get('/fly-icon', [Common::class, 'flyIcon']);
   });
 });

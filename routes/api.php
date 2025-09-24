@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Upload;
 use App\Http\Controllers\Postback;
+use App\Http\Controllers\api\Common;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -20,3 +21,5 @@ Route::post('/uploadImage', [Upload::class, 'uploadImage']);
 
 Route::get('/involve/postback', [Postback::class, 'involve']);
 Route::get('/postback/scan', [Postback::class, 'scan']);
+
+Route::get('/common/get-urls-by-id', [Common::class, 'getUrlsById']);
