@@ -65,7 +65,7 @@ async function flyHander() {
                         &#10006;
                     </div>
                     <div id="pvoucher-live-icon" style="width: ${pWidth}px; cursor: pointer;">
-                        <img src="${pBanners[pBannerIndex] == 'https://res.cloudinary.com/dwszylalu/image/upload/v1693450477/popup/voucher_live_snhxhw.png' ? 'https://d22k0f5x9iaayd.cloudfront.net/adpia.vn/util/upload_document/20230929/voucher_live_snhxhw.png' : pBanners[pBannerIndex]}" alt="" style="width: 100%;">
+                        <img src="${pBanners[pBannerIndex]}" alt="" style="width: 100%;">
                     </div>
                 </div>
             </div>
@@ -87,24 +87,6 @@ async function flyHander() {
           handlePopupProcess();
         });
       }
-
-      // function pDeeplink(url) {
-      //     if (isTrackingUrl) {
-      //         return url;
-      //     } else {
-      //         objectURL = new URL(url);
-      //         if (
-      //             objectURL.host != "click.adpia.vn"
-      //             && objectURL.host != "adpvn.co"
-      //             && objectURL.host != "adpvn.top"
-      //             && !objectURL.search.includes('utm_medium=affiliates')
-      //         ) {
-      //             return `https://click.adpia.vn/deeplink.php?a=${pAffiliateId}&url=${encodeURIComponent(url)}&utm_source=flyicon`;
-      //         } else {
-      //             return url;
-      //         }
-      //     }
-      // }
 
       function pSetLog(name, value) {
         localStorage.setItem(name, value);
