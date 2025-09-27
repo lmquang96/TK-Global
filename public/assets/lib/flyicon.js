@@ -257,5 +257,8 @@ console.log(screenSize);
 // window.addEventListener("load", () => {
 if (screenSize < 768) {
   flyHander();
+  console.log('mobile');
+} else {
+	console.log('pc');
 }
 
