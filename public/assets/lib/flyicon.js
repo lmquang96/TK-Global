@@ -1,4 +1,8 @@
 async function flyHander() {
+  const screenSize = window.innerWidth;
+  if (screenSize >= 768) {
+    return false
+  }
   console.log('fly ready');
   let timeoutSleep = 0;
   if (typeof pSleepMinutes !== 'undefined') {
@@ -250,15 +254,5 @@ async function flyHander() {
     },
     timeoutSleep * 60 * 1000
   );
-}
-
-const screenSize = window.innerWidth;
-console.log(screenSize);
-// window.addEventListener("load", () => {
-if (screenSize < 768) {
-  flyHander();
-  console.log('mobile');
-} else {
-	console.log('pc');
 }
 
