@@ -18,8 +18,8 @@
         window.pWidthPCScreen = 100;
         window.pWidthMobileScreen = 100;
         window.iconPosition = 50;
-        window.pSleepMinutes = 0.5;
-        window.pDelayMinutes = 0.5;
+        window.pSleepMinutes = 0.01;
+        window.pDelayMinutes = 0.01;
         window.iconXAxis = 'right';
         window.iconFollowLink = false;
         var s=document.createElement("script");s.src="/assets/lib/flyicon.js",s.onload=function(){"function"==typeof window.flyHander&&window.flyHander()},document.head.appendChild(s);});
