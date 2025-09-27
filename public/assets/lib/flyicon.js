@@ -33,7 +33,6 @@ async function flyHander() {
       if (pAffiliateId == 'KT20250026') {
         pBanners = ['https://static.masothue.com/images/san-deal.png'];
       }
-      z;
       if (typeof iconFollowLink !== 'undefined' && iconFollowLink == true) {
         pBannerIndex = pGetLog('pUrlIndex') != undefined ? parseInt(pGetLog('pUrlIndex')) + 1 : 0;
         if (pBannerIndex >= pBanners.length) {
