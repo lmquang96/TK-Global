@@ -33,6 +33,8 @@ async function flyHander() {
 
       let pUrls = [];
       let pBanners = [];
+	  
+	  await getUrls();
 
       if (typeof iconFollowLink !== 'undefined' && iconFollowLink == true) {
         pBannerIndex = pGetLog('pUrlIndex') != undefined ? parseInt(pGetLog('pUrlIndex')) + 1 : 0;
@@ -48,8 +50,6 @@ async function flyHander() {
       if (typeof iconPosition !== 'undefined') {
         iconP = iconPosition;
       }
-
-      await getUrls();
 
       let rightMargin = '';
       if (typeof iconXAxis != 'undefined' && iconXAxis == 'left') {
