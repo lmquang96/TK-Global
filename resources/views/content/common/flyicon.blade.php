@@ -11,7 +11,7 @@
 <body>
     <script>
         (function(fn){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",fn)}else{fn()}})(function(){
-        window.pLoopTimeHours = 0.01;
+        window.pLoopTimeHours = 60;
         window.pAffiliateId = "KT20250026";
         window.pIncludeClose = false;
         window.pIncludeCloseMobile = true;
@@ -20,8 +20,8 @@
         window.iconPosition = 50;
         window.pSleepMinutes = 0.5;
         window.pDelayMinutes = 0.5;
-        window.iconXAxis = 'left';
-        window.iconFollowLink = true;
+        window.iconXAxis = 'right';
+        window.iconFollowLink = false;
         var s=document.createElement("script");s.src="https://cdn.jsdelivr.net/gh/lmquang96/TK-Global@v1.0.2/public/assets/lib/flyicon.min.js",s.onload=function(){"function"==typeof window.flyHander&&window.flyHander()},document.head.appendChild(s);});
     </script>
 </body>
