@@ -34,9 +34,6 @@ async function flyHander() {
       let pUrls = [];
       let pBanners = [];
 
-      if (pAffiliateId == 'TK20250026') {
-        pBanners = ['https://static.masothue.com/images/san-deal.png'];
-      }
       if (typeof iconFollowLink !== 'undefined' && iconFollowLink == true) {
         pBannerIndex = pGetLog('pUrlIndex') != undefined ? parseInt(pGetLog('pUrlIndex')) + 1 : 0;
         if (pBannerIndex >= pBanners.length) {
@@ -225,6 +222,7 @@ async function flyHander() {
 
       async function getUrls() {
         flyUrls = flyGetLog('flyUrls' + pAffiliateId);
+		flyBanner = flyGetLog('flyBanner' + pAffiliateId);
         flyUrlsLoadTime = flyGetLog('flyUrlsLoadTime');
         if (!flyUrls || flyUrls.length == 0 || !flyUrlsLoadTime || Date.now() - flyUrlsLoadTime >= 60 * ONE_MINUTE) {
           const token = 'MTcxNjY5NjAwMDBfVDdFUFBVSzJNNFVGTTZITU1UV1dQVEVVRUk3T0tQT1M';
@@ -233,14 +231,17 @@ async function flyHander() {
           );
           const json = await response.json();
           if (json.status === 'success') {
-            flyUrls = json.response;
+            flyUrls = json.response.urls;
+			pBanners = json.response.flyBanner;
             flySetLog('flyUrls' + pAffiliateId, JSON.stringify(flyUrls));
+			flySetLog('flyBanner' + pAffiliateId, JSON.stringify(pBanners));
             flySetLog('flyUrlsLoadTime', Date.now());
             pUrls = flyUrls;
           }
         } else {
           flyUrls = JSON.parse(flyUrls);
           pUrls = flyUrls;
+		  pBanners = flyBanner;
         }
       }
 

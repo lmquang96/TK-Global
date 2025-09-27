@@ -54,6 +54,8 @@ class Common extends Controller
         $tiktokUrls = ['https://vt.tiktok.com/ZSHWS2seLNuBA-JrOK8/'];
         $urls[] = $shopeeUrl[rand(0, count($shopeeUrl) - 1)];
         $urls[] = $tiktokUrls[0];
+		$flyBanner = ['https://static.masothue.com/images/san-deal.png'];
+		$mBanner = [];
         break;
       default:
         # code...
@@ -61,7 +63,10 @@ class Common extends Controller
     }
     return response([
       'status' => 'success',
-      'response' => $urls
+      'response' => [
+		'urls' => $urls,
+		'flyBanner' => $flyBanner
+	  ]
     ], 200);
   }
 
