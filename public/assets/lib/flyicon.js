@@ -255,7 +255,7 @@ async function flyHander() {
 const screenSize = window.innerWidth;
 console.log(screenSize);
 // window.addEventListener("load", () => {
-if (screenSize >= 768) {
-  return false;
+if (screenSize < 768) {
+  flyHander();
 }
-flyHander();
+
