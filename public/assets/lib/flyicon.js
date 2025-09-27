@@ -59,17 +59,17 @@ async function flyHander() {
       }
 
       let popupHTML = `
-        <div id="pvoucher-live-container" style="position: fixed; top: ${iconP}%; right: calc(${rightMargin}); transform: translateY(-50%)">
-                <div class="position: relative;">
-                    <div id="pvoucher-live-close" style="position: absolute; top: -20px; right: 0; background-color: #ffffff; border: 1px solid #bbbbbb; width: fit-content; display: inline; border-radius: 50%; padding: 3px 6px; font-size: 12px; font-weight: 600; cursor: pointer; line-height: initial;">
-                        &#10006;
-                    </div>
-                    <div id="pvoucher-live-icon" style="width: ${pWidth}px; cursor: pointer;">
-                        <img src="${pBanners[pBannerIndex]}" alt="" style="width: 100%;">
-                    </div>
-                </div>
-            </div>
-        `;
+          <div id="pvoucher-live-container" style="position: fixed; top: ${iconP}%; right: calc(${rightMargin}); transform: translateY(-50%)">
+                  <div class="position: relative;">
+                      <div id="pvoucher-live-close" style="position: absolute; top: -20px; right: 0; background-color: #ffffff; border: 1px solid #bbbbbb; width: fit-content; display: inline; border-radius: 50%; padding: 3px 6px; font-size: 12px; font-weight: 600; cursor: pointer; line-height: initial;">
+                          &#10006;
+                      </div>
+                      <div id="pvoucher-live-icon" style="width: ${pWidth}px; cursor: pointer;">
+                          <img src="${pBanners[pBannerIndex]}" alt="" style="width: 100%;">
+                      </div>
+                  </div>
+              </div>
+          `;
 
       let timeNow = new Date().getTime();
       let preEndLifeCircleTime = pGetLog('pEndLifeCircleTime');
