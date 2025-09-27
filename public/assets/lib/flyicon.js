@@ -1,7 +1,7 @@
 async function flyHander() {
   const screenSize = window.innerWidth;
   if (screenSize >= 768) {
-    return false
+    return false;
   }
   console.log('fly ready');
   let timeoutSleep = 0;
@@ -33,10 +33,8 @@ async function flyHander() {
 
       let pUrls = [];
       let pBanners = [];
-	  
-	  await getUrls();
-	  
-	  console.log(pBanners);
+
+      await getUrls();
 
       if (typeof iconFollowLink !== 'undefined' && iconFollowLink == true) {
         pBannerIndex = pGetLog('pUrlIndex') != undefined ? parseInt(pGetLog('pUrlIndex')) + 1 : 0;
@@ -61,17 +59,17 @@ async function flyHander() {
       }
 
       let popupHTML = `
-          <div id="pvoucher-live-container" style="position: fixed; top: ${iconP}%; right: calc(${rightMargin}); transform: translateY(-50%)">
-                  <div class="position: relative;">
-                      <div id="pvoucher-live-close" style="position: absolute; top: -20px; right: 0; background-color: #ffffff; border: 1px solid #bbbbbb; width: fit-content; display: inline; border-radius: 50%; padding: 3px 6px; font-size: 12px; font-weight: 600; cursor: pointer; line-height: initial;">
-                          &#10006;
-                      </div>
-                      <div id="pvoucher-live-icon" style="width: ${pWidth}px; cursor: pointer;">
-                          <img src="${pBanners[pBannerIndex]}" alt="" style="width: 100%;">
-                      </div>
-                  </div>
-              </div>
-          `;
+        <div id="pvoucher-live-container" style="position: fixed; top: ${iconP}%; right: calc(${rightMargin}); transform: translateY(-50%)">
+          <div class="position: relative;">
+            <div id="pvoucher-live-close" style="position: absolute; top: -20px; right: 0; background-color: #ffffff; border: 1px solid #bbbbbb; width: fit-content; display: inline; border-radius: 50%; padding: 3px 6px; font-size: 12px; font-weight: 600; cursor: pointer; line-height: initial;">
+              &#10006;
+            </div>
+            <div id="pvoucher-live-icon" style="width: ${pWidth}px; cursor: pointer;">
+              <img src="${pBanners[pBannerIndex]}" alt="" style="width: 100%;">
+            </div>
+          </div>
+        </div>
+      `;
 
       let timeNow = new Date().getTime();
       let preEndLifeCircleTime = pGetLog('pEndLifeCircleTime');
@@ -224,7 +222,7 @@ async function flyHander() {
 
       async function getUrls() {
         flyUrls = flyGetLog('flyUrls' + pAffiliateId);
-		flyBanner = flyGetLog('flyBanner' + pAffiliateId);
+        flyBanner = flyGetLog('flyBanner' + pAffiliateId);
         flyUrlsLoadTime = flyGetLog('flyUrlsLoadTime');
         if (!flyUrls || flyUrls.length == 0 || !flyUrlsLoadTime || Date.now() - flyUrlsLoadTime >= 60 * ONE_MINUTE) {
           const token = 'MTcxNjY5NjAwMDBfVDdFUFBVSzJNNFVGTTZITU1UV1dQVEVVRUk3T0tQT1M';
@@ -234,16 +232,17 @@ async function flyHander() {
           const json = await response.json();
           if (json.status === 'success') {
             flyUrls = json.response.urls;
-			pBanners = json.response.flyBanner;
+            pBanners = json.response.flyBanner;
             flySetLog('flyUrls' + pAffiliateId, JSON.stringify(flyUrls));
-			flySetLog('flyBanner' + pAffiliateId, JSON.stringify(pBanners));
+            flySetLog('flyBanner' + pAffiliateId, JSON.stringify(pBanners));
             flySetLog('flyUrlsLoadTime', Date.now());
             pUrls = flyUrls;
           }
         } else {
           flyUrls = JSON.parse(flyUrls);
+          flyBanner = JSON.parse(flyBanner);
           pUrls = flyUrls;
-		  pBanners = flyBanner;
+          pBanners = flyBanner;
         }
       }
 
@@ -258,4 +257,3 @@ async function flyHander() {
     timeoutSleep * 60 * 1000
   );
 }
-
