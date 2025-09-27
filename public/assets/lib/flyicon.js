@@ -30,19 +30,10 @@ async function flyHander() {
       let pUrls = [];
       let pBanners = [];
 
-      if (pAffiliateId == 'KT20250001') {
-        pBanners = [
-          'https://d22k0f5x9iaayd.cloudfront.net/adpia.vn/avatar/lmquang96-1758619494',
-          'https://d22k0f5x9iaayd.cloudfront.net/adpia.vn/avatar/lmquang96-1758619803'
-        ];
-      }
-
       if (pAffiliateId == 'KT20250026') {
         pBanners = ['https://static.masothue.com/images/san-deal.png'];
       }
-
-      let pBannerIndex = 0;
-
+      z;
       if (typeof iconFollowLink !== 'undefined' && iconFollowLink == true) {
         pBannerIndex = pGetLog('pUrlIndex') != undefined ? parseInt(pGetLog('pUrlIndex')) + 1 : 0;
         if (pBannerIndex >= pBanners.length) {
