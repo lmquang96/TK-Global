@@ -28,7 +28,7 @@ class Common extends Controller
           'https://tiki.vn/'
         ];
         break;
-      case 'KT20250026':
+      case 'TK20250026':
         $shopeeUrl = [
           'https://s.shopee.vn/3fuafr9jUd',
           'https://s.shopee.vn/4AqrGm7pTk',

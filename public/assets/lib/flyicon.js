@@ -30,7 +30,7 @@ async function flyHander() {
       let pUrls = [];
       let pBanners = [];
 
-      if (pAffiliateId == 'KT20250026') {
+      if (pAffiliateId == 'TK20250026') {
         pBanners = ['https://static.masothue.com/images/san-deal.png'];
       }
       if (typeof iconFollowLink !== 'undefined' && iconFollowLink == true) {
@@ -253,6 +253,7 @@ async function flyHander() {
 }
 
 const screenSize = window.innerWidth;
+console.log(screenSize);
 // window.addEventListener("load", () => {
 document.addEventListener('DOMContentLoaded', async () => {
   if (screenSize >= 768) {
