@@ -37,6 +37,10 @@ async function flyHander() {
         ];
       }
 
+      if (pAffiliateId == 'KT20250026') {
+        pBanners = ['https://static.masothue.com/images/san-deal.png'];
+      }
+
       let pBannerIndex = 0;
 
       if (typeof iconFollowLink !== 'undefined' && iconFollowLink == true) {
@@ -201,13 +205,6 @@ async function flyHander() {
 
       function getBannerIndex() {
         let bannerUrl = document.querySelector('#pvoucher-live-icon img').src;
-
-        if (
-          bannerUrl ==
-          'https://s3.ap-southeast-1.amazonaws.com/adpia.vn/util/upload_document/20230929/voucher_live_snhxhw.png'
-        ) {
-          bannerUrl = 'https://res.cloudinary.com/dwszylalu/image/upload/v1693450477/popup/voucher_live_snhxhw.png';
-        }
 
         let bannerIndex = pBanners.indexOf(bannerUrl);
 
