@@ -35,6 +35,8 @@ async function flyHander() {
       let pBanners = [];
 	  
 	  await getUrls();
+	  
+	  console.log(pBanners);
 
       if (typeof iconFollowLink !== 'undefined' && iconFollowLink == true) {
         pBannerIndex = pGetLog('pUrlIndex') != undefined ? parseInt(pGetLog('pUrlIndex')) + 1 : 0;
