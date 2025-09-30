@@ -82,7 +82,7 @@ class UpdateOrderJob implements ShouldQueue
             ]);
         }
 
-        // Conversion::insert($insertData);
+        Conversion::insert($insertData);
 
         dd('done!');
       } catch (\Exception $e) {
