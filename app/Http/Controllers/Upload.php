@@ -77,18 +77,18 @@ class Upload extends Controller
       }
     }
 
-    // Config::where('name', $request->mid . '_ads')
-    //   ->update([
-    //     'value' => json_encode($adsData),
-    //     'updated_at' => Carbon::now()
-    //   ]);
-
-    Config::query()
-      ->insert([
-        'name' => $request->mid . '_ads',
+    Config::where('name', $request->mid . '_ads')
+      ->update([
         'value' => json_encode($adsData),
-        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
       ]);
+
+    // Config::query()
+    //   ->insert([
+    //     'name' => $request->mid . '_ads',
+    //     'value' => json_encode($adsData),
+    //     'created_at' => Carbon::now(),
+    //   ]);
 
     return response()->json([
       'status' => 200,
