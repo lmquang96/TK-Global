@@ -28,8 +28,8 @@ class Common extends Controller
           'https://tiki.vn/'
         ];
         $flyBanner = [
-          'https://tkglobal.asia/assets/img/icons/shopee-van-deal-5k.png',
-          'https://tkglobal.asia/assets/img/icons/tiktokshop-4k.png'
+          'https://tkglobal.asia/assets/img/icons/fly/shopee-van-deal-5k.png',
+          'https://tkglobal.asia/assets/img/icons/fly/tiktokshop-4k.png'
         ];
         break;
       case 'TK20250026':
