@@ -22,10 +22,14 @@ class Common extends Controller
 
     $urls = [];
     switch ($id) {
-      case 'KT20250001':
+      case 'TK20250001':
         $urls = [
           'https://shopee.vn/',
           'https://tiki.vn/'
+        ];
+        $flyBanner = [
+          'https://tkglobal.asia/assets/img/icons/shopee-van-deal-5k.png',
+          'https://tkglobal.asia/assets/img/icons/tiktokshop-4k.png'
         ];
         break;
       case 'TK20250026':
@@ -54,8 +58,8 @@ class Common extends Controller
         $tiktokUrls = ['https://vt.tiktok.com/ZSHWS2seLNuBA-JrOK8/'];
         $urls[] = $shopeeUrl[rand(0, count($shopeeUrl) - 1)];
         $urls[] = $tiktokUrls[0];
-		$flyBanner = ['https://static.masothue.com/images/san-deal.png'];
-		$mBanner = [];
+        $flyBanner = ['https://static.masothue.com/images/san-deal.png'];
+        $mBanner = [];
         break;
       default:
         # code...
@@ -64,9 +68,9 @@ class Common extends Controller
     return response([
       'status' => 'success',
       'response' => [
-		'urls' => $urls,
-		'flyBanner' => $flyBanner
-	  ]
+        'urls' => $urls,
+        'flyBanner' => $flyBanner
+      ]
     ], 200);
   }
 

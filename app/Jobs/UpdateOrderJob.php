@@ -203,7 +203,8 @@ class UpdateOrderJob implements ShouldQueue
         'click_id' => $clickId,
         'user_id' => $userId,
         'created_at' => Carbon::now(),
-        'updated_at' => Carbon::now()
+        'updated_at' => Carbon::now(),
+        'comment' => 'payment 202509'
       ];
     }
 
