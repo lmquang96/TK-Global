@@ -91,4 +91,8 @@ class Common extends Controller
 
     return true;
   }
+
+  public function agodaVerify() {
+    return view('content.agodaVerify');
+  }
 }
