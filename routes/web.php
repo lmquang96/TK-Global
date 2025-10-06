@@ -40,7 +40,7 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 Route::get('/terms-of-service', [GuideMain::class, 'termsOfService'])->name('terms-of-service');
 Route::get('/privacy-policy', [GuideMain::class, 'privacyPolicy'])->name('privacy-policy');
-Route::get('/agoda-verify', [Common::class, 'agodaVerify'])->name('agoda-verify');
+Route::get('/AgodaPartnerVerification.htm', [Common::class, 'agodaVerify'])->name('agoda-verify');
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
