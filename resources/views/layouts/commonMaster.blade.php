@@ -16,6 +16,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <meta name='impact-site-verification' value="{{ config('variables.impactVerify') }}">
+  <meta name="agd-partner-manual-verification" />
   <!-- Canonical SEO -->
   <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
   <!-- Favicon -->
