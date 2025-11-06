@@ -221,7 +221,7 @@
                             </ul>
                         </div>
                     @endif
-                    @if ($campaign->device)
+                    @if ($campaign->device && $campaign->device != 'null')
                         @php
                             $devices = json_decode($campaign->device, true) ?? [];
                         @endphp
