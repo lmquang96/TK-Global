@@ -82,7 +82,7 @@ class UpdateOrderJob implements ShouldQueue
             ]);
         }
 
-        Conversion::insert($insertData);
+        // Conversion::insert($insertData);
 
         dd('done!');
       } catch (\Exception $e) {
@@ -131,7 +131,7 @@ class UpdateOrderJob implements ShouldQueue
         'commission_sys' => $commissionSys,
         'product_code' => $productCode,
         'campaign_id' => $campaginId,
-        'comment' => 'payment t9'
+        'comment' => 'payment t10'
       ];
     }
 
@@ -224,6 +224,12 @@ class UpdateOrderJob implements ShouldQueue
       // }
       $subid = $row['publisher_sub_id_1'];
 
+      if ($subid == 'TK20250011') {
+        $subid = '34db1ecd9e8d3d2008fd48be54232a9b991291ed';
+      } else {
+        continue;
+      }
+
       $clickData = Click::where('code', $subid)->first();
 
       // if (empty($clickData)) {
@@ -243,22 +249,29 @@ class UpdateOrderJob implements ShouldQueue
       $quantity = 1;
 
       $originalSales = $row['sale_amount_myr'];
+      if (gettype($originalSales) == 'string')
+      {
+        $originalSales = str_replace(',', '', $originalSales);
+        $originalSales = floatval($originalSales);
+      }
 
       $sales = $originalSales * self::MYR_RATE;
-      // $productName = trim($row['prod_sub_type']);
+      $productName = '';
       $sumCom = $row['est_earning_usd'];
 
       // if ($sumCom < 0) {
       //   $arrayKey = 'insert';
       // }
 
+      // $arrayKey = 'insert';
+
       $commissionPub = $sumCom * self::USD_RATE * $pubRate;
       $commissionSys = $sumCom * self::USD_RATE * $sysRate;
       $status = 'Pending';
 
       $upsertData[$arrayKey][] = [
-        // 'code' => sha1(time() + $key),
-        // 'order_code' => $orderCode . ($arrayKey == 'insert' ? '_refunded' : ''),
+        'code' => sha1(time() + $key),
+        'order_code' => $orderCode,
         'order_code' => $orderCode,
         'order_time' => $time,
         'unit_price' => $sales,
@@ -267,13 +280,13 @@ class UpdateOrderJob implements ShouldQueue
         'commission_sys' => $commissionSys,
         'status' => $status,
         'product_code' => $productCode,
-        // 'product_name' => $productName,
+        'product_name' => $productName,
         'campaign_id' => $campaginId,
         'click_id' => $clickId,
         'user_id' => $userId,
-        // 'created_at' => Carbon::now(),
-        // 'updated_at' => Carbon::now()
-        'comment' => 'payment 202509'
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now(),
+        'comment' => 'payment 202510-2'
       ];
     }
 

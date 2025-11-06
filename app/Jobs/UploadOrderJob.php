@@ -394,17 +394,17 @@ class UploadOrderJob implements ShouldQueue
       $commissionPub = $sumCom * $pubRate;
       $commissionSys = $sumCom * $sysRate;
       $status = 'Pending';
-      if ($row['action'] == 'Refund') {
-        $dataKey = 'update';
-        $status = 'Cancelled';
-        $sales = abs($sales);
-        $commissionPub = abs($commissionPub);
-        $commissionSys = abs($commissionSys);
-      }
+      // if ($row['action'] == 'Refund') {
+      //   $dataKey = 'update';
+      //   $status = 'Cancelled';
+      //   $sales = abs($sales);
+      //   $commissionPub = abs($commissionPub);
+      //   $commissionSys = abs($commissionSys);
+      // }
 
       $upsertData[$dataKey][] = [
         'code' => sha1(time() + $key),
-        'order_code' => $orderCode,
+        'order_code' => $orderCode."_refunded",
         'order_time' => $time,
         'unit_price' => $sales,
         'quantity' => $quantity,

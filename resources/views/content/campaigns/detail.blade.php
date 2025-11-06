@@ -168,7 +168,7 @@
                     </div>
                     @if (!empty($campaign->allowed_rule))
                         @php
-                            $traffics = json_decode($campaign->allowed_rule, true);
+                            $traffics = json_decode($campaign->allowed_rule, true) ?? [];
                         @endphp
                         <h6>Traffic được chấp thuận</h6>
                         <div class="row mb-4">
