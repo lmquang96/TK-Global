@@ -183,7 +183,7 @@
                     @endif
                     @if ($campaign->not_allowed_rule)
                         @php
-                            $traffics = json_decode($campaign->not_allowed_rule, true);
+                            $traffics = json_decode($campaign->not_allowed_rule, true) ?? [];
                         @endphp
                         <h6>Traffic không được chấp thuận</h6>
                         <div class="row mb-4">
