@@ -223,7 +223,7 @@
                     @endif
                     @if ($campaign->device)
                         @php
-                            $devices = json_decode($campaign->device, true);
+                            $devices = json_decode($campaign->device, true) ?? [];
                         @endphp
                         <h6>Thiết bị được áp dụng</h6>
                         <div class="row mb-4">
