@@ -166,7 +166,7 @@
                     <div>
                         {!! $campaign->detail !!}
                     </div>
-                    @if (!empty($campaign->allowed_rule))
+                    @if (!empty($campaign->allowed_rule) && $campaign->allowed_rule != 'null')
                         @php
                             $traffics = json_decode($campaign->allowed_rule, true) ?? [];
                         @endphp
@@ -181,7 +181,7 @@
                             @endforeach
                         </div>
                     @endif
-                    @if ($campaign->not_allowed_rule)
+                    @if ($campaign->not_allowed_rule && $campaign->allowed_rule != 'null')
                         @php
                             $traffics = json_decode($campaign->not_allowed_rule, true) ?? [];
                         @endphp
