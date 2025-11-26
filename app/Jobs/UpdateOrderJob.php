@@ -7,6 +7,8 @@ use Illuminate\Foundation\Queue\Queueable;
 use Carbon\Carbon;
 use App\Models\Conversion;
 use App\Models\Click;
+use App\Models\LinkHistory;
+use App\Models\User;
 
 class UpdateOrderJob implements ShouldQueue
 {
@@ -18,6 +20,7 @@ class UpdateOrderJob implements ShouldQueue
   const USD_RATE = 22500;
   const MYR_RATE = 5962.5;
   const KLOOK_ID = 1;
+  const KLOOKHK_ID = 32;
 
   /**
    * Create a new job instance.
@@ -37,14 +40,15 @@ class UpdateOrderJob implements ShouldQueue
     $data = $this->data;
 
     foreach ($data as $sheet) {
-      if ($mid == 'klook') {
-        $updateData = self::getKlookUpdateData($sheet, $mid);
+      if ($mid == 'klook' || $mid == 'klookhk') {
+        $insertData = self::getKlookUpdateData($sheet, $mid);
+        $updateData = [];
       } else if ($mid == 'tripcom') {
         $data = self::getTripcomUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
         $updateData = $data['update'] ?? [];
-      } else if ($mid == 'tripcomnetwork') {
-        $data = self::getTripcomNetworkUpdateData($sheet, $mid);
+      } else if ($mid == 'tripcomnetwork' || $mid == 'traveloka') {
+        $data = self::getInvolveUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
         $updateData = $data['update'] ?? [];
       }
@@ -82,7 +86,7 @@ class UpdateOrderJob implements ShouldQueue
             ]);
         }
 
-        // Conversion::insert($insertData);
+        Conversion::insert($insertData);
 
         dd('done!');
       } catch (\Exception $e) {
@@ -97,8 +101,8 @@ class UpdateOrderJob implements ShouldQueue
   {
     $updateData = [];
 
-    foreach ($sheet as $row) {
-      if (in_array($row['ticket_status'], ['Full Refund'])) {
+    foreach ($sheet as $key => $row) {
+      if (!in_array($row['ticket_status'], ['Full Refund'])) {
         continue;
       }
       $pubRate = 0.7;
@@ -107,7 +111,7 @@ class UpdateOrderJob implements ShouldQueue
       if ($mid == 'klookhk') {
         $pubRate = 0.8;
         $sysRate = 0.2;
-        $campaginId = 32;
+        $campaginId = self::KLOOKHK_ID;
       }
       $time = Carbon::parse(trim($row['book_date']) . ' ' . trim($row['book_time']));
       $orderCode = trim($row['order_id']);
@@ -123,17 +127,102 @@ class UpdateOrderJob implements ShouldQueue
       $commissionPub = $sumCom * $pubRate;
       $commissionSys = $sumCom * $sysRate;
 
+      $status = 'Pending';
+      $quantity = 1;
+      $productName = str_replace("'", "''", trim($row['activity_name']));
+
+      $adid = ($row['adid'] && strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
+
+      if (!empty($adid)) {
+        $subid = $adid['sub1'];
+        $affiliate_id = 'KT20250005';
+        if (!empty($subid) && strlen($subid) == 10) {
+          $affiliate_id = $subid;
+        }
+        $sub1 = $ads[$row['adid']]['sub2'];
+        $sub2 = $ads[$row['adid']]['sub3'];
+      } else {
+        // continue;
+        $affiliate_id = 'TK20250012';
+        $sub1 = $sub2 = null;
+      }
+
+      $userId = User::query()
+        ->whereHas('profile', function ($query) use ($affiliate_id) {
+          $query->where('affiliate_id', $affiliate_id);
+        })
+        ->pluck('id')->first();
+      $linkHistoryId = null;
+
+      $existLink = LinkHistory::where('sub1', $sub1)
+        ->where('sub2', $sub2)
+        ->where('user_id', $userId)
+        ->where('campaign_id', $campaginId)
+        ->first();
+
+      if (!$existLink) {
+        $link = new LinkHistory();
+        $link->code = sha1(time() + $key);
+        $link->sub1 = $sub1;
+        $link->sub2 = $sub2;
+        $link->user_id = $userId;
+        $link->campaign_id = $campaginId;
+
+        try {
+          $link->save();
+          $linkHistoryId = $link->id;
+        } catch (\Exception $e) {
+          \Log::error("--------------");
+          \Log::error($e->getMessage());
+          \Log::error("--------------");
+        }
+      } else {
+        $linkHistoryId = $existLink->id;
+      }
+
+      $clickId = null;
+      $click = new Click();
+
+      $click->code = sha1(time() + $key);
+      $click->link_history_id = $linkHistoryId;
+
+      try {
+        $click->save();
+        $clickId = $click->id;
+      } catch (\Exception $e) {
+        \Log::error("--------------");
+        \Log::error($e->getMessage());
+        \Log::error("--------------");
+      }
+
+      if (in_array($row['ticket_status'], ['Full Refund'])) {
+        $orderCode .= '_refunded';
+        if ($commissionPub == 0) {
+          continue;
+        }
+      }
+
       $updateData[] = [
+        'code' => sha1(time() + $key),
         'order_code' => $orderCode,
         'order_time' => $time,
         'unit_price' => $sales,
+        'quantity' => $quantity,
         'commission_pub' => $commissionPub,
         'commission_sys' => $commissionSys,
+        'status' => $status,
         'product_code' => $productCode,
+        'product_name' => $productName,
         'campaign_id' => $campaginId,
-        'comment' => 'payment t10'
+        'comment' => 'payment t11',
+        'click_id' => $clickId,
+        'user_id' => $userId,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
       ];
     }
+
+    // dd($updateData);
 
     return $updateData;
   }
@@ -145,9 +234,9 @@ class UpdateOrderJob implements ShouldQueue
     $sysRate = 0.3;
 
     foreach ($sheet as $key => $row) {
-      // if ($row['commission_date'] != '2025-03' && $row['commission_date'] != '2025-02') {
-      //   continue;
-      // }
+      if ($row['commission_date'] != '2025-08' && $row['commission_date'] != '2025-07') {
+        continue;
+      }
       $subid = $row['tripsub1'];
       // $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
 
@@ -204,14 +293,14 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202509'
+        'comment' => 'payment 202511-2'
       ];
     }
 
     return $upsertData;
   }
 
-  public static function getTripcomNetworkUpdateData($sheet, $mid)
+  public static function getInvolveUpdateData($sheet, $mid)
   {
     $upsertData = [];
     $pubRate = 0.7;
@@ -226,8 +315,6 @@ class UpdateOrderJob implements ShouldQueue
 
       if ($subid == 'TK20250011') {
         $subid = '34db1ecd9e8d3d2008fd48be54232a9b991291ed';
-      } else {
-        continue;
       }
 
       $clickData = Click::where('code', $subid)->first();
@@ -286,7 +373,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202510-2'
+        'comment' => 'payment 202511-2'
       ];
     }
 

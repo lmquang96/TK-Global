@@ -54,6 +54,7 @@ class UploadOrderJob implements ShouldQueue
           ->where('name', 'klook_ads')
           ->pluck('value')
           ->first();
+
         if (empty($ads)) {
           return true;
         }
@@ -295,7 +296,11 @@ class UploadOrderJob implements ShouldQueue
     $pubRate = 0.7;
     $sysRate = 0.3;
 
+
     foreach ($sheet as $key => $row) {
+      if ($row['order_id'] != '2686995879') {
+        continue;
+      }
       $adid = ($row['adid'] && strlen($row['adid']) >= 6 && isset($ads[$row['adid']])) ? $ads[$row['adid']] : '';
 
       if (!empty($adid)) {
@@ -404,7 +409,7 @@ class UploadOrderJob implements ShouldQueue
 
       $upsertData[$dataKey][] = [
         'code' => sha1(time() + $key),
-        'order_code' => $orderCode."_refunded",
+        'order_code' => $orderCode,
         'order_time' => $time,
         'unit_price' => $sales,
         'quantity' => $quantity,
