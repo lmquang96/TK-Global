@@ -22,6 +22,18 @@ class Postback extends Controller
         return response(['status' => 'success'], 200);
     }
 
+    public function partnerize(Request $request) {
+        $data = $request->all();
+
+        CampaignPostback::create([
+            'source' => 'partnerize',
+            'data' => json_encode($data),
+            'campaign_id' => self::getCampaignId($data['offer_id'])
+        ]);
+
+        return response(['status' => 'success'], 200);
+    }
+
     public function getCampaignId($adsId) {
         $campaignId = '';
 
@@ -29,7 +41,7 @@ class Postback extends Controller
             case 'value':
                 # code...
                 break;
-            
+
             default:
                 $campaignId = 3;
                 break;
