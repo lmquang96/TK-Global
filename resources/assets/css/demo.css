@@ -146,3 +146,7 @@
 .id-card-upload-wrapper:hover .id-card-upload-btn {
   display: block;
 }
+
+table tr td {
+  line-break: anywhere;
+}

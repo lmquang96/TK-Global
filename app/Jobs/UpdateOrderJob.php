@@ -41,8 +41,8 @@ class UpdateOrderJob implements ShouldQueue
 
     foreach ($data as $sheet) {
       if ($mid == 'klook' || $mid == 'klookhk') {
-        $insertData = self::getKlookUpdateData($sheet, $mid);
-        $updateData = [];
+        $insertData = [];
+        $updateData = self::getKlookUpdateData($sheet, $mid);
       } else if ($mid == 'tripcom') {
         $data = self::getTripcomUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
@@ -69,6 +69,7 @@ class UpdateOrderJob implements ShouldQueue
           //     'quantity',
           //     'commission_pub',
           //     'commission_sys',
+          //     'comment',
           //     'updated_at',
           //   ]
           // );
@@ -102,7 +103,7 @@ class UpdateOrderJob implements ShouldQueue
     $updateData = [];
 
     foreach ($sheet as $key => $row) {
-      if (!in_array($row['ticket_status'], ['Full Refund'])) {
+      if (in_array($row['ticket_status'], ['Full Refund'])) {
         continue;
       }
       $pubRate = 0.7;
@@ -135,7 +136,7 @@ class UpdateOrderJob implements ShouldQueue
 
       if (!empty($adid)) {
         $subid = $adid['sub1'];
-        $affiliate_id = 'KT20250005';
+        $affiliate_id = 'TK20250031';
         if (!empty($subid) && strlen($subid) == 10) {
           $affiliate_id = $subid;
         }
@@ -143,7 +144,7 @@ class UpdateOrderJob implements ShouldQueue
         $sub2 = $ads[$row['adid']]['sub3'];
       } else {
         // continue;
-        $affiliate_id = 'TK20250012';
+        $affiliate_id = 'TK20250031';
         $sub1 = $sub2 = null;
       }
 
@@ -214,15 +215,13 @@ class UpdateOrderJob implements ShouldQueue
         'product_code' => $productCode,
         'product_name' => $productName,
         'campaign_id' => $campaginId,
-        'comment' => 'payment t11',
+        'comment' => 'payment 202512-2',
         'click_id' => $clickId,
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now()
       ];
     }
-
-    // dd($updateData);
 
     return $updateData;
   }
@@ -234,7 +233,7 @@ class UpdateOrderJob implements ShouldQueue
     $sysRate = 0.3;
 
     foreach ($sheet as $key => $row) {
-      if ($row['commission_date'] != '2025-08' && $row['commission_date'] != '2025-07') {
+      if ($row['commission_date'] != '2025-09' && $row['commission_date'] != '2025-10') {
         continue;
       }
       $subid = $row['tripsub1'];
@@ -243,7 +242,7 @@ class UpdateOrderJob implements ShouldQueue
       $clickData = Click::where('code', $subid)->first();
 
       if (empty($clickData)) {
-        $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
+        $subid = '1152fd54f6c4da01aefe879b2477642a83b2ab12';
         $clickData = Click::where('code', $subid)->first();
       }
 
@@ -293,7 +292,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202511-2'
+        'comment' => 'payment 202512-3'
       ];
     }
 
@@ -319,10 +318,10 @@ class UpdateOrderJob implements ShouldQueue
 
       $clickData = Click::where('code', $subid)->first();
 
-      // if (empty($clickData)) {
-      //   $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
-      //   $clickData = Click::where('code', $subid)->first();
-      // }
+      if (empty($clickData)) {
+        $subid = '21231099928e0f5f4ed9c1965fb3798feebe6791';
+        $clickData = Click::where('code', $subid)->first();
+      }
 
       $userId = $clickData->linkHistory->user_id;
       $clickId = $clickData->id;
@@ -373,7 +372,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202511-2'
+        'comment' => 'payment 202512-1'
       ];
     }
 
