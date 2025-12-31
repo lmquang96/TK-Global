@@ -28,7 +28,7 @@ class Postback extends Controller
         CampaignPostback::create([
             'source' => 'partnerize',
             'data' => json_encode($data),
-            'campaign_id' => self::getCampaignId($data['offer_id'])
+            'campaign_id' => self::getCampaignId($data['campaign_id'])
         ]);
 
         return response(['status' => 'success'], 200);

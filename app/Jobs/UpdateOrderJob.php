@@ -292,7 +292,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202512-3'
+        'comment' => 'payment 202512-9'
       ];
     }
 
@@ -372,7 +372,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202512-1'
+        'comment' => 'payment 202512-3'
       ];
     }
 
