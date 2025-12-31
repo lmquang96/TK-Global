@@ -87,6 +87,11 @@ class UploadOrderJob implements ShouldQueue
 
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
+      } elseif ($mid == 'partnerize') {
+        $upsertData = self::getPartnerizeUpsertData($sheet, $mid);
+
+        $updateData = $upsertData['update'] ?? [];
+        $upsertData = $upsertData['insert'];
       }
 
       $chunks = array_chunk($upsertData, 500);
@@ -590,6 +595,76 @@ class UploadOrderJob implements ShouldQueue
       if (trim($row['orderstatus']) == 'BACK') {
         $status = 'Approved';
       } elseif (trim($row['orderstatus']) == 'CX') {
+        $dataKey = 'update';
+        $status = 'Cancelled';
+        $sales = abs($sales);
+        $commissionPub = abs($commissionPub);
+        $commissionSys = abs($commissionSys);
+      }
+
+      $upsertData[$dataKey][] = [
+        'code' => sha1(time() + $key),
+        'order_code' => $orderCode,
+        'order_time' => $time,
+        'unit_price' => $sales,
+        'quantity' => $quantity,
+        'commission_pub' => $commissionPub,
+        'commission_sys' => $commissionSys,
+        'status' => $status,
+        'product_code' => $productCode,
+        'product_name' => $productName,
+        'campaign_id' => $campaginId,
+        'click_id' => $clickId,
+        'user_id' => $userId,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
+      ];
+    }
+
+    return $upsertData;
+  }
+
+  public function getPartnerizeUpsertData($sheet)
+  {
+    $upsertData = [];
+    $pubRate = 0.7;
+    $sysRate = 0.3;
+
+    foreach ($sheet as $key => $row) {
+      $subid = $row['publisher_reference'];
+
+      if (empty($subid)) {
+        continue;
+      }
+
+      $clickData = Click::where('code', $subid)->first();
+
+      if (empty($clickData)) {
+        continue;
+      }
+
+      $userId = $clickData->linkHistory->user_id;
+      $clickId = $clickData->id;
+      $campaginId = $clickData->linkHistory->campaign_id;
+
+      $dataKey = 'insert';
+      $time = Carbon::parse(trim($row['conversion_date_time']));
+      $orderCode = $row['conversion_id'];
+      $productCode = $row['conversion_item_id'];
+      $quantity = $row['quantity'];
+
+      $originalSales = floatval($row['item_value']);
+
+      $sales = $originalSales * self::USD_RATE;
+      $productName = trim($row['category']);
+
+      $sumCom = floatval($row['item_publisher_commission']);
+      $commissionPub = $sumCom * self::USD_RATE * $pubRate;
+      $commissionSys = $sumCom * self::USD_RATE * $sysRate;
+      $status = 'Pending';
+      if (trim($row['item_status']) == 'approved') {
+        $status = 'Approved';
+      } elseif (trim($row['item_status']) == 'rejected') {
         $dataKey = 'update';
         $status = 'Cancelled';
         $sales = abs($sales);

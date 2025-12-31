@@ -16,50 +16,21 @@ class ScanConversionsService
     $postbackList = CampaignPostback::where('status', 0)->get();
 
     foreach ($postbackList as $key => $postback) {
-
       $data = json_decode($postback->data);
+      if ($postback->source == 'involve') {
 
-      if ($data->status == 'pending') {
-        $click = Click::query()
-          ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
-          ->select('link_histories.*', 'clicks.id as click_id')
-          ->where('clicks.code', $data->aff_sub)
-          ->first();
+        if ($data->status == 'pending') {
+          $click = Click::query()
+            ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
+            ->select('link_histories.*', 'clicks.id as click_id')
+            ->where('clicks.code', $data->aff_sub)
+            ->first();
 
-        $sales = floatval($data->usd_sale_amount) * self::USD_VND_RATE;
-        $sumcom = floatval($data->usd_payout) * self::USD_VND_RATE;
+          $sales = floatval($data->usd_sale_amount) * self::USD_VND_RATE;
+          $sumcom = floatval($data->usd_payout) * self::USD_VND_RATE;
 
-        if ($click) {
-          Conversion::upsert([
-            'code' => sha1(time() + $key),
-            'order_code' => $data->conversion_id,
-            'order_time' => $data->datetime_conversion,
-            'unit_price' => $sales,
-            'quantity' => 1,
-            'commission_pub' => $sumcom * 0.7,
-            'commission_sys' => $sumcom * 0.3,
-            'status' => 'Pending',
-            'product_code' => $data->adv_sub,
-            'product_name' => $data->adv_sub2,
-            'campaign_id' => $click->campaign_id,
-            'click_id' => $click->click_id,
-            'user_id' => $click->user_id,
-            'updated_at'    => now(),
-          ], [
-            'campaign_id',
-            'order_code',
-            'product_code',
-          ], [
-            'unit_price',
-            'quantity',
-            'commission_pub',
-            'commission_sys',
-            'updated_at',
-          ]);
-        } else {
-          $userId = Profile::where('affiliate_id', $data->aff_sub)->pluck('user_id')->first();
-          if ($userId) {
-            Conversion::updateOrCreate([
+          if ($click) {
+            Conversion::upsert([
               'code' => sha1(time() + $key),
               'order_code' => $data->conversion_id,
               'order_time' => $data->datetime_conversion,
@@ -70,19 +41,98 @@ class ScanConversionsService
               'status' => 'Pending',
               'product_code' => $data->adv_sub,
               'product_name' => $data->adv_sub2,
-              'campaign_id' => 33,
-              'click_id' => 21657,
-              'user_id' => $userId
+              'campaign_id' => $click->campaign_id,
+              'click_id' => $click->click_id,
+              'user_id' => $click->user_id,
+              'updated_at'    => now(),
+            ], [
+              'campaign_id',
+              'order_code',
+              'product_code',
+            ], [
+              'unit_price',
+              'quantity',
+              'commission_pub',
+              'commission_sys',
+              'updated_at',
+            ]);
+          } else {
+            $userId = Profile::where('affiliate_id', $data->aff_sub)->pluck('user_id')->first();
+            if ($userId) {
+              Conversion::updateOrCreate([
+                'code' => sha1(time() + $key),
+                'order_code' => $data->conversion_id,
+                'order_time' => $data->datetime_conversion,
+                'unit_price' => $sales,
+                'quantity' => 1,
+                'commission_pub' => $sumcom * 0.7,
+                'commission_sys' => $sumcom * 0.3,
+                'status' => 'Pending',
+                'product_code' => $data->adv_sub,
+                'product_name' => $data->adv_sub2,
+                'campaign_id' => 33,
+                'click_id' => 21657,
+                'user_id' => $userId
+              ]);
+            }
+          }
+        } else {
+          $status = $data->status == 'approved' ? 'Approved' : ($data->status == 'yet to consume' ? 'pending' : 'Rejected');
+
+          Conversion::where('order_code', $data->conversion_id)
+            ->update([
+              'status' => $status
+            ]);
+        }
+      } elseif ($postback->source == 'partnerize') {
+        $conversionData = collect($data)->except('items');
+
+        $results = collect($data->items)->map(function ($item) use ($conversionData) {
+          return array_merge(
+            $conversionData->toArray(),
+            (array) $item
+          );
+        });
+
+        foreach ($results as $key => $item) {
+          $click = Click::query()
+            ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
+            ->select('link_histories.*', 'clicks.id as click_id')
+            ->where('clicks.code', $item['publisher_reference'])
+            ->first();
+
+          $sales = floatval($item['item_value']) * self::USD_VND_RATE;
+          $sumcom = floatval($item['item_publisher_commission']) * self::USD_VND_RATE;
+
+          if ($click) {
+            Conversion::upsert([
+              'code' => sha1(time() + $key),
+              'order_code' => $item['conversion_id'],
+              'order_time' => date('Y-m-d H:i:s', $item['conversion_time']),
+              'unit_price' => $sales,
+              'quantity' => 1,
+              'commission_pub' => $sumcom * 0.7,
+              'commission_sys' => $sumcom * 0.3,
+              'status' => 'Pending',
+              'product_code' => $item['item_id'],
+              'product_name' => $item['item_category'],
+              'campaign_id' => $click->campaign_id,
+              'click_id' => $click->click_id,
+              'user_id' => $click->user_id,
+              'updated_at'    => now(),
+            ], [
+              'campaign_id',
+              'order_code',
+              'product_code',
+            ], [
+              'unit_price',
+              'quantity',
+              'commission_pub',
+              'commission_sys',
+              'updated_at',
             ]);
           }
         }
-      } else {
-        $status = $data->status == 'approved' ? 'Approved' : ($data->status == 'yet to consume' ? 'pending' : 'Rejected');
-
-        Conversion::where('order_code', $data->conversion_id)
-          ->update([
-            'status' => $status
-          ]);
       }
 
       $postback->status = 1;

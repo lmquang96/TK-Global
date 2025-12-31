@@ -6,6 +6,7 @@ use App\Models\CampaignPostback;
 use App\Models\Click;
 use App\Models\Conversion;
 use App\Models\Profile;
+use Carbon\Carbon;
 
 class ScanViatorService
 {
@@ -25,7 +26,36 @@ class ScanViatorService
         ->where('clicks.code', $item['campaign'])
         ->first();
 
-      dd($click);
+      $sales = floatval(substr($item['totalBookingAmount'], 4)) * self::USD_VND_RATE;
+      $sumcom = floatval(substr($item['commission'], 4)) * self::USD_VND_RATE;
+
+      Conversion::upsert([
+        'code' => sha1(time() + $key),
+        'order_code' => $item['itineraryItemId'],
+        'order_time' => Carbon::parse($item['bookingDateTime'])->format('Y-m-d H:i:s'),
+        'unit_price' => $sales,
+        'quantity' => 1,
+        'commission_pub' => $sumcom * 0.7,
+        'commission_sys' => $sumcom * 0.3,
+        'status' => $item['bookingStatus'] == 'CANCELLED' ? 'Cancelled' : ($item['bookingStatus'] == 'CONFIRMED' ? 'Approved' : 'Pending'),
+        'product_code' => $item['productCode'],
+        'product_name' => $item['productName'],
+        'campaign_id' => $click->campaign_id,
+        'click_id' => $click->click_id,
+        'user_id' => $click->user_id,
+        'updated_at'    => now(),
+      ], [
+        'campaign_id',
+        'order_code',
+        'product_code',
+      ], [
+        'unit_price',
+        'quantity',
+        'commission_pub',
+        'commission_sys',
+        'status',
+        'updated_at',
+      ]);
     }
 
     return true;
