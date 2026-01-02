@@ -20,6 +20,7 @@ class UploadOrderJob implements ShouldQueue
 
   const USD_RATE = 22500;
   const KLOOK_ID = 1;
+  const VAT_RATE = 1.1;
 
   /**
    * Create a new job instance.
@@ -169,7 +170,7 @@ class UploadOrderJob implements ShouldQueue
       // $originalSales = floatval(str_replace(",", ".", substr(trim($row['amount']), 1)));
       $originalSales = floatval(str_replace(",", ".", trim($row['amount'])));
 
-      $sales = $originalSales * self::USD_RATE;
+      $sales = ($originalSales * self::USD_RATE) / self::VAT_RATE;
       $productName = self::getTripcomProductName($productType, $fromInfo, $toInfo);
 
       $sumCom = self::tripcomComissionRate($productType, $departureCountry, $arrivalCountry, $sales);
@@ -388,7 +389,7 @@ class UploadOrderJob implements ShouldQueue
       $salesObject = explode(" ", $salesAmount);
 
       if (count($salesObject) == 2) {
-        $sales = self::convertCurrency($salesObject);
+        $sales = (self::convertCurrency($salesObject)) / self::VAT_RATE;
       } else {
         continue;
       }
@@ -397,7 +398,7 @@ class UploadOrderJob implements ShouldQueue
       $comAmount = trim($row['commission_amount']);
       $comObject = explode(" ", $comAmount);
       if (count($comObject) == 2) {
-        $sumCom = self::convertCurrency($comObject);
+        $sumCom = (self::convertCurrency($comObject)) / self::VAT_RATE;
       } else {
         continue;
       }
@@ -585,10 +586,10 @@ class UploadOrderJob implements ShouldQueue
 
       $originalSales = floatval(str_replace(",", ".", trim($row['pricetotal'])));
 
-      $sales = $originalSales * self::USD_RATE;
+      $sales = ($originalSales * self::USD_RATE) / self::VAT_RATE;
       $productName = trim($row['prodname']);
 
-      $sumCom = floatval(str_replace(",", ".", trim($row['commission'])));
+      $sumCom = (floatval(str_replace(",", ".", trim($row['commission'])))) / self::VAT_RATE;
       $commissionPub = $sumCom * self::USD_RATE * $pubRate;
       $commissionSys = $sumCom * self::USD_RATE * $sysRate;
       $status = 'Pending';
@@ -655,10 +656,10 @@ class UploadOrderJob implements ShouldQueue
 
       $originalSales = floatval($row['item_value']);
 
-      $sales = $originalSales * self::USD_RATE;
+      $sales = ($originalSales * self::USD_RATE) / self::VAT_RATE;
       $productName = trim($row['category']);
 
-      $sumCom = floatval($row['item_publisher_commission']);
+      $sumCom = (floatval($row['item_publisher_commission'])) / self::VAT_RATE;
       $commissionPub = $sumCom * self::USD_RATE * $pubRate;
       $commissionSys = $sumCom * self::USD_RATE * $sysRate;
       $status = 'Pending';

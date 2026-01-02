@@ -6,10 +6,12 @@ use App\Models\CampaignPostback;
 use App\Models\Click;
 use App\Models\Conversion;
 use App\Models\Profile;
+use App\Models\CommissionRate;
 
 class ScanConversionsService
 {
   const USD_VND_RATE = 22500;
+  const VAT_RATE = 1.1;
 
   public function scan()
   {
@@ -26,18 +28,27 @@ class ScanConversionsService
             ->where('clicks.code', $data->aff_sub)
             ->first();
 
-          $sales = floatval($data->usd_sale_amount) * self::USD_VND_RATE;
-          $sumcom = floatval($data->usd_payout) * self::USD_VND_RATE;
+          $sales = (floatval($data->usd_sale_amount) * self::USD_VND_RATE) / self::VAT_RATE;
+          $sumcom = (floatval($data->usd_payout) * self::USD_VND_RATE) / self::VAT_RATE;
 
           if ($click) {
+            $comRate = CommissionRate::where('user_id', $click->user_id)
+            ->pluck('rate')->first();
+
+            if (!$comRate) {
+              $comRate = 0.7;
+            }
+
+            $comRate = floatval($comRate);
+
             Conversion::upsert([
               'code' => sha1(time() + $key),
               'order_code' => $data->conversion_id,
               'order_time' => $data->datetime_conversion,
               'unit_price' => $sales,
               'quantity' => 1,
-              'commission_pub' => $sumcom * 0.7,
-              'commission_sys' => $sumcom * 0.3,
+              'commission_pub' => $sumcom * $comRate,
+              'commission_sys' => $sumcom * (1 - $comRate),
               'status' => 'Pending',
               'product_code' => $data->adv_sub,
               'product_name' => $data->adv_sub2,
@@ -59,14 +70,23 @@ class ScanConversionsService
           } else {
             $userId = Profile::where('affiliate_id', $data->aff_sub)->pluck('user_id')->first();
             if ($userId) {
+              $comRate = CommissionRate::where('user_id', $click->user_id)
+              ->pluck('rate')->first();
+
+              if (!$comRate) {
+                $comRate = 0.7;
+              }
+
+              $comRate = floatval($comRate);
+
               Conversion::updateOrCreate([
                 'code' => sha1(time() + $key),
                 'order_code' => $data->conversion_id,
                 'order_time' => $data->datetime_conversion,
                 'unit_price' => $sales,
                 'quantity' => 1,
-                'commission_pub' => $sumcom * 0.7,
-                'commission_sys' => $sumcom * 0.3,
+                'commission_pub' => $sumcom * $comRate,
+                'commission_sys' => $sumcom * (1 - $comRate),
                 'status' => 'Pending',
                 'product_code' => $data->adv_sub,
                 'product_name' => $data->adv_sub2,
@@ -101,18 +121,27 @@ class ScanConversionsService
             ->where('clicks.code', $item['publisher_reference'])
             ->first();
 
-          $sales = floatval($item['item_value']) * self::USD_VND_RATE;
-          $sumcom = floatval($item['item_publisher_commission']) * self::USD_VND_RATE;
+          $sales = (floatval($item['item_value']) * self::USD_VND_RATE) / self::VAT_RATE;
+          $sumcom = (floatval($item['item_publisher_commission']) * self::USD_VND_RATE) / self::VAT_RATE;
 
           if ($click) {
+            $comRate = CommissionRate::where('user_id', $click->user_id)
+            ->pluck('rate')->first();
+
+            if (!$comRate) {
+              $comRate = 0.7;
+            }
+
+            $comRate = floatval($comRate);
+
             Conversion::upsert([
               'code' => sha1(time() + $key),
               'order_code' => $item['conversion_id'],
               'order_time' => date('Y-m-d H:i:s', $item['conversion_time']),
               'unit_price' => $sales,
               'quantity' => 1,
-              'commission_pub' => $sumcom * 0.7,
-              'commission_sys' => $sumcom * 0.3,
+              'commission_pub' => $sumcom * $comRate,
+              'commission_sys' => $sumcom * (1 - $comRate),
               'status' => 'Pending',
               'product_code' => $item['item_id'],
               'product_name' => $item['item_category'],

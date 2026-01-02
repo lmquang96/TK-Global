@@ -21,6 +21,7 @@ class UpdateOrderJob implements ShouldQueue
   const MYR_RATE = 5962.5;
   const KLOOK_ID = 1;
   const KLOOKHK_ID = 32;
+  const VAT_RATE = 1.1;
 
   /**
    * Create a new job instance.
@@ -117,11 +118,11 @@ class UpdateOrderJob implements ShouldQueue
       $time = Carbon::parse(trim($row['book_date']) . ' ' . trim($row['book_time']));
       $orderCode = trim($row['order_id']);
       $productCode = trim($row['ticket_id']) . "_" . trim($row['booking_number']);
-      $sales = $row['commissionable_sales_amountusd'] * self::USD_RATE;
+      $sales = ($row['commissionable_sales_amountusd'] * self::USD_RATE) / self::VAT_RATE;
       $comAmount = trim($row['payable_commission_amt']);
       $comObject = explode(" ", $comAmount);
       if (count($comObject) == 2) {
-        $sumCom = floatval($comObject[1]) * self::USD_RATE;
+        $sumCom = (floatval($comObject[1]) * self::USD_RATE) / self::VAT_RATE;
       } else {
         continue;
       }
@@ -264,9 +265,9 @@ class UpdateOrderJob implements ShouldQueue
 
       $originalSales = self::convertUSD(trim($row['booking_amount']));
 
-      $sales = $originalSales * self::USD_RATE;
+      $sales = ($originalSales * self::USD_RATE) / self::VAT_RATE;
       $productName = trim($row['prod_sub_type']);
-      $sumCom = self::convertUSD(trim($row['commission_amount']));
+      $sumCom = (self::convertUSD(trim($row['commission_amount']))) / self::VAT_RATE;
 
       if ($sumCom < 0) {
         $arrayKey = 'insert';
@@ -341,9 +342,9 @@ class UpdateOrderJob implements ShouldQueue
         $originalSales = floatval($originalSales);
       }
 
-      $sales = $originalSales * self::MYR_RATE;
+      $sales = ($originalSales * self::MYR_RATE) / self::VAT_RATE;
       $productName = '';
-      $sumCom = $row['est_earning_usd'];
+      $sumCom = ($row['est_earning_usd']) / self::VAT_RATE;
 
       // if ($sumCom < 0) {
       //   $arrayKey = 'insert';

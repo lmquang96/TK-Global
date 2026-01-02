@@ -11,6 +11,7 @@ use Carbon\Carbon;
 class ScanViatorService
 {
   const USD_VND_RATE = 22500;
+  const VAT_RATE = 1.1;
 
   public function scan()
   {
@@ -26,8 +27,17 @@ class ScanViatorService
         ->where('clicks.code', $item['campaign'])
         ->first();
 
-      $sales = floatval(substr($item['totalBookingAmount'], 4)) * self::USD_VND_RATE;
-      $sumcom = floatval(substr($item['commission'], 4)) * self::USD_VND_RATE;
+      $sales = (floatval(substr($item['totalBookingAmount'], 4)) * self::USD_VND_RATE) / self::VAT_RATE;
+      $sumcom = (floatval(substr($item['commission'], 4)) * self::USD_VND_RATE) / self::VAT_RATE;
+
+      $comRate = CommissionRate::where('user_id', $click->user_id)
+      ->pluck('rate')->first();
+
+      if (!$comRate) {
+        $comRate = 0.7;
+      }
+
+      $comRate = floatval($comRate);
 
       Conversion::upsert([
         'code' => sha1(time() + $key),
@@ -35,8 +45,8 @@ class ScanViatorService
         'order_time' => Carbon::parse($item['bookingDateTime'])->format('Y-m-d H:i:s'),
         'unit_price' => $sales,
         'quantity' => 1,
-        'commission_pub' => $sumcom * 0.7,
-        'commission_sys' => $sumcom * 0.3,
+        'commission_pub' => $sumcom * $comRate,
+        'commission_sys' => $sumcom * (1 - $comRate),
         'status' => $item['bookingStatus'] == 'CANCELLED' ? 'Cancelled' : ($item['bookingStatus'] == 'CONFIRMED' ? 'Approved' : 'Pending'),
         'product_code' => $item['productCode'],
         'product_name' => $item['productName'],
