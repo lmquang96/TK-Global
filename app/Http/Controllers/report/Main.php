@@ -74,7 +74,7 @@ class Main extends Controller
     });
 
     $result['totalCom'] = $data->get()->sum(function ($item) {
-      return $item->quantity * $item->commission_pub;
+      return $item->commission_pub;
     });
 
     $result['data'] = $data->orderBy('order_time', 'desc')->paginate(self::PER_PAGE)->withQueryString();
