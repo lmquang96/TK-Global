@@ -4,6 +4,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\SwitchUser;
+use Carbon\Carbon;
+
+$date = Carbon::now()->format('Ymd');
+$preDate = Carbon::now()->subDays(1)->format('Ymd');
 
 return Application::configure(basePath: dirname(__DIR__))
   ->withRouting(
@@ -20,4 +24,5 @@ return Application::configure(basePath: dirname(__DIR__))
   })
   ->withSchedule(function ($schedule) {
     $schedule->command('app:conversions-scan')->everyTenMinutes();
+    $schedule->command('app:partnerize-scan '.$preDate.' '.$date)->everyTwoHours();
   })->create();
