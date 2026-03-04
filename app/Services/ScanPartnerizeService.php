@@ -63,8 +63,8 @@ class ScanPartnerizeService
         ->where('clicks.code', $item['publisher_reference'])
         ->first();
 
-        $sales = (floatval(substr($itemDetail['item_value'], 4)) * self::USD_VND_RATE) / self::VAT_RATE;
-        $sumcom = (floatval(substr($itemDetail['item_publisher_commission'], 4)) * self::USD_VND_RATE) / self::VAT_RATE;
+        $sales = (floatval($itemDetail['item_value']) * self::USD_VND_RATE) / self::VAT_RATE;
+        $sumcom = (floatval($itemDetail['item_publisher_commission']) * self::USD_VND_RATE) / self::VAT_RATE;
 
         $comRate = CommissionRate::where('user_id', $click->user_id)
         ->pluck('rate')->first();

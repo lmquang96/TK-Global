@@ -22,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
   ->withExceptions(function (Exceptions $exceptions) {
     //
   })
-  ->withSchedule(function ($schedule) {
+  ->withSchedule(function ($schedule) use ($date, $preDate) {
     $schedule->command('app:conversions-scan')->everyTenMinutes();
     $schedule->command('app:partnerize-scan '.$preDate.' '.$date)->everyTwoHours();
   })->create();
