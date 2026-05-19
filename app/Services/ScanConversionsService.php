@@ -115,6 +115,9 @@ class ScanConversionsService
         });
 
         foreach ($results as $key => $item) {
+          if ($item['conversion_type'] == 11) {
+            continue;
+          }
           $click = Click::query()
             ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
             ->select('link_histories.*', 'clicks.id as click_id')

@@ -54,6 +54,10 @@ class UpdateOrderJob implements ShouldQueue
         $updateData = $data['update'] ?? [];
         // $insertData = $updateData;
         // dd($insertData);
+      } else if ($mid == 'partnerize') {
+        $data = self::getPartnerizeUpdateData($sheet, $mid);
+        $insertData = $data['insert'] ?? [];
+        $updateData = $data['update'] ?? [];
       }
 
       try {
@@ -236,9 +240,9 @@ class UpdateOrderJob implements ShouldQueue
     $sysRate = 0.3;
 
     foreach ($sheet as $key => $row) {
-      if ($row['commission_date'] != '2025-11') {
-        continue;
-      }
+      // if ($row['commission_date'] != '2025-11') {
+      //   continue;
+      // }
 
       $subid = $row['tripsub1'];
       // $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
@@ -253,6 +257,8 @@ class UpdateOrderJob implements ShouldQueue
       $userId = $clickData->linkHistory->user_id;
       $clickId = $clickData->id;
       $campaginId = $clickData->linkHistory->campaign_id;
+
+      dd($campaginId);
 
       if ($campaginId == 31) {
         $pubRate = 0.8;
@@ -296,7 +302,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202602-4'
+        'comment' => 'payment 202603-1'
       ];
     }
 
@@ -378,6 +384,90 @@ class UpdateOrderJob implements ShouldQueue
         'updated_at' => Carbon::now(),
         'comment' => 'payment 202602-3'
       ];
+    }
+
+    return $upsertData;
+  }
+
+  public static function getPartnerizeUpdateData($sheet, $mid)
+  {
+    $upsertData = [];
+    $pubRate = 0.7;
+    $sysRate = 0.3;
+
+    foreach ($sheet as $key => $row) {
+      // dd($row);
+      // if ($row['commission_date'] != '2025-03' && $row['commission_date'] != '2025-02') {
+      //   continue;
+      // }
+      $subid = $row['publisher_reference'];
+
+      $clickData = Click::where('code', $subid)->first();
+
+      if (empty($clickData)) {
+        $subid = '138860e16b18008cfbfa53dc802589d95f80893b';
+        $clickData = Click::where('code', $subid)->first();
+      }
+
+      $userId = $clickData->linkHistory->user_id;
+      $clickId = $clickData->id;
+      $campaginId = $clickData->linkHistory->campaign_id;
+
+      $arrayKey = 'update';
+
+      $time = Carbon::parse(trim($row['conversion_date_time']));
+      $orderCode = trim($row['conversion_id']);
+      $productCode = $row['conversion_item_id'];
+      $quantity = 1;
+
+      $originalSales = $row['value'];
+      if (gettype($originalSales) == 'string')
+      {
+        $originalSales = str_replace(',', '', $originalSales);
+        $originalSales = floatval($originalSales);
+      }
+
+      $sales = ($originalSales * self::USD_RATE) / self::VAT_RATE;
+      $productName = $row['category'];
+      $sumCom = ($row['item_publisher_commission']) / self::VAT_RATE;
+
+      if (gettype($sumCom) == 'string')
+      {
+        $sumCom = str_replace(',', '', $sumCom);
+        $sumCom = floatval($sumCom);
+      }
+
+      // if ($sumCom < 0) {
+      //   $arrayKey = 'insert';
+      // }
+
+      // $arrayKey = 'insert';
+
+      $commissionPub = $sumCom * self::USD_RATE * $pubRate;
+      $commissionSys = $sumCom * self::USD_RATE * $sysRate;
+      $status = 'Pending';
+
+      $upsertData[$arrayKey][] = [
+        'code' => sha1(time() + $key),
+        'order_code' => $orderCode,
+        'order_code' => $orderCode,
+        'order_time' => $time,
+        'unit_price' => $sales,
+        'quantity' => $quantity,
+        'commission_pub' => $commissionPub,
+        'commission_sys' => $commissionSys,
+        'status' => $status,
+        'product_code' => $productCode,
+        'product_name' => $productName,
+        'campaign_id' => $campaginId,
+        'click_id' => $clickId,
+        'user_id' => $userId,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now(),
+        'comment' => 'payment 202603-1'
+      ];
+
+      // dd($upsertData);
     }
 
     return $upsertData;
