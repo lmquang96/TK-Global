@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
   )
   ->withMiddleware(function (Middleware $middleware) {
     $middleware->append(SwitchUser::class);
+    $middleware->redirectTo(
+        guests: '/login',
+        users: '/'
+    );
   })
   ->withExceptions(function (Exceptions $exceptions) {
     //
