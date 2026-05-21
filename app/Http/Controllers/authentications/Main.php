@@ -28,7 +28,7 @@ class Main extends Controller
     if (Auth::attempt($credentials, $remember)) {
       $request->session()->regenerate();
 
-      return redirect()->intended('dashboard');
+      return redirect()->intended('/');
     }
 
     return back()->withErrors([
