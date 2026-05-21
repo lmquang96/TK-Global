@@ -15,12 +15,13 @@ use Illuminate\Http\Request;
 
 // Main Page Route
 
-Route::get('/login', [AuthMain::class, 'login'])->name('login');
-Route::post('/authenticate', [AuthMain::class, 'authenticate'])->name('authenticate');
-Route::get('/register', [AuthMain::class, 'register'])->name('register');
-Route::post('/store-user', [AuthMain::class, 'storeUser'])->name('store-user');
-Route::post('/logout', [AuthMain::class, 'logout'])->name('logout');
-Route::get('/forgot-password', [AuthMain::class, 'forgotPassword'])->name('forgot-password');
+Route::middleware(['guest'])->group(function () {
+  Route::get('/login', [AuthMain::class, 'login'])->name('login');
+  Route::post('/authenticate', [AuthMain::class, 'authenticate'])->name('authenticate');
+  Route::get('/register', [AuthMain::class, 'register'])->name('register');
+  Route::post('/store-user', [AuthMain::class, 'storeUser'])->name('store-user');
+  Route::get('/forgot-password', [AuthMain::class, 'forgotPassword'])->name('forgot-password');
+});
 
 Route::get('/email/verify', function () {
   return view('content.authentications.verify-email');
@@ -43,6 +44,7 @@ Route::get('/privacy-policy', [GuideMain::class, 'privacyPolicy'])->name('privac
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
+  Route::post('/logout', [AuthMain::class, 'logout'])->name('logout');
   Route::get('/', [Analytics::class, 'index'])->name('dashboard');
   Route::get('/data-chart', [Analytics::class, 'getDataChart'])->name('get-data-chart');
   Route::get('/click-chart', [Analytics::class, 'getClickChart'])->name('get-click-chart');
