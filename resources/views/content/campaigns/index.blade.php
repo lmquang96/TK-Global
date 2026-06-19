@@ -84,7 +84,7 @@
               <i class="bx bx-git-branch mb-2"></i>
               <span style="margin-left: 0.5rem">{{ $campaign->cp_type }}</span>
             </div>
-            <a href="{{ route('campaigns-detail', ['id' => $campaign->code]) }}" class="btn btn-primary">Chi tiết</a>
+            <a href="{{ route('campaigns-detail', ['id' => $campaign->id]) }}" class="btn btn-primary">Chi tiết</a>
           </div>
         </div>
       </div>
