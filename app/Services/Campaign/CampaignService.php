@@ -41,8 +41,16 @@ class CampaignService
 
   public function getDetail($id)
   {
-    return Campaign::statusActive()
+    $campaign = Campaign::statusActive()
       ->where('code', $id)
       ->first();
+
+    if (!$campaign) {
+      $campaign = Campaign::statusActive()
+        ->where('id', $id)
+        ->first();
+    }
+
+    return $campaign;
   }
 }
