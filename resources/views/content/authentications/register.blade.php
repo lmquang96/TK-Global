@@ -44,6 +44,11 @@
                 <input type="text" class="form-control" id="name" name="name" placeholder="Nhập họ tên của bạn"
                   autofocus value="{{ old('name') }}">
               </div>
+              <div class="mb-6">
+                <label for="phone" class="form-label">Số điện thoại</label>
+                <input type="text" class="form-control" id="phone" name="phone"
+                  placeholder="Nhập số điện thoại của bạn" value="{{ old('phone') }}">
+              </div>
               <div class="mb-6 form-password-toggle">
                 <label class="form-label" for="password">Mật khẩu</label>
                 <div class="input-group input-group-merge">

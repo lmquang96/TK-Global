@@ -38,6 +38,9 @@ $('#formRegister').validate({
       regex:
         '^[A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*){1,}$'
     },
+    phone: {
+      required: true,
+    },
     password: {
       required: true,
       maxlength: 50,
@@ -62,6 +65,9 @@ $('#formRegister').validate({
       required: 'Họ tên là bắt buộc',
       maxlength: 'Họ tên không được quá dài',
       regex: 'Họ tên có ít nhất 2 từ, viết hoa mỗi chữ cái đầu, những chữ cái khác viết thường. Ví dụ: Nguyễn Nhạc'
+    },
+    phone: {
+      required: 'Số điện thoại là bắt buộc',
     },
     password: {
       required: 'Mật khẩu là bắt buộc',

@@ -19,7 +19,8 @@ class RegisterService
       ])->id;
 
       Profile::create([
-        'user_id' => $userId
+        'user_id' => $userId,
+        'phone' => $request->phone
       ]);
     } catch (\Throwable $th) {
       Log::error('Lỗi xảy ra khi tạo user: ' . $th->getMessage());
