@@ -34,6 +34,7 @@ class ReportOrderExport implements FromCollection, WithHeadings
       "Thời gian click",
       "Chiến dịch",
       "ID đơn hàng",
+      "Tên sản phẩm",
       "Giá trị đơn hàng(₫)",
       "Hoa hồng(₫)",
       "Trạng thái",
