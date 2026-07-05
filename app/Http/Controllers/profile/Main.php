@@ -83,4 +83,9 @@ class Main extends Controller
     }
     return redirect()->back()->withErrors(['message' => $doUpload['data']]);
   }
+
+  public function apiManager()
+  {
+    return view('content.profile.apiManager');
+  }
 }

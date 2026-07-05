@@ -464,10 +464,8 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202603-1'
+        'comment' => 'payment 202607-3'
       ];
-
-      // dd($upsertData);
     }
 
     return $upsertData;

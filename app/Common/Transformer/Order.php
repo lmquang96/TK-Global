@@ -12,6 +12,7 @@ class Order
       'click_time' => $item->click->created_at,
       'campaign' => $item->campaign->name,
       'order_code' => $item->order_code,
+      'product_name' => $item->product_name,
       'unit_price' => $item->unit_price,
       'commission_pub' => $item->commission_pub,
       'status' => $item->status == 'Pending' ? 'Tạm duyệt' : ($item->status == 'Approved' ? 'Đã duyệt' : 'Đã hủy'),

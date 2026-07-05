@@ -26,6 +26,8 @@
               Thông tin cá nhân</a></li>
           <li class="nav-item"><a class="nav-link active" href="javascript:void(0);"><i
                 class="bx bx-sm bx-lock-alt me-1_5"></i> Đổi mật khẩu</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('api-manager') }}"><i
+                class="bx bx-sm bx-extension me-1_5"></i> API Access</a></li>
         </ul>
       </div>
       <div class="card mb-6">
