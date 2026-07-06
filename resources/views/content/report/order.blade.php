@@ -168,7 +168,8 @@
     </div>
   </div>
   <div>
-    <a href="{{ route('report-order-export', request()->all()) }}" target="_blank" class="btn btn-primary mb-6 text-white">
+    <a href="{{ route('report-order-export', request()->all()) }}" target="_blank"
+      class="btn btn-primary mb-6 text-white">
       <span class="tf-icons bx bx-download bx-18px me-2"></span>Export
     </a>
   </div>
@@ -202,6 +203,7 @@
               <th>Thời gian click</th>
               <th>Chiến dịch</th>
               <th>ID đơn hàng</th>
+              <th>Tên sản phẩm</th>
               <th>Giá trị đơn hàng(₫)</th>
               <th>Hoa hồng(₫)</th>
               <th>Trạng thái</th>
@@ -229,6 +231,9 @@
                 </td>
                 <td>
                   {{ $row->order_code }}
+                </td>
+                <td>
+                  {{ $row->product_name }}
                 </td>
                 <td>
                   {{ number_format($row->unit_price, 0, ',', '.') }}
