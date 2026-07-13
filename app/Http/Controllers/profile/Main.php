@@ -84,8 +84,24 @@ class Main extends Controller
     return redirect()->back()->withErrors(['message' => $doUpload['data']]);
   }
 
-  public function apiManager()
+  public function apiManager(UserService $userService)
   {
-    return view('content.profile.apiManager');
+    $clientToken = $userService->getApiTokenByUser();
+
+    return view('content.profile.apiManager', compact('clientToken'));
+  }
+
+  public function generateClientId(UserService $userService)
+  {
+    $newclientId = $userService->generateClientId();
+
+    return redirect()->back();
+  }
+
+  public function resetClientId(UserService $userService)
+  {
+    $newclientId = $userService->resetClientId();
+
+    return redirect()->back();
   }
 }

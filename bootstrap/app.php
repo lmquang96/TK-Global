@@ -11,16 +11,16 @@ $preDate = Carbon::now()->subDays(1)->format('Ymd');
 
 return Application::configure(basePath: dirname(__DIR__))
   ->withRouting(
-    web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-    commands: __DIR__.'/../routes/console.php',
+    web: __DIR__ . '/../routes/web.php',
+    api: __DIR__ . '/../routes/api.php',
+    commands: __DIR__ . '/../routes/console.php',
     health: '/up',
   )
   ->withMiddleware(function (Middleware $middleware) {
     $middleware->append(SwitchUser::class);
     $middleware->redirectTo(
-        guests: '/login',
-        users: '/'
+      guests: '/login',
+      users: '/'
     );
   })
   ->withExceptions(function (Exceptions $exceptions) {
@@ -28,5 +28,5 @@ return Application::configure(basePath: dirname(__DIR__))
   })
   ->withSchedule(function ($schedule) use ($date, $preDate) {
     $schedule->command('app:conversions-scan')->everyTenMinutes();
-    $schedule->command('app:partnerize-scan '.$preDate.' '.$date)->everyTwoHours();
+    $schedule->command('app:partnerize-scan ' . $preDate . ' ' . $date)->everyTwoHours();
   })->create();

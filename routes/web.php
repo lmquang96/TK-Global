@@ -75,6 +75,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/change-password', [ProfileMain::class, 'changePass'])->name('change-password');
     Route::put('/update-id-image', [ProfileMain::class, 'updateIdImage'])->name('profile-update-id-image');
     Route::get('/api-manager', [ProfileMain::class, 'apiManager'])->name('api-manager');
+    Route::get('/generate-client', [ProfileMain::class, 'generateClientId'])->name('generate-client');
+    Route::post('/update-client', [ProfileMain::class, 'resetClientId'])->name('update-client');
   });
 
   Route::put('/update-password', [AuthMain::class, 'updatePass'])->name('update-password');

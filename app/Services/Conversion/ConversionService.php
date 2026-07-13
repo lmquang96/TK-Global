@@ -2,13 +2,18 @@
 
 namespace App\Services\Conversion;
 
+use App\Models\ClientCredential;
 use App\Models\Conversion;
+use App\Models\OauthToken;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class ConversionService
 {
   const PER_PAGE = 25;
+  const MSG_MISSING_TOKEN = 'Missing token!';
+  const MSG_TOKEN_EXPIRED = 'Token expired!';
 
   public function getConversionsGroupByCampagin($request)
   {
@@ -37,13 +42,24 @@ class ConversionService
     return $data;
   }
 
-  public function getConversions($request)
+  public function getConversions($request, $rule = 'server')
   {
+    $token = $request->bearerToken();
+    $tokenData = null;
+    if ($rule === 'client') {
+      $tokenData = $this->validToken($token);
+      if (is_array($tokenData) && !$tokenData['status']) {
+        return $tokenData;
+      }
+    }
 
     $data = Conversion::query()
       ->when($request->date, function ($q, $date) {
         $dateArray = explode(" - ", $date);
         $q->whereBetween('order_time', [$dateArray[0] . ' 00:00:00', $dateArray[1] . ' 23:59:59']);
+      })
+      ->when($request->from_date && $request->to_date, function ($q) use ($request) {
+        $q->whereBetween('order_time', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
       })
       ->when($request->keyword, function ($q, $keyword) {
         return $q->whereHas('campaign', function ($query) use ($keyword) {
@@ -97,8 +113,46 @@ class ConversionService
           });
         });
       })
-      ->where('user_id', Auth::user()->id);
+      ->when($rule === 'server', function ($q) {
+        return $q->where('user_id', Auth::user()->id);
+      })
+      ->when($rule === 'client', function ($q) use ($tokenData) {
+        $userId = $tokenData->clientCredential->user_id;
+        // return $q->where('user_id', $userId);
+        return $q->where('user_id', 24);
+      });
 
     return $data;
+  }
+
+  private function validToken($token)
+  {
+    if (!$token) {
+      return [
+        'status' => false,
+        'data' => self::MSG_MISSING_TOKEN
+      ];
+    }
+
+    $tokenData = OauthToken::where('token_hash', $token)->first();
+
+    if (!$tokenData) {
+      return [
+        'status' => false,
+        'data' => self::MSG_MISSING_TOKEN
+      ];
+    }
+
+    $now = Carbon::now();
+    $expiresAt = Carbon::parse($tokenData->expires_at);
+
+    if ($expiresAt->diffInHours($now) > 6) {
+      return [
+        'status' => false,
+        'data' => self::MSG_TOKEN_EXPIRED
+      ];
+    }
+
+    return $tokenData;
   }
 }

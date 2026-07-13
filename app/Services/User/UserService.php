@@ -4,13 +4,17 @@ namespace App\Services\User;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\ClientCredential;
+use Illuminate\Support\Str;
 
 class UserService
 {
   const MSG_UPDATE_SUCCESS = 'Cập nhật thành công!';
   const MSG_UPDATE_ERROR = 'Cập nhật thất bại, vui lòng liên hệ với chúng tôi để khắc phục sự cố!';
 
-  protected $user;
+  protected User $user;
 
   public function __construct()
   {
@@ -19,7 +23,7 @@ class UserService
     $this->user = Auth::user();
   }
 
-  public function updatePersonalInfo($request)
+  public function updatePersonalInfo(Request $request)
   {
     $city = $request->city;
     $city_code = $city_name = null;
@@ -63,7 +67,7 @@ class UserService
     ];
   }
 
-  public function updatePaymentInfo($request)
+  public function updatePaymentInfo(Request $request)
   {
     $bank = $request->bank;
     $bank_code = $bank_name = null;
@@ -98,14 +102,9 @@ class UserService
         'data' => self::MSG_UPDATE_ERROR
       ];
     }
-
-    return [
-      'status' => false,
-      'data' => self::MSG_UPDATE_ERROR
-    ];
   }
 
-  public function updateAvatar($request)
+  public function updateAvatar(Request $request)
   {
     $avatar = $request->file('avatar');
     try {
@@ -130,7 +129,7 @@ class UserService
     }
   }
 
-  public function updateIdImage($data)
+  public function updateIdImage(array $data)
   {
     try {
       if (!empty($this->user->profile)) {
@@ -152,5 +151,38 @@ class UserService
         'data' => self::MSG_UPDATE_ERROR
       ];
     }
+  }
+
+  public function getApiTokenByUser()
+  {
+    return $this->user->clientCredential;
+  }
+
+  public function generateClientId()
+  {
+    $clientKey = Str::random(24);
+    $clientSecret = Str::random(48);
+
+    $newClient = ClientCredential::create([
+      'client_id' => $clientKey,
+      'client_secret' => $clientSecret,
+      'user_id' => $this->user->id
+    ]);
+
+    return $newClient;
+  }
+
+  public function resetClientId()
+  {
+    $clientKey = Str::random(24);
+    $clientSecret = Str::random(48);
+
+    $newClient = ClientCredential::where('user_id', $this->user->id)
+      ->update([
+        'client_id' => $clientKey,
+        'client_secret' => $clientSecret
+      ]);
+
+    return $newClient;
   }
 }

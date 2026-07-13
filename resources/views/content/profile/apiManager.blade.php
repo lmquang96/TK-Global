@@ -36,39 +36,70 @@
         <div class="card-body pt-1">
           <div>Use your API Token to authenticate requests.</div>
           <div>Base URL</div>
-          <div>https://api.network.com/v1</div>
-          <div>[ View Documentation ]</div>
+          <div>{{ env('APP_URL') . '/docs' }}</div>
+          <div><a href="{{ env('APP_URL') . '/docs' }}">[ View Documentation ]</a></div>
         </div>
       </div>
       <div class="card mb-6">
-        <h5 class="card-header">Your API Tokens</h5>
+        <h5 class="card-header">Your API Credentials</h5>
         <div class="card-body pt-1">
-          <div class="mb-4">
-            <button class="btn btn-primary disabled">+ Create Token</button>
-          </div>
-          <div class="col-md-6 mb-4">
-            <div class="input-group">
-              <input type="text" class="form-control" id="affiliate-id"
-                value="{{ auth()->user()->profile->affiliate_id }}" readonly
-                style="color: #a7acb2;     background-color: rgba(34, 48, 62, 0.06); border-color: #cacdd1; opacity: 1;">
-              <button class="btn btn-primary" type="button" onclick="handleCopy('#affiliate-id')">
-                <i class='bx bx-copy me-2'></i> Copy
-              </button>
+          @if (!$clientToken)
+            <div class="mb-4">
+              <form action="{{ route('generate-client') }}" method="GET">
+                <button class="btn btn-primary{{ $apiToken ? ' disabled' : '' }}">+ Create Token</button>
+              </form>
             </div>
-          </div>
-          <div class="mb-4">
-            Please save it securely.
-          </div>
-          <div>
-            <button class="btn btn-primary disabled">+ Generate new Token</button>
-          </div>
+          @else
+            <div class="col-md-6 mb-4">
+              <label class="form-label" for="client_id">API Key</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="client_id" value="{{ $clientToken->client_id }}" readonly
+                  style="color: #a7acb2; background-color: rgba(34, 48, 62, 0.06); border-color: #cacdd1; opacity: 1;">
+                <button class="btn btn-primary" type="button"
+                  onclick="handleCopy('#client_id', 'Sao chép API key thành công')">
+                  <i class='bx bx-copy me-2'></i> Copy
+                </button>
+              </div>
+            </div>
+            <div class="col-md-6 mb-4">
+              <label class="form-label" for="client_secret">API Secret</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="client_secret" value="{{ $clientToken->client_secret }}"
+                  readonly
+                  style="color: #a7acb2; background-color: rgba(34, 48, 62, 0.06); border-color: #cacdd1; opacity: 1;">
+                <button class="btn btn-primary" type="button"
+                  onclick="handleCopy('#client_secret', 'Sao chép API Secret thành công')">
+                  <i class='bx bx-copy me-2'></i> Copy
+                </button>
+              </div>
+            </div>
+            <div>
+              <form action="{{ route('update-client') }}" method="POST">
+                @csrf
+                <button class="btn btn-primary">+ Generate new Token</button>
+              </form>
+            </div>
+          @endif
         </div>
       </div>
     </div>
   </div>
+  <!-- Toast with Placements -->
+  <x-toast type="info" message="Sao chép thành công" />
+  <!-- Toast with Placements -->
   <!--/ Text alignment -->
 
   <!--/ Card layout -->
 @endsection
 @section('page-script')
+  <script>
+    function handleCopy(target, $msg = "Sao chép thành công!") {
+      let copyText = $(target);
+      copyText.select();
+      copyText[0].setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      $(".toast-body").html($msg);
+      toastShow();
+    }
+  </script>
 @endsection
