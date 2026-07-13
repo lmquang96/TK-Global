@@ -35,8 +35,6 @@
         <h5 class="card-header">API Documentation</h5>
         <div class="card-body pt-1">
           <div>Use your API Token to authenticate requests.</div>
-          <div>Base URL</div>
-          <div>{{ env('APP_URL') . '/docs' }}</div>
           <div><a href="{{ env('APP_URL') . '/docs' }}">[ View Documentation ]</a></div>
         </div>
       </div>

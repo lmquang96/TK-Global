@@ -99,7 +99,7 @@
     <ul class="toc-footer" id="toc-footer">
       <li style="padding-bottom: 5px;"><a href="{{ route('scribe.postman') }}">View Postman collection</a></li>
       <li style="padding-bottom: 5px;"><a href="{{ route('scribe.openapi') }}">View OpenAPI spec</a></li>
-      {{-- <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li> --}}
+      {{-- <li><a href="http://github.com/knuckleswtf/scribe"> Documentation powered by Scribe ✍</a></li> --}}
     </ul>
 
     <ul class="toc-footer" id="last-updated">
@@ -117,7 +117,8 @@
 
       <h1 id="authenticating-requests">Authenticating requests</h1>
       <p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value
-        <strong><code>"Bearer {your_access_token}"</code></strong>.</p>
+        <strong><code>"Bearer {your_access_token}"</code></strong>.
+      </p>
       <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation
         below.</p>
       <p>Please obtain the token from the API /api/v1/token.</p>
