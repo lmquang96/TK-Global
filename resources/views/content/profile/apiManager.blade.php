@@ -44,7 +44,7 @@
           @if (!$clientToken)
             <div class="mb-4">
               <form action="{{ route('generate-client') }}" method="GET">
-                <button class="btn btn-primary{{ $apiToken ? ' disabled' : '' }}">+ Create Token</button>
+                <button class="btn btn-primary{{ $clientToken ? ' disabled' : '' }}">+ Create Token</button>
               </form>
             </div>
           @else
