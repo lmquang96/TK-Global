@@ -26,7 +26,11 @@ class ReportResource extends JsonResource
             'product_name' => $this->product_name,
             'confirmed_at' => $this->confirmed_at,
             'paid_at' => $this->paid_at,
-            'campaign_id' => $this->campaign_id
+            'campaign_id' => $this->campaign_id,
+            'sub1' => $row->click->linkHistory->sub1 ?? 'N/A',
+            'sub2' => $row->click->linkHistory->sub2 ?? 'N/A',
+            'sub3' => $row->click->linkHistory->sub3 ?? 'N/A',
+            'sub4' => $row->click->linkHistory->sub4 ?? 'N/A',
         ];
     }
 }
