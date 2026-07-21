@@ -112,7 +112,7 @@
     <div class="content">
       <h1 id="introduction">Introduction</h1>
       <aside>
-        <strong>Base URL</strong>: <code>http://localhost:8000</code>
+        <strong>Base URL</strong>: <code>https://pub.tkglobal.asia</code>
       </aside>
 
       <h1 id="authenticating-requests">Authenticating requests</h1>
