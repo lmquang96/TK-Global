@@ -13,6 +13,15 @@ class Conversion extends Model
 
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'price' => 'float',
+            'commission' => 'float',
+            'quantity' => 'integer'
+        ];
+    }
+
     public function click()
     {
         return $this->belongsTo(Click::class);
