@@ -27,10 +27,10 @@ class ReportResource extends JsonResource
             'confirmed_at' => $this->confirmed_at,
             'paid_at' => $this->paid_at,
             'campaign_id' => $this->campaign_id,
-            'sub1' => $row->click->linkHistory->sub1 ?? 'N/A',
-            'sub2' => $row->click->linkHistory->sub2 ?? 'N/A',
-            'sub3' => $row->click->linkHistory->sub3 ?? 'N/A',
-            'sub4' => $row->click->linkHistory->sub4 ?? 'N/A',
+            'sub1' => $row->click->linkHistory->sub1 ?? null,
+            'sub2' => $row->click->linkHistory->sub2 ?? null,
+            'sub3' => $row->click->linkHistory->sub3 ?? null,
+            'sub4' => $row->click->linkHistory->sub4 ?? null,
         ];
     }
 }
