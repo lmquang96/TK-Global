@@ -16,8 +16,8 @@ class Conversion extends Model
     protected function casts(): array
     {
         return [
-            'price' => 'float',
-            'commission' => 'float',
+            'unit_price' => 'float',
+            'commission_pub' => 'float',
             'quantity' => 'integer'
         ];
     }
