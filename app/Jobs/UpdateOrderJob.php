@@ -9,13 +9,14 @@ use App\Models\Conversion;
 use App\Models\Click;
 use App\Models\LinkHistory;
 use App\Models\User;
+use App\Models\Config;
 
 class UpdateOrderJob implements ShouldQueue
 {
   use Queueable;
 
-  protected $mid;
-  protected $data;
+  protected string $mid;
+  protected array $data;
 
   const USD_RATE = 22500;
   const MYR_RATE = 5962.5;
@@ -42,14 +43,25 @@ class UpdateOrderJob implements ShouldQueue
 
     foreach ($data as $sheet) {
       if ($mid == 'klook' || $mid == 'klookhk') {
+        $ads = Config::query()
+          ->where('name', 'klook_ads')
+          ->pluck('value')
+          ->first();
+
+        if (empty($ads)) {
+          continue;
+        }
+
+        $ads = json_decode($ads, true);
+
         $insertData = [];
-        $updateData = self::getKlookUpdateData($sheet, $mid);
+        $updateData = self::getKlookUpdateData($sheet, $mid, $ads);
       } else if ($mid == 'tripcom') {
         $data = self::getTripcomUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
         $updateData = $data['update'] ?? [];
       } else if ($mid == 'tripcomnetwork' || $mid == 'traveloka') {
-        $data = self::getInvolveUpdateData($sheet, $mid);
+        $data = self::getInvolveUpdateData($sheet);
         $insertData = $data['insert'] ?? [];
         $updateData = $data['update'] ?? [];
         // $insertData = $updateData;
@@ -105,7 +117,7 @@ class UpdateOrderJob implements ShouldQueue
     }
   }
 
-  public static function getKlookUpdateData($sheet, $mid)
+  public static function getKlookUpdateData($sheet, $mid, $ads)
   {
     $updateData = [];
 
@@ -309,7 +321,7 @@ class UpdateOrderJob implements ShouldQueue
     return $upsertData;
   }
 
-  public static function getInvolveUpdateData($sheet, $mid)
+  public static function getInvolveUpdateData(array $sheet)
   {
     $upsertData = [];
     $pubRate = 0.7;
@@ -345,8 +357,7 @@ class UpdateOrderJob implements ShouldQueue
       $quantity = 1;
 
       $originalSales = $row['sale_amount_myr'];
-      if (gettype($originalSales) == 'string')
-      {
+      if (gettype($originalSales) == 'string') {
         $originalSales = str_replace(',', '', $originalSales);
         $originalSales = floatval($originalSales);
       }
@@ -368,7 +379,6 @@ class UpdateOrderJob implements ShouldQueue
       $upsertData[$arrayKey][] = [
         'code' => sha1(time() + $key),
         'order_code' => $orderCode,
-        'order_code' => $orderCode,
         'order_time' => $time,
         'unit_price' => $sales,
         'quantity' => $quantity,
@@ -382,7 +392,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202602-3'
+        'comment' => 'payment 202608-01'
       ];
     }
 
@@ -421,8 +431,7 @@ class UpdateOrderJob implements ShouldQueue
       $quantity = 1;
 
       $originalSales = $row['value'];
-      if (gettype($originalSales) == 'string')
-      {
+      if (gettype($originalSales) == 'string') {
         $originalSales = str_replace(',', '', $originalSales);
         $originalSales = floatval($originalSales);
       }
@@ -431,8 +440,7 @@ class UpdateOrderJob implements ShouldQueue
       $productName = $row['category'];
       $sumCom = ($row['item_publisher_commission']) / self::VAT_RATE;
 
-      if (gettype($sumCom) == 'string')
-      {
+      if (gettype($sumCom) == 'string') {
         $sumCom = str_replace(',', '', $sumCom);
         $sumCom = floatval($sumCom);
       }
@@ -450,7 +458,6 @@ class UpdateOrderJob implements ShouldQueue
       $upsertData[$arrayKey][] = [
         'code' => sha1(time() + $key),
         'order_code' => $orderCode,
-        'order_code' => $orderCode,
         'order_time' => $time,
         'unit_price' => $sales,
         'quantity' => $quantity,
@@ -464,7 +471,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202607-3'
+        'comment' => 'payment 202608-03'
       ];
     }
 
