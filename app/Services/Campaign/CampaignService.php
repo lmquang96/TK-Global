@@ -18,7 +18,7 @@ class CampaignService
 
   public function getAll($request)
   {
-    return Cache::remember('campaigns_all', 600, function () use ($request) {
+    return Cache::remember('campaigns_all_' . $request->keyword . '_' . $request->category . '_' . $request->cpType, 300, function () use ($request) {
       return Campaign::statusActive()
         ->when($request->keyword, function ($q, $keyword) {
           $q->where('name', 'like', '%' . $keyword . '%');
