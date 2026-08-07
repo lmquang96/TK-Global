@@ -118,8 +118,7 @@ class ConversionService
       })
       ->when($rule === 'client', function ($q) use ($tokenData) {
         $userId = $tokenData->clientCredential->user_id;
-        // return $q->where('user_id', $userId);
-        return $q->where('user_id', 24);
+        return $q->where('user_id', $userId);
       });
 
     return $data;
