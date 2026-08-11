@@ -49,4 +49,6 @@ Route::get('/test', function () {
 Route::get('/tiktok/callback', function (Request $request) {
   $code = $request->query('code');
   $state = $request->query('state');
+
+  dd($code, $state);
 });
