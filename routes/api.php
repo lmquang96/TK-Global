@@ -45,3 +45,8 @@ Route::get('/test', function () {
   $data = Conversion::whereIn('order_code', $orderList)->get();
   dd($data);
 });
+
+Route::get('/tiktok/callback', function (Request $request) {
+  $code = $request->query('code');
+  $state = $request->query('state');
+});

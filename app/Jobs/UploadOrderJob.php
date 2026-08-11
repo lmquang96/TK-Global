@@ -15,8 +15,8 @@ class UploadOrderJob implements ShouldQueue
 {
   use Queueable;
 
-  protected $mid;
-  protected $data;
+  protected string $mid;
+  protected array $data;
 
   const USD_RATE = 22500;
   const KLOOK_ID = 1;
@@ -90,6 +90,11 @@ class UploadOrderJob implements ShouldQueue
         $upsertData = $upsertData['insert'];
       } elseif ($mid == 'partnerize') {
         $upsertData = self::getPartnerizeUpsertData($sheet, $mid);
+
+        $updateData = $upsertData['update'] ?? [];
+        $upsertData = $upsertData['insert'];
+      } elseif ($mid == 'getyourguide') {
+        $upsertData = self::getGetyourguideUpsertData($sheet);
 
         $updateData = $upsertData['update'] ?? [];
         $upsertData = $upsertData['insert'];
@@ -692,6 +697,63 @@ class UploadOrderJob implements ShouldQueue
       ];
     }
 
+    return $upsertData;
+  }
+
+  public function getGetyourguideUpsertData(array $sheet)
+  {
+    $upsertData = [];
+    $pubRate = 0.7;
+    $sysRate = 0.3;
+
+    foreach ($sheet as $key => $row) {
+      $subid = $row['campaign'];
+
+      if (empty($subid)) {
+        continue;
+      }
+
+      $clickData = Click::where('code', $subid)->first();
+
+      if (empty($clickData)) {
+        continue;
+      }
+
+      $userId = $clickData->linkHistory->user_id;
+      $clickId = $clickData->id;
+      $campaginId = $clickData->linkHistory->campaign_id;
+
+      $dataKey = 'insert';
+      $time = Carbon::parse(trim($row['booking_date']));
+      $orderCode = $row['booking_reference'];
+      $productCode = $row['booking_reference'];
+      $quantity = 1;
+
+      $sales = 0;
+      $productName = trim($row['activity']);
+      $sumCom = (floatval($row['potential_income'])) / self::VAT_RATE;
+      $commissionPub = $sumCom * self::USD_RATE * $pubRate;
+      $commissionSys = $sumCom * self::USD_RATE * $sysRate;
+      $status = 'Pending';
+
+      $upsertData[$dataKey][] = [
+        'code' => sha1(time() + $key),
+        'order_code' => $orderCode,
+        'order_time' => $time,
+        'unit_price' => $sales,
+        'quantity' => $quantity,
+        'commission_pub' => $commissionPub,
+        'commission_sys' => $commissionSys,
+        'status' => $status,
+        'product_code' => $productCode,
+        'product_name' => $productName,
+        'campaign_id' => $campaginId,
+        'click_id' => $clickId,
+        'user_id' => $userId,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
+      ];
+    }
     return $upsertData;
   }
 }
