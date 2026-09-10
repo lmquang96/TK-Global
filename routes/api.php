@@ -7,6 +7,7 @@ use App\Http\Controllers\Postback;
 use App\Http\Controllers\api\Common;
 use App\Http\Controllers\api\publisher\AuthController;
 use App\Http\Controllers\api\publisher\ReportController;
+use App\Http\Controllers\links\Main as LinkMain;
 use App\Models\CampaignPostback;
 use App\Models\Conversion;
 
@@ -52,3 +53,6 @@ Route::get('/tiktok/callback', function (Request $request) {
 
   dd($code, $state);
 });
+
+
+Route::get('/tiktok/create-link', [LinkMain::class, 'createLinkTiktok']);

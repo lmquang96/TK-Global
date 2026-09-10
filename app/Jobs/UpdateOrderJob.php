@@ -70,6 +70,10 @@ class UpdateOrderJob implements ShouldQueue
         $data = self::getPartnerizeUpdateData($sheet, $mid);
         $insertData = $data['insert'] ?? [];
         $updateData = $data['update'] ?? [];
+      } else if ($mid == 'getyourguide') {
+        $data = self::getGetYourGuideUpdateData($sheet, $mid);
+        $insertData = $data['insert'] ?? [];
+        $updateData = $data['update'] ?? [];
       }
 
       try {
@@ -471,7 +475,7 @@ class UpdateOrderJob implements ShouldQueue
         'user_id' => $userId,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now(),
-        'comment' => 'payment 202608-03'
+        'comment' => 'payment 202609-03'
       ];
     }
 
@@ -489,5 +493,26 @@ class UpdateOrderJob implements ShouldQueue
       $usdObject2 = explode("$", $usdObject[0]);
       return floatval($usdObject2[1]);
     }
+  }
+
+  public static function getGetYourGuideUpdateData(array $sheet) {
+    $pubRate = 0.7;
+    $sysRate = 0.3;
+
+    foreach ($sheet as $key => $row) {
+      $comPub = $row['commission'] * self::USD_RATE * $pubRate / self::VAT_RATE;
+      $comSys = $row['commission'] * self::USD_RATE * $sysRate / self::VAT_RATE;
+
+      Conversion::query()
+      ->where('campaign_id', 43)
+      ->where('order_code', $row['ocd'])
+      ->update([
+        'commission_pub' => $comPub,
+        'commission_sys' => $comSys,
+        'comment' => 'payment 202609',
+        'updated_at' => Carbon::now()
+      ]);
+    }
+    dd('done');
   }
 }
