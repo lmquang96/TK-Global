@@ -132,7 +132,7 @@
                           <input type="text" class="form-control bg-white"
                             id="link-history-root-input-{{ $linkHistory->id }}" placeholder=""
                             aria-label="Example text with button addon" aria-describedby="button-addon1"
-                            value="{{ $linkHistory->originial_url }}">
+                            value="{{ $linkHistory->original_url }}">
                           <button class="btn btn-primary" style="--bs-btn-padding-x: 0.75rem;" type="button"
                             onclick="handleCopy('#link-history-root-input-{{ $linkHistory->id }}')">
                             <i class='bx bx-copy'></i>

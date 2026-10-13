@@ -77,9 +77,9 @@ class LinkService
 
   private function getLinkTiktok()
   {
-    $accessToken = 'ROW_BQ_b2gAAAABwr-_kjfieGD29cLJ6cN-0-BT-gTVx5ArfIkBryYo4zZxwbCVkoUD21es0k12ddaludFLlaR-p4uDuRqYX9QFw';
+    $accessToken = 'ROW__S5y1wAAAABwr-_kjfieGD29cLJ6cN-0IkK90wDe_rQtP1dj4AhkFBZnKNkm-2d5Zcj4KRfhkJtGSKdp1eu8SUHslJqpsG_GFkp3NWfRyrPo1lbPIfB9Ww';
 
-    $refreshToken = 'ROW__H3z-QAAAAAexlBo9rTYwTMJpGzV_oQ3_ceKlXLXSZV1sFDJ7XewsQV_MX2s9_nAL00ib0Mrarq7MbYVEyG4jHupQy086gGS';
+    $refreshToken = 'ROW_dWBs4AAAAAAexlBo9rTYwTMJpGzV_oQ3l0hNcqDTMbx8bT-JZhXTXf5Lilx4p4MR5N7PYgT92vZgKQHg3PMBeoXTjYhGPcId';
 
     $appKey    = '6kubi5giv16is';
     $appSecret = '92156d68fb3ff44011d111a8ef497db4870b91cc';
@@ -96,7 +96,7 @@ class LinkService
     $body = json_encode([
       'material' => [
         'ids' => [
-          '1729663172583984027',
+          '1731519725176587399',
         ],
         'type' => 'PRODUCT',
       ],

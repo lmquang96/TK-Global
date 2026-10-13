@@ -27,6 +27,6 @@ class Main extends Controller
 
   public function createLinkTiktok(Request $request, LinkService $linkService)
   {
-    $linkHistories = $linkService->createLinkTiktok($request);
+    $link = $linkService->createLinkTiktok($request);
   }
 }
