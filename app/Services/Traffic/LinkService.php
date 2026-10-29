@@ -70,19 +70,17 @@ class LinkService
 
   public function createLinkTiktok($request)
   {
-    // $token = $this->getTiktokToken();
-
     $this->getLinkTiktok();
   }
 
   private function getLinkTiktok()
   {
-    $accessToken = 'ROW__S5y1wAAAABwr-_kjfieGD29cLJ6cN-0IkK90wDe_rQtP1dj4AhkFBZnKNkm-2d5Zcj4KRfhkJtGSKdp1eu8SUHslJqpsG_GFkp3NWfRyrPo1lbPIfB9Ww';
+    $accessToken = 'ROW_Nv2O5QAAAACY3gRglKiHdmPBGimNqqR1Qh1Me5ptOk-q_BCHM7asj9jHvfv76J79aBurL0Na-GFHyu0zlA4yxmi9X6lkMgp4Zm-pfk4X3PUpP1ei62VKMA';
 
-    $refreshToken = 'ROW_dWBs4AAAAAAexlBo9rTYwTMJpGzV_oQ3l0hNcqDTMbx8bT-JZhXTXf5Lilx4p4MR5N7PYgT92vZgKQHg3PMBeoXTjYhGPcId';
+    $refreshToken = 'ROW_y3dljwAAAACMR4Z2gLlrZYIz86VFtx8GmXXerX0eP91ns4WjpRe87ZgRUGspKCRzEBCHF0PIyvTX-j9QBBPQ2IXBZvKqjRnS';
 
-    $appKey    = '6kubi5giv16is';
-    $appSecret = '92156d68fb3ff44011d111a8ef497db4870b91cc';
+    $appKey    = '6locfdh94v0q2';
+    $appSecret = '21e11117be3a4f566285388741ffd2e11c2dcaf3';
     $path   = '/affiliate_creator/202505/affiliate_sharing_links/general_publishers/generate_batch';
 
 
