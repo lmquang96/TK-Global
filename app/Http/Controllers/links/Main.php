@@ -24,9 +24,4 @@ class Main extends Controller
 
     return view('content.links.histories', compact('linkHistories'));
   }
-
-  public function createLinkTiktok(Request $request, LinkService $linkService)
-  {
-    $link = $linkService->createLinkTiktok($request);
-  }
 }

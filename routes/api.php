@@ -53,6 +53,3 @@ Route::get('/tiktok/callback', function (Request $request) {
 
   dd($code, $state);
 });
-
-
-Route::get('/tiktok/create-link', [LinkMain::class, 'createLinkTiktok']);
