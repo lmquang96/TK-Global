@@ -94,7 +94,7 @@ class LinkService
     $body = json_encode([
       'material' => [
         'ids' => [
-          '1731519725176587399',
+          '1729749693232744449',
         ],
         'type' => 'PRODUCT',
       ],
