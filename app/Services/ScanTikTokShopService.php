@@ -12,9 +12,9 @@ class ScanTikTokShopService
   public function scan($timeGe, $timeLt, int $pageSize = 20, ?string $pageToken = null)
   {
     $path = '/affiliate_creator/202410/orders/search';
-    $appKey    = '6kubi5giv16is';
-    $appSecret = '92156d68fb3ff44011d111a8ef497db4870b91cc';
-    $accessToken = 'ROW_0N_QLAAAAABwr-_kjfieGD29cLJ6cN-0IkK90wDe_rQtP1dj4AhkFJ1Jry1M5uu7r8U-X25r7_x1hmHs5u-OeesCr1h7shP72j94wvul8VKfZF5M29FePg';
+    $appKey    = '6locfdh94v0q2';
+    $appSecret = '21e11117be3a4f566285388741ffd2e11c2dcaf3';
+    $accessToken = 'ROW_Nv2O5QAAAACY3gRglKiHdmPBGimNqqR1Qh1Me5ptOk-q_BCHM7asj9jHvfv76J79aBurL0Na-GFHyu0zlA4yxmi9X6lkMgp4Zm-pfk4X3PUpP1ei62VKMA';
 
     $body = [
       'create_time_ge'   => $timeGe,
@@ -42,10 +42,10 @@ class ScanTikTokShopService
       'content-type'      => 'application/json',
       'x-tts-access-token' => $accessToken,
     ])
-    ->post(
-      $this->baseUrl . $path . '?' . http_build_query($query),
-      $body
-    );
+      ->post(
+        $this->baseUrl . $path . '?' . http_build_query($query),
+        $body
+      );
 
     $result = $response->json();
 
