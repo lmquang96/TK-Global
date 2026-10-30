@@ -10,7 +10,8 @@ use App\Models\Conversion;
 
 class Postback extends Controller
 {
-    public function involve(Request $request) {
+    public function involve(Request $request)
+    {
         $data = $request->all();
 
         CampaignPostback::create([
@@ -22,7 +23,8 @@ class Postback extends Controller
         return response(['status' => 'success'], 200);
     }
 
-    public function partnerize(Request $request) {
+    public function partnerize(Request $request)
+    {
         $data = $request->all();
 
         CampaignPostback::create([
@@ -34,7 +36,10 @@ class Postback extends Controller
         return response(['status' => 'success'], 200);
     }
 
-    public function getCampaignId($adsId) {
+    public function lazada(Request $request) {}
+
+    public function getCampaignId($adsId)
+    {
         $campaignId = '';
 
         switch ($adsId) {
