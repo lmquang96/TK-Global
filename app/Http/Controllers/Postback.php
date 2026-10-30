@@ -36,7 +36,18 @@ class Postback extends Controller
         return response(['status' => 'success'], 200);
     }
 
-    public function lazada(Request $request) {}
+    public function lazada(Request $request)
+    {
+        $data = $request->all();
+
+        CampaignPostback::create([
+            'source' => 'lazada',
+            'data' => json_encode($data),
+            'campaign_id' => self::getCampaignId($data['campaign_id'])
+        ]);
+
+        return response(['status' => 'success'], 200);
+    }
 
     public function getCampaignId($adsId)
     {
