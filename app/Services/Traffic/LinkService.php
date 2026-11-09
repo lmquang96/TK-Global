@@ -15,6 +15,7 @@ class LinkService
   {
     return LinkHistory::where('user_id', Auth::user()->id)
       ->where('campaign_id', $campaignId)
+      ->orderby('created_at', 'desc')
       ->limit(5)
       ->get();
   }
