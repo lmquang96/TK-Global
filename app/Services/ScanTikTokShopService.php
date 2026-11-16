@@ -4,17 +4,22 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use App\Models\CommissionRate;
+use App\Models\Click;
+use App\Models\Conversion;
 
 class ScanTikTokShopService
 {
   private string $baseUrl = 'https://open-api.tiktokglobalshop.com';
 
-  public function scan($timeGe, $timeLt, int $pageSize = 20, ?string $pageToken = null)
+  public function scan(int $timeGe, int $timeLt, int $pageSize = 100, ?string $pageToken = null)
   {
     $path = '/affiliate_creator/202410/orders/search';
     $appKey    = '6locfdh94v0q2';
     $appSecret = '21e11117be3a4f566285388741ffd2e11c2dcaf3';
-    $accessToken = 'ROW_Nv2O5QAAAACY3gRglKiHdmPBGimNqqR1Qh1Me5ptOk-q_BCHM7asj9jHvfv76J79aBurL0Na-GFHyu0zlA4yxmi9X6lkMgp4Zm-pfk4X3PUpP1ei62VKMA';
+    $accessToken = $this->getAccessToken();;
 
     $body = [
       'create_time_ge'   => $timeGe,
@@ -49,7 +54,78 @@ class ScanTikTokShopService
 
     $result = $response->json();
 
-    dd($result);
+    // dd($result);
+
+    $orders = data_get($result, 'data.orders');
+
+    $insertData = [];
+
+    foreach ($orders as $key => $order) {
+      // if ($order['status'] == 'REFUNDED') {
+      //   continue;
+      // }
+      $item = data_get($order, 'skus.0');
+      $price = data_get($item, 'price.amount') ? (int) preg_replace('/[^\d]/u', '', data_get($item, 'price.amount')) : 0;
+      $sumcom = data_get($item, 'estimated_commission.amount') ? (int) preg_replace('/[^\d]/u', '', data_get($item, 'estimated_commission.amount')) : 0;
+      $clickId = data_get($item, 'trace_info.id');
+
+      $click = Click::query()
+        ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
+        ->select('link_histories.*', 'clicks.id as click_id')
+        ->where('clicks.code', $clickId)
+        ->first();
+
+      if (!$click) {
+        continue;
+      }
+
+      $comRate = CommissionRate::where('user_id', $click->user_id)
+        ->pluck('rate')->first();
+
+      if (!$comRate) {
+        $comRate = 0.7;
+      }
+
+      $comRate = floatval($comRate);
+
+      $insertData[] = [
+        'code' => sha1(time() + $key),
+        'order_code' => $order['id'],
+        'order_time' => Carbon::createFromTimestamp($order['create_time'])->format('Y-m-d H:i:s'),
+        'unit_price' => floatval($price),
+        'quantity' => $item['quantity'],
+        'commission_pub' => floatval($sumcom) * $comRate,
+        'commission_sys' => floatval($sumcom) * (1 - $comRate),
+        'status' => $order['status'] == 'REFUNDED' ? 'Cancelled' : ($order['status'] == 'AWAITING PAYMENT' ? 'Approved' : 'Pending'),
+        'product_code' => $item['id'] . '-' . $item['product_id'],
+        'product_name' => $item['product_name'],
+        'campaign_id' => $click->campaign_id,
+        'click_id' => $click->click_id,
+        'user_id' => $click->user_id,
+        'updated_at' => now(),
+      ];
+    }
+
+    $chunks = array_chunk($insertData, 100);
+
+    foreach ($chunks as $key => $chunk) {
+      Conversion::upsert(
+        $chunk,
+        [
+          'campaign_id',
+          'order_code',
+          'product_code',
+        ],
+        [
+          'unit_price',
+          'quantity',
+          'commission_pub',
+          'commission_sys',
+          'status',
+          'updated_at',
+        ]
+      );
+    }
   }
 
   function generateTikTokSign(
@@ -84,5 +160,38 @@ class ScanTikTokShopService
       'sign' => $sign,
       'sign_string' => $signString,
     ];
+  }
+
+  private function getAccessToken()
+  {
+    $endpoint = 'https://auth.tiktok-shops.com/api/v2/token/refresh';
+    $accessToken = Cache::get('tiktok_access_token');
+
+    if (!$accessToken) {
+      $refreshToken = Cache::get('tiktok_refresh_token');
+
+      try {
+        $response = Http::get($endpoint, [
+          'app_key' => '6locfdh94v0q2',
+          'refresh_token' => $refreshToken,
+          'grant_type' => 'refresh_token'
+        ]);
+
+        $response = $response->json();
+
+        $accessToken = data_get($response, 'data.access_token');
+        $accessTokenExpire = data_get($response, 'data.access_token_expire_in');
+        $refreshToken = data_get($response, 'data.refresh_token');
+        $refreshTokenExpire = data_get($response, 'data.refresh_token_expire_in');
+
+        Cache::put('tiktok_refresh_token', $refreshToken, Carbon::createFromTimestamp((int) $refreshTokenExpire));
+
+        Cache::put('tiktok_access_token', $accessToken, Carbon::createFromTimestamp((int) $accessTokenExpire));
+      } catch (\Throwable $th) {
+        Log::error('Lỗi xảy ra khi lấy access token tiktok: ' . $th->getMessage());
+      }
+    }
+
+    return $accessToken;
   }
 }

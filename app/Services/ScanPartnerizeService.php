@@ -2,37 +2,36 @@
 
 namespace App\Services;
 
-use App\Models\CampaignPostback;
 use App\Models\Click;
 use App\Models\Conversion;
-use App\Models\Profile;
 use Carbon\Carbon;
 use App\Models\CommissionRate;
+use Illuminate\Support\Facades\Log;
 
 class ScanPartnerizeService
 {
   const USD_VND_RATE = 22500;
   const VAT_RATE = 1.1;
 
-  public function scan($startDate, $endDate)
+  public function scan(string $startDate, string $endDate)
   {
     $token = "cDN0ZXcxNDV5M3RhZzQxbjpOenkyOVM2Yg==";
     $pId = "1011l398764";
 
     $filters = [
-        'start_date' => $startDate."T00:00:00",
-        'end_date' => $endDate."T23:59:59",
-        'timezone' => 'Asia/Ho_Chi_Minh'
+      'start_date' => $startDate . "T00:00:00",
+      'end_date' => $endDate . "T23:59:59",
+      'timezone' => 'Asia/Ho_Chi_Minh'
     ];
 
     $headers = [
-        'Authorization: Basic ' . $token,
-        'Content-Type: application/json',
+      'Authorization: Basic ' . $token,
+      'Content-Type: application/json',
     ];
 
     $query = http_build_query($filters);
 
-    $url = "https://api.partnerize.com/reporting/report_publisher/publisher/$pId/conversion.json?".$query;
+    $url = "https://api.partnerize.com/reporting/report_publisher/publisher/$pId/conversion.json?" . $query;
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -45,7 +44,7 @@ class ScanPartnerizeService
 
     if (!empty($response['error'])) {
       Log::error(
-          'Call api optimise Fail:' .
+        'Call api optimise Fail:' .
           ' Message: ' . json_encode($response['error'])
       );
     }
@@ -58,16 +57,16 @@ class ScanPartnerizeService
       $purchaseTime = $item['conversion_time'];
       foreach ($itemDetails as $subkey => $itemDetail) {
         $click = Click::query()
-        ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
-        ->select('link_histories.*', 'clicks.id as click_id')
-        ->where('clicks.code', $item['publisher_reference'])
-        ->first();
+          ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
+          ->select('link_histories.*', 'clicks.id as click_id')
+          ->where('clicks.code', $item['publisher_reference'])
+          ->first();
 
         $sales = (floatval($itemDetail['item_value']) * self::USD_VND_RATE) / self::VAT_RATE;
         $sumcom = (floatval($itemDetail['item_publisher_commission']) * self::USD_VND_RATE) / self::VAT_RATE;
 
         $comRate = CommissionRate::where('user_id', $click->user_id)
-        ->pluck('rate')->first();
+          ->pluck('rate')->first();
 
         if (!$comRate) {
           $comRate = 0.7;

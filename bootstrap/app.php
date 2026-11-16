@@ -29,4 +29,5 @@ return Application::configure(basePath: dirname(__DIR__))
   ->withSchedule(function ($schedule) use ($date, $preDate) {
     $schedule->command('app:conversions-scan')->everyTenMinutes();
     $schedule->command('app:partnerize-scan ' . $preDate . ' ' . $date)->everyTwoHours();
+    $schedule->command('app:tiktokshop-scan ' . $preDate)->dailyAt('03:00');
   })->create();
