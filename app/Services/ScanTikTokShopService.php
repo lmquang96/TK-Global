@@ -95,7 +95,7 @@ class ScanTikTokShopService
         'code' => sha1(time() + $key),
         'order_code' => $order['id'],
         'order_time' => Carbon::createFromTimestamp($order['create_time'])->format('Y-m-d H:i:s'),
-        'unit_price' => floatval($price),
+        'unit_price' => floatval($price)  / self::VAT_RATE,
         'quantity' => $item['quantity'],
         'commission_pub' => floatval($sumcom) * $comRate / self::VAT_RATE,
         'commission_sys' => floatval($sumcom) * (1 - $comRate) / self::VAT_RATE,
