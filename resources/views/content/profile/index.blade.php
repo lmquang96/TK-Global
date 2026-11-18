@@ -90,14 +90,21 @@
               <div class="col-md-6">
                 <label class="form-label" for="account_type">Loại tài khoản</label>
                 <select id="account_type" class="select2 form-select" name="account_type">
-                  <option value="Individual"
-                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'Individual' ? 'selected' : '' }}>
-                    Cá
-                    nhân</option>
-                  <option value="Company"
-                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'Company' ? 'selected' : '' }}>
-                    Doanh
-                    nghiệp</option>
+                  <option value="domestic_individual"
+                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'domestic_individual' ? 'selected' : '' }}>
+                    Cá nhân trong nước</option>
+                  <option value="individual_business"
+                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'individual_business' ? 'selected' : '' }}>
+                    Hộ kinh doanh</option>
+                  <option value="domestic_company"
+                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'domestic_company' ? 'selected' : '' }}>
+                    Công ty trong nước</option>
+                  <option value="foreign_individual"
+                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'foreign_individual' ? 'selected' : '' }}>
+                    Cá nhân nước ngoài</option>
+                  <option value="foreign_company"
+                    {{ !empty(auth()->user()->profile->account_type) && auth()->user()->profile->account_type == 'foreign_company' ? 'selected' : '' }}>
+                    Công ty nước ngoài</option>
                 </select>
               </div>
               <div class="col-md-6">
