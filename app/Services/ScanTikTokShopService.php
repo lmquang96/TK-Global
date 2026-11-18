@@ -12,6 +12,9 @@ use App\Models\Conversion;
 
 class ScanTikTokShopService
 {
+  const USD_VND_RATE = 22500;
+  const VAT_RATE = 1.08;
+
   private string $baseUrl = 'https://open-api.tiktokglobalshop.com';
 
   public function scan(int $timeGe, int $timeLt, int $pageSize = 100, ?string $pageToken = null)
@@ -61,9 +64,9 @@ class ScanTikTokShopService
     $insertData = [];
 
     foreach ($orders as $key => $order) {
-      // if ($order['status'] == 'REFUNDED') {
-      //   continue;
-      // }
+      if ($order['status'] == 'REFUNDED') {
+        continue;
+      }
       $item = data_get($order, 'skus.0');
       $price = data_get($item, 'price.amount') ? (int) preg_replace('/[^\d]/u', '', data_get($item, 'price.amount')) : 0;
       $sumcom = data_get($item, 'estimated_commission.amount') ? (int) preg_replace('/[^\d]/u', '', data_get($item, 'estimated_commission.amount')) : 0;
@@ -94,8 +97,8 @@ class ScanTikTokShopService
         'order_time' => Carbon::createFromTimestamp($order['create_time'])->format('Y-m-d H:i:s'),
         'unit_price' => floatval($price),
         'quantity' => $item['quantity'],
-        'commission_pub' => floatval($sumcom) * $comRate,
-        'commission_sys' => floatval($sumcom) * (1 - $comRate),
+        'commission_pub' => floatval($sumcom) * $comRate / self::VAT_RATE,
+        'commission_sys' => floatval($sumcom) * (1 - $comRate) / self::VAT_RATE,
         'status' => $order['status'] == 'REFUNDED' ? 'Cancelled' : ($order['status'] == 'AWAITING PAYMENT' ? 'Approved' : 'Pending'),
         'product_code' => $item['id'] . '-' . $item['product_id'],
         'product_name' => $item['product_name'],

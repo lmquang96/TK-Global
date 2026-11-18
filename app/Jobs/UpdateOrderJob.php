@@ -22,7 +22,7 @@ class UpdateOrderJob implements ShouldQueue
   const MYR_RATE = 5962.5;
   const KLOOK_ID = 1;
   const KLOOKHK_ID = 32;
-  const VAT_RATE = 1.1;
+  const VAT_RATE = 1.08;
 
   /**
    * Create a new job instance.
@@ -495,7 +495,8 @@ class UpdateOrderJob implements ShouldQueue
     }
   }
 
-  public static function getGetYourGuideUpdateData(array $sheet) {
+  public static function getGetYourGuideUpdateData(array $sheet)
+  {
     $pubRate = 0.7;
     $sysRate = 0.3;
 
@@ -504,14 +505,14 @@ class UpdateOrderJob implements ShouldQueue
       $comSys = $row['commission'] * self::USD_RATE * $sysRate / self::VAT_RATE;
 
       Conversion::query()
-      ->where('campaign_id', 43)
-      ->where('order_code', $row['ocd'])
-      ->update([
-        'commission_pub' => $comPub,
-        'commission_sys' => $comSys,
-        'comment' => 'payment 202610',
-        'updated_at' => Carbon::now()
-      ]);
+        ->where('campaign_id', 43)
+        ->where('order_code', $row['ocd'])
+        ->update([
+          'commission_pub' => $comPub,
+          'commission_sys' => $comSys,
+          'comment' => 'payment 202610',
+          'updated_at' => Carbon::now()
+        ]);
     }
     dd('done');
   }

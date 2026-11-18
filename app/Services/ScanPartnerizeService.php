@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class ScanPartnerizeService
 {
   const USD_VND_RATE = 22500;
-  const VAT_RATE = 1.1;
+  const VAT_RATE = 1.08;
 
   public function scan(string $startDate, string $endDate)
   {

@@ -11,7 +11,7 @@ use App\Models\CommissionRate;
 class ScanConversionsService
 {
   const USD_VND_RATE = 22500;
-  const VAT_RATE = 1.1;
+  const VAT_RATE = 1.08;
 
   public function scan()
   {
@@ -33,7 +33,7 @@ class ScanConversionsService
 
           if ($click) {
             $comRate = CommissionRate::where('user_id', $click->user_id)
-            ->pluck('rate')->first();
+              ->pluck('rate')->first();
 
             if (!$comRate) {
               $comRate = 0.7;
@@ -71,7 +71,7 @@ class ScanConversionsService
             $userId = Profile::where('affiliate_id', $data->aff_sub)->pluck('user_id')->first();
             if ($userId) {
               $comRate = CommissionRate::where('user_id', $click->user_id)
-              ->pluck('rate')->first();
+                ->pluck('rate')->first();
 
               if (!$comRate) {
                 $comRate = 0.7;
@@ -129,7 +129,7 @@ class ScanConversionsService
 
           if ($click) {
             $comRate = CommissionRate::where('user_id', $click->user_id)
-            ->pluck('rate')->first();
+              ->pluck('rate')->first();
 
             if (!$comRate) {
               $comRate = 0.7;

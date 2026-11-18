@@ -2,17 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\CampaignPostback;
 use App\Models\Click;
 use App\Models\Conversion;
-use App\Models\Profile;
 use Carbon\Carbon;
 use App\Models\CommissionRate;
 
 class ScanViatorService
 {
   const USD_VND_RATE = 22500;
-  const VAT_RATE = 1.1;
+  const VAT_RATE = 1.08;
 
   public function scan()
   {
@@ -32,7 +30,7 @@ class ScanViatorService
       $sumcom = (floatval(substr($item['commission'], 4)) * self::USD_VND_RATE) / self::VAT_RATE;
 
       $comRate = CommissionRate::where('user_id', $click->user_id)
-      ->pluck('rate')->first();
+        ->pluck('rate')->first();
 
       if (!$comRate) {
         $comRate = 0.7;
