@@ -10,6 +10,11 @@ class LinkHistory extends Model
     /** @use HasFactory<\Database\Factories\LinkHistoryFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'sub1',
+        // thêm các cột khác được phép update/create tại đây
+    ];
+
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);

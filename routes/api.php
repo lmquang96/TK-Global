@@ -27,6 +27,7 @@ Route::post('/uploadImage', [Upload::class, 'uploadImage']);
 Route::get('/involve/postback', [Postback::class, 'involve']);
 Route::get('/partnerize/postback', [Postback::class, 'partnerize']);
 Route::get('/lazada/postback', [Postback::class, 'lazada']);
+Route::get('/vexere/postback', [Postback::class, 'vexere']);
 Route::get('/postback/scan', [Postback::class, 'scan']);
 
 Route::get('/common/get-urls-by-id', [Common::class, 'getUrlsById']);

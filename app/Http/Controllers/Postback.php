@@ -49,6 +49,19 @@ class Postback extends Controller
         return response(['status' => 'success'], 200);
     }
 
+    public function vexere(Request $request)
+    {
+        $data = $request->all();
+
+        CampaignPostback::create([
+            'source' => 'vexere',
+            'data' => json_encode($data),
+            'campaign_id' => self::getCampaignId($data['offer_id'])
+        ]);
+
+        return response(['status' => 'success'], 200);
+    }
+
     public function getCampaignId($adsId)
     {
         $campaignId = '';

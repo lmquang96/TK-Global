@@ -565,6 +565,7 @@ class UploadOrderJob implements ShouldQueue
 
     foreach ($sheet as $key => $row) {
       $subid = $row['sourceparam2'];
+      $subid1 = $row['sourceparam3'] ?? null;
 
       if (empty($subid)) {
         continue;
@@ -582,6 +583,12 @@ class UploadOrderJob implements ShouldQueue
       $userId = $clickData->linkHistory->user_id;
       $clickId = $clickData->id;
       $campaginId = $clickData->linkHistory->campaign_id;
+
+      if (!empty($subid1) && $clickData->linkHistory) {
+        $clickData->linkHistory->update([
+          'sub1' => $subid1,
+        ]);
+      }
 
       $dataKey = 'insert';
       $time = Carbon::parse(trim($row['crtdt']))->addHours(7);
