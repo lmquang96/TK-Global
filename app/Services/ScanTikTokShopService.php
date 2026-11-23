@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\CommissionRate;
 use App\Models\Click;
 use App\Models\Conversion;
+use App\Models\Config;
 
 class ScanTikTokShopService
 {
@@ -57,9 +58,11 @@ class ScanTikTokShopService
 
     $result = $response->json();
 
-    // dd($result);
-
     $orders = data_get($result, 'data.orders');
+
+    if (!$orders) {
+      return true;
+    }
 
     $insertData = [];
 
@@ -128,6 +131,33 @@ class ScanTikTokShopService
           'updated_at',
         ]
       );
+
+      foreach ($chunk as $key => $item) {
+        $this->callUserPostback($item);
+      }
+    }
+  }
+
+  private function callUserPostback($item)
+  {
+    switch ($item['user_id']) {
+      case 8:
+        $subid = '';
+        $payout = 0;
+        $url = 'https://blnciaga.com/1e52a83/postback';
+
+        $response = Http::get($url, [
+          'subid' => $subid,
+          'payout' => $payout,
+          'status' => 'lead'
+        ]);
+        // dd($response);
+
+        break;
+
+      default:
+        # code...
+        break;
     }
   }
 
@@ -172,6 +202,10 @@ class ScanTikTokShopService
 
     if (!$accessToken) {
       $refreshToken = Cache::get('tiktok_refresh_token');
+
+      if (!$refreshToken) {
+        $refreshToken = Config::where('name', 'tiktok_refresh_token')->pluck('value')->first();
+      }
 
       try {
         $response = Http::get($endpoint, [
