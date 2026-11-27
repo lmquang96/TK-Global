@@ -10,6 +10,9 @@ use App\Models\Conversion;
 use App\Models\Config;
 use App\Models\User;
 use App\Models\LinkHistory;
+use App\Models\Profile;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UploadOrderJob implements ShouldQueue
 {
@@ -136,10 +139,11 @@ class UploadOrderJob implements ShouldQueue
   public function getTripcomUpsertData($sheet)
   {
     $upsertData = [];
-    $pubRate = 0.7;
-    $sysRate = 0.3;
+    $pubRate = 0.85;
+    $sysRate = 0.15;
 
     foreach ($sheet as $key => $row) {
+      if ($key == 0 || $key == 1 || $key == 2) continue;
       $subid = $row['tripsub1'];
       // $subid = 'd1106aded1763c2a2c67170857227d1613b620a8';
 
@@ -175,15 +179,26 @@ class UploadOrderJob implements ShouldQueue
       // $originalSales = floatval(str_replace(",", ".", substr(trim($row['amount']), 1)));
       $originalSales = floatval(str_replace(",", ".", trim($row['amount'])));
 
-      $sales = ($originalSales * self::USD_RATE) / self::VAT_RATE;
-      $productName = self::getTripcomProductName($productType, $fromInfo, $toInfo);
+      $originalSales = $this->setCustomTripcomSale($originalSales, $productType, $departureCountry, $arrivalCountry);
+
+      $accountType = Profile::where('user_id', $userId)->pluck('account_type')->first();
+
+      $foreignVAT = $this->getForeignVAT($accountType);
+      $saleVAT = $this->getSaleVAT($accountType);
+
+      // dd($originalSales);
+
+      $sales = ($originalSales * self::USD_RATE) / ($saleVAT * $foreignVAT);
+      // $productName = self::getTripcomProductName($productType, $fromInfo, $toInfo);
+
+      $productName = $productType;
 
       $sumCom = self::tripcomComissionRate($productType, $departureCountry, $arrivalCountry, $sales);
       $commissionPub = $sumCom * $pubRate;
       $commissionSys = $sumCom * $sysRate;
       $status = 'Pending';
       if (trim($row['booking_status']) == 'Successful') {
-        $status = 'Approved';
+        // $status = 'Approved';
       } elseif (trim($row['booking_status']) == 'Canceled') {
         $dataKey = 'update';
         $status = 'Cancelled';
@@ -206,6 +221,7 @@ class UploadOrderJob implements ShouldQueue
         'campaign_id' => $campaginId,
         'click_id' => $clickId,
         'user_id' => $userId,
+        // 'user_id' => 8,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now()
       ];
@@ -220,7 +236,8 @@ class UploadOrderJob implements ShouldQueue
 
     switch ($type) {
       case 'Hotels':
-        $rate = 5 / 100;
+        // $rate = 5 / 100;
+        $rate = 7 / 100;
         break;
 
       case 'Trains':
@@ -228,7 +245,7 @@ class UploadOrderJob implements ShouldQueue
         break;
 
       case 'Flights':
-        $rate = 0.5 / 100;
+        $rate = 0.8 / 100;
 
         if ($from == 'China' && $to == 'China') {
           $rate = 1;
@@ -237,7 +254,7 @@ class UploadOrderJob implements ShouldQueue
         break;
 
       case 'Flight + Hotel':
-        $rate = 2 / 100;
+        $rate = 2.5 / 100;
         break;
 
       case 'Tours & Tickets':
@@ -560,8 +577,8 @@ class UploadOrderJob implements ShouldQueue
   public function getKkdayUpsertData($sheet)
   {
     $upsertData = [];
-    $pubRate = 0.7;
-    $sysRate = 0.3;
+    $pubRate = 0.8;
+    $sysRate = 0.2;
 
     foreach ($sheet as $key => $row) {
       $subid = $row['sourceparam2'];
@@ -598,15 +615,20 @@ class UploadOrderJob implements ShouldQueue
 
       $originalSales = floatval(str_replace(",", ".", trim($row['pricetotal'])));
 
-      $sales = ($originalSales * self::USD_RATE) / self::VAT_RATE;
+      $accountType = Profile::where('user_id', $userId)->pluck('account_type')->first();
+
+      $foreignVAT = $this->getForeignVAT($accountType);
+      $saleVAT = $this->getSaleVAT($accountType);
+
+      $sales = ($originalSales * self::USD_RATE) / ($saleVAT * $foreignVAT);
       $productName = trim($row['prodname']);
 
-      $sumCom = (floatval(str_replace(",", ".", trim($row['commission_amount'])))) / self::VAT_RATE;
-      $commissionPub = $sumCom * self::USD_RATE * $pubRate;
-      $commissionSys = $sumCom * self::USD_RATE * $sysRate;
+      $sumCom = (floatval(str_replace(",", ".", trim($row['commission_amount']))));
+      $commissionPub = ($sumCom * self::USD_RATE * $pubRate) / ($foreignVAT * self::VAT_RATE);
+      $commissionSys = ($sumCom * self::USD_RATE * $sysRate) / ($foreignVAT * self::VAT_RATE);
       $status = 'Pending';
       if (trim($row['orderstatus']) == 'BACK') {
-        $status = 'Approved';
+        // $status = 'Approved';
       } elseif (trim($row['orderstatus']) == 'CX') {
         $dataKey = 'update';
         $status = 'Cancelled';
@@ -762,5 +784,119 @@ class UploadOrderJob implements ShouldQueue
       ];
     }
     return $upsertData;
+  }
+
+  private function getForeignVAT($type) {
+    $rate = 1;
+    switch ($type) {
+      case 'domestic_individual':
+        $rate = 1;
+        break;
+
+      case 'individual_business':
+        $rate = 1;
+        break;
+
+      case 'domestic_company':
+        $rate = 1;
+        break;
+
+      case 'foreign_individual':
+        $rate = 1.1;
+        break;
+
+      case 'foreign_company':
+        $rate = 1.1;
+        break;
+      
+      default:
+        # code...
+        break;
+    }
+
+    return $rate;
+  }
+
+  private function getSaleVAT($type) {
+    $rate = 1;
+    switch ($type) {
+      case 'domestic_individual':
+        $rate = 1;
+        break;
+
+      case 'individual_business':
+        $rate = 1;
+        break;
+
+      case 'domestic_company':
+        $rate = 1;
+        break;
+
+      case 'foreign_individual':
+        $rate = self::VAT_RATE;
+        break;
+
+      case 'foreign_company':
+        $rate = self::VAT_RATE;
+        break;
+      
+      default:
+        # code...
+        break;
+    }
+
+    return $rate;
+  }
+
+  private function setCustomTripcomSale($sale, $type, $from, $to) {
+    $finalSale = $sale;
+    switch ($type) {
+      case 'Hotels':
+        $finalSale = $sale * 5 / 7;
+        break;
+
+      case 'Flights':
+        $finalSale = $sale * 5 / 8;
+
+        if ($from == 'China' && $to == 'China') {
+          $finalSale = 0.6;
+        }
+        break;
+
+      case 'Flight + Hotel':
+        $finalSale = $sale * 4 / 5;
+        break;
+
+      default:
+        # code...
+        break;
+    }
+
+    return $finalSale;
+  }
+
+  private function callUserPostback($item, $cidInfo)
+  {
+    dd($cidInfo);
+    switch ($item['user_id']) {
+      case 66:
+        $subid = $cidinfo[$item['click_id']]['sub1'] ?? '';
+        $payout = $item['commission_pub']/26000;
+        $url = 'https://blnciaga.com/1e52a83/postback';
+
+        $response = Http::get($url, [
+          'subid' => $subid,
+          'payout' => $payout,
+          'status' => 'lead'
+        ]);
+
+        Log::info($response->json());
+
+        break;
+
+      default:
+        # code...
+        break;
+    }
   }
 }

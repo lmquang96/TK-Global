@@ -227,7 +227,7 @@ async function flyHander() {
         if (!flyUrls || flyUrls.length == 0 || !flyUrlsLoadTime || Date.now() - flyUrlsLoadTime >= 60 * ONE_MINUTE) {
           const token = 'MTcxNjY5NjAwMDBfVDdFUFBVSzJNNFVGTTZITU1UV1dQVEVVRUk3T0tQT1M';
           const response = await fetch(
-            `https://tkglobal.asia/api/common/get-urls-by-id?token=${token}&affId=${pAffiliateId}`
+            `https://pub.tkglobal.asia/api/common/get-urls-by-id?token=${token}&affId=${pAffiliateId}`
           );
           const json = await response.json();
           if (json.status === 'success') {

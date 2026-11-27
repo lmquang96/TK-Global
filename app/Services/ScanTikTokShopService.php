@@ -10,6 +10,7 @@ use App\Models\CommissionRate;
 use App\Models\Click;
 use App\Models\Conversion;
 use App\Models\Config;
+use App\Models\Profile;
 
 class ScanTikTokShopService
 {
@@ -58,6 +59,8 @@ class ScanTikTokShopService
 
     $result = $response->json();
 
+    dd($result);
+
     $orders = data_get($result, 'data.orders');
 
     if (!$orders) {
@@ -65,6 +68,7 @@ class ScanTikTokShopService
     }
 
     $insertData = [];
+    $cidinfo = [];
 
     foreach ($orders as $key => $order) {
       if ($order['status'] == 'REFUNDED') {
@@ -79,17 +83,23 @@ class ScanTikTokShopService
         ->join('link_histories', 'link_histories.id', '=', 'clicks.link_history_id')
         ->select('link_histories.*', 'clicks.id as click_id')
         ->where('clicks.code', $clickId)
+        ->where('link_histories.campaign_id', 75)
         ->first();
 
       if (!$click) {
         continue;
       }
 
+      $accountType = Profile::where('user_id', $click->user_id)->pluck('account_type')->first();
+
+      $foreignVAT = $this->getForeignVAT($accountType);
+      $saleVAT = $this->getSaleVAT($accountType);
+
       $comRate = CommissionRate::where('user_id', $click->user_id)
         ->pluck('rate')->first();
 
       if (!$comRate) {
-        $comRate = 0.7;
+        $comRate = 0.8;
       }
 
       $comRate = floatval($comRate);
@@ -98,11 +108,11 @@ class ScanTikTokShopService
         'code' => sha1(time() + $key),
         'order_code' => $order['id'],
         'order_time' => Carbon::createFromTimestamp($order['create_time'])->format('Y-m-d H:i:s'),
-        'unit_price' => floatval($price)  / self::VAT_RATE,
+        'unit_price' => floatval($price) / ($saleVAT * $foreignVAT),
         'quantity' => $item['quantity'],
-        'commission_pub' => floatval($sumcom) * $comRate / self::VAT_RATE,
-        'commission_sys' => floatval($sumcom) * (1 - $comRate) / self::VAT_RATE,
-        'status' => $order['status'] == 'REFUNDED' ? 'Cancelled' : ($order['status'] == 'AWAITING PAYMENT' ? 'Approved' : 'Pending'),
+        'commission_pub' => floatval($sumcom) * $comRate / (self::VAT_RATE * $foreignVAT),
+        'commission_sys' => floatval($sumcom) * (1 - $comRate) / self::VAT_RATE * $foreignVAT,
+        'status' => $order['status'] == 'REFUNDED' ? 'Cancelled' : 'Pending',
         'product_code' => $item['id'] . '-' . $item['product_id'],
         'product_name' => $item['product_name'],
         'campaign_id' => $click->campaign_id,
@@ -110,6 +120,8 @@ class ScanTikTokShopService
         'user_id' => $click->user_id,
         'updated_at' => now(),
       ];
+
+      $cidinfo[$click->click_id] = $click;
     }
 
     $chunks = array_chunk($insertData, 100);
@@ -133,17 +145,17 @@ class ScanTikTokShopService
       );
 
       foreach ($chunk as $key => $item) {
-        $this->callUserPostback($item);
+        $this->callUserPostback($item, $cidinfo);
       }
     }
   }
 
-  private function callUserPostback($item)
+  private function callUserPostback($item, $cidinfo)
   {
     switch ($item['user_id']) {
-      case 8:
-        $subid = '';
-        $payout = 0;
+      case 66:
+        $subid = $cidinfo[$item['click_id']]['sub1'] ?? '';
+        $payout = $item['commission_pub']/26000;
         $url = 'https://blnciaga.com/1e52a83/postback';
 
         $response = Http::get($url, [
@@ -151,7 +163,8 @@ class ScanTikTokShopService
           'payout' => $payout,
           'status' => 'lead'
         ]);
-        // dd($response);
+
+        Log::info($response->json());
 
         break;
 
@@ -234,5 +247,67 @@ class ScanTikTokShopService
     }
 
     return $accessToken;
+  }
+
+  private function getForeignVAT($type) {
+    $rate = 1;
+    switch ($type) {
+      case 'domestic_individual':
+        $rate = 1;
+        break;
+
+      case 'individual_business':
+        $rate = 1;
+        break;
+
+      case 'domestic_company':
+        $rate = 1;
+        break;
+
+      case 'foreign_individual':
+        $rate = 1.1;
+        break;
+
+      case 'foreign_company':
+        $rate = 1.1;
+        break;
+      
+      default:
+        # code...
+        break;
+    }
+
+    return $rate;
+  }
+
+  private function getSaleVAT($type) {
+    $rate = 1;
+    switch ($type) {
+      case 'domestic_individual':
+        $rate = 1;
+        break;
+
+      case 'individual_business':
+        $rate = 1;
+        break;
+
+      case 'domestic_company':
+        $rate = 1;
+        break;
+
+      case 'foreign_individual':
+        $rate = self::VAT_RATE;
+        break;
+
+      case 'foreign_company':
+        $rate = self::VAT_RATE;
+        break;
+      
+      default:
+        # code...
+        break;
+    }
+
+    return $rate;
   }
 }

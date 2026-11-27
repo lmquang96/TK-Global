@@ -29,11 +29,13 @@
       window.iconXAxis = 'right';
       window.iconFollowLink = false;
       var s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/gh/lmquang96/TK-Global@v1.0.2.2/public/assets/lib/flyicon.min.js", s.onload =
+      s.src = "/assets/lib/flyicon.js", s.onload =
         function() {
           "function" == typeof window.flyHander && window.flyHander()
         }, document.head.appendChild(s);
     });
+
+    // https://cdn.jsdelivr.net/gh/lmquang96/TK-Global@v1.0.2.2/public/assets/lib/flyicon.min.js
   </script>
 </body>
 

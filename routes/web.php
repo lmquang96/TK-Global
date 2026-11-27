@@ -41,6 +41,9 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 Route::get('/terms-of-service', [GuideMain::class, 'termsOfService'])->name('terms-of-service');
 Route::get('/privacy-policy', [GuideMain::class, 'privacyPolicy'])->name('privacy-policy');
+Route::prefix('/common')->group(function () {
+  Route::get('/fly-icon', [Common::class, 'flyIcon']);
+});
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -84,9 +87,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::prefix('/links')->group(function () {
     Route::post('/store-history', [LinkMain::class, 'storeHistory'])->name('links-store-history');
     Route::get('/history', [LinkMain::class, 'history'])->name('links-history');
-  });
-
-  Route::prefix('/common')->group(function () {
-    Route::get('/fly-icon', [Common::class, 'flyIcon']);
   });
 });
