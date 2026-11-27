@@ -59,8 +59,6 @@ class ScanTikTokShopService
 
     $result = $response->json();
 
-    dd($result);
-
     $orders = data_get($result, 'data.orders');
 
     if (!$orders) {
